@@ -93,6 +93,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\ContactsController.cs" />
     <Compile Include="Controllers\EmailListsController.cs" />
+    <Compile Include="Controllers\EmailSenderController.cs" />
     <Compile Include="Controllers\TemplatesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
