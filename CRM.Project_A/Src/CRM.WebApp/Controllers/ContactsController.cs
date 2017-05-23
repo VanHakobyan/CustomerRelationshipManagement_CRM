@@ -14,105 +14,127 @@ namespace CRM.WebApp.Controllers
 {
     public class ContactsController : ApiController
     {
-        private DataBaseCRMEntities db = new DataBaseCRMEntities();
 
         // GET: api/Contacts
-        public IQueryable<Contact> GetContacts()
+        public List<Contact> GetContacts()
         {
-            return db.Contacts;
+            using (DataBaseCRMEntities db = new DataBaseCRMEntities())
+            {
+                return db.Contacts.ToListAsync().Result;
+            }
+
         }
 
         // GET: api/Contacts/5
         [ResponseType(typeof(Contact))]
         public IHttpActionResult GetContact(int id)
         {
-            Contact contact = db.Contacts.Find(id);
-            if (contact == null)
+            using (DataBaseCRMEntities db = new DataBaseCRMEntities())
             {
-                return NotFound();
-            }
+                Contact contact = db.Contacts.Find(id);
+                if (contact == null)
+                {
+                    return NotFound();
+                }
 
-            return Ok(contact);
+                return Ok(contact);
+            }
         }
 
         // PUT: api/Contacts/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutContact(int id, Contact contact)
+        public IHttpActionResult PutContact([FromUri]int id, [FromBody]Contact contact)
         {
-            if (!ModelState.IsValid)
+            using (DataBaseCRMEntities db = new DataBaseCRMEntities())
             {
-                return BadRequest(ModelState);
-            }
-
-            if (id != contact.ContactId)
-            {
-                return BadRequest();
-            }
-
-            db.Entry(contact).State = EntityState.Modified;
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ContactExists(id))
+                if (!ModelState.IsValid)
                 {
-                    return NotFound();
+                    return BadRequest(ModelState);
                 }
-                else
-                {
-                    throw;
-                }
-            }
 
-            return StatusCode(HttpStatusCode.NoContent);
+                if (id != contact.ContactId)
+                {
+                    return BadRequest();
+                }
+
+                db.Entry(contact).State = EntityState.Modified;
+
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ContactExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+                return StatusCode(HttpStatusCode.NoContent);
+            }
         }
 
         // POST: api/Contacts
         [ResponseType(typeof(Contact))]
-        public IHttpActionResult PostContact(Contact contact)
+        public IHttpActionResult PostContact([FromBody]Contact contact)
         {
-            if (!ModelState.IsValid)
+            using (DataBaseCRMEntities db = new DataBaseCRMEntities())
             {
-                return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                contact.DateInserted = DateTime.UtcNow;
+                contact.GuID = Guid.NewGuid();
+                db.Contacts.Add(contact);
+                db.SaveChanges();
+
+                return CreatedAtRoute("DefaultApi", new { id = contact.ContactId }, contact);
             }
-
-            db.Contacts.Add(contact);
-            db.SaveChanges();
-
-            return CreatedAtRoute("DefaultApi", new { id = contact.ContactId }, contact);
         }
-
         // DELETE: api/Contacts/5
         [ResponseType(typeof(Contact))]
         public IHttpActionResult DeleteContact(int id)
         {
-            Contact contact = db.Contacts.Find(id);
-            if (contact == null)
+            using (DataBaseCRMEntities db = new DataBaseCRMEntities())
             {
-                return NotFound();
+                Contact contact = db.Contacts.Find(id);
+                if (contact == null)
+                {
+                    return NotFound();
+                }
+
+                db.Contacts.Remove(contact);
+                db.SaveChanges();
+
+                return Ok(contact);
             }
-
-            db.Contacts.Remove(contact);
-            db.SaveChanges();
-
-            return Ok(contact);
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            using (DataBaseCRMEntities db = new DataBaseCRMEntities())
             {
-                db.Dispose();
+                if (disposing)
+                {
+                    db.Dispose();
+                }
+                base.Dispose(disposing);
             }
-            base.Dispose(disposing);
         }
 
         private bool ContactExists(int id)
         {
-            return db.Contacts.Count(e => e.ContactId == id) > 0;
+            using (DataBaseCRMEntities db = new DataBaseCRMEntities())
+            {
+                return db.Contacts.Count(e => e.ContactId == id) > 0;
+            }
         }
     }
 }
