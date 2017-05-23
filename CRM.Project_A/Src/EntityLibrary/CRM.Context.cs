@@ -13,10 +13,10 @@ namespace EntityLibrary
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class DataBaseCRMEntities : DbContext
+    public partial class DataBaseCRMEntityes : DbContext
     {
-        public DataBaseCRMEntities()
-            : base("name=DataBaseCRMEntities")
+        public DataBaseCRMEntityes()
+            : base("name=DataBaseCRMEntityes")
         {
         }
     
