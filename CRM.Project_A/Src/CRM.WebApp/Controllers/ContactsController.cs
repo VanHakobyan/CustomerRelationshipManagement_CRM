@@ -17,25 +17,25 @@ namespace CRM.WebApp.Controllers
         private DataBaseCRMEntityes db = new DataBaseCRMEntityes();
 
         // GET: api/Contacts
-        public IQueryable<Contact> GetContacts()
+        public List<Contact> GetContacts()
         {
-            return db.Contacts;
+            return db.Contacts.ToListAsync().Result;
         }
-        [HttpGet]
-
-
+        
         // GET: api/Contacts/5
         [ResponseType(typeof(Contact))]
-        public IHttpActionResult GetContact(int id)
+        public IHttpActionResult GetContact(int start, int numberRows, bool flag)
         {
-            Contact contact = db.Contacts.Find(id);
-            if (contact == null)
+            var query = db.Contacts.OrderBy(x => x.DateInserted).Skip(start).Take(numberRows).ToList();
+
+            for (int i = 0; i < query.Count; i++)
             {
-                return NotFound();
+                query[i].EmailLists = new List<EmailList>();
             }
 
-            return Ok(contact);
+            return Ok(query);
         }
+
 
         // PUT: api/Contacts/5
         [ResponseType(typeof(void))]
@@ -80,7 +80,8 @@ namespace CRM.WebApp.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+            contact.GuID = Guid.NewGuid();
+            contact.DateInserted = DateTime.UtcNow;
             db.Contacts.Add(contact);
             db.SaveChanges();
 
