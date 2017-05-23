@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CRM.HelpMethods")]
+[assembly: AssemblyTitle("HelpMethods")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CRM.HelpMethods")]
+[assembly: AssemblyProduct("HelpMethods")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("9716c484-9450-49c7-ae0b-ae1bbc1b90aa")]
+[assembly: Guid("9e9289d5-d8da-46f3-9c17-716d32a829f5")]
 
 // Version information for an assembly consists of the following four values:
 //

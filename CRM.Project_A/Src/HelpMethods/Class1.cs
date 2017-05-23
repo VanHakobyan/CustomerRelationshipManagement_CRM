@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CRM.HelpMethods
+namespace HelpMethods
 {
     public class Class1
     {

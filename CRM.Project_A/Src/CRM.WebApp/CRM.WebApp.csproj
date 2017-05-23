@@ -8,7 +8,7 @@
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{BBE3D306-EB70-42F8-BCE8-E3AC6CD725B2}</ProjectGuid>
+    <ProjectGuid>{B7EAF9DF-EE5D-4E2D-9EB9-713FA8FFB641}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -113,13 +113,13 @@
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\EntityLibrary\EntityLibrary.csproj">
+    <ProjectReference Include="..\EntityLibrary\EntityLibrary.csproj">
       <Project>{1d4e883f-e105-4aac-a0e3-c28cd37a0551}</Project>
       <Name>EntityLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CRM.HelpMethods\CRM.HelpMethods.csproj">
-      <Project>{9716c484-9450-49c7-ae0b-ae1bbc1b90aa}</Project>
-      <Name>CRM.HelpMethods</Name>
+    <ProjectReference Include="..\HelpMethods\HelpMethods.csproj">
+      <Project>{9e9289d5-d8da-46f3-9c17-716d32a829f5}</Project>
+      <Name>HelpMethods</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
@@ -135,9 +135,9 @@
         <WebProjectProperties>
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>50543</DevelopmentServerPort>
+          <DevelopmentServerPort>50631</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:50543/</IISUrl>
+          <IISUrl>http://localhost:50522/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
