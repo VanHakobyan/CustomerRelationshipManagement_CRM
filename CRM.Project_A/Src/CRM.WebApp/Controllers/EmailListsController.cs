@@ -17,9 +17,9 @@ namespace CRM.WebApp.Controllers
         private DataBaseCRMEntityes db = new DataBaseCRMEntityes();
 
         // GET: api/EmailLists
-        public IQueryable<EmailList> GetEmailLists()
+        public List<EmailList> GetEmailLists()
         {
-            return db.EmailLists;
+            return db.EmailLists.ToListAsync().Result;
         }
 
         // GET: api/EmailLists/5
