@@ -96,15 +96,45 @@ namespace CRM.WebApp.Controllers
         [ResponseType(typeof(EmailList))]
         public IHttpActionResult PostEmailList(EmailList emailList)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return BadRequest(ModelState);
+            //}
 
-            db.EmailLists.Add(emailList);
-            db.SaveChanges();
+            //EmailList EmailListUpdate = db.EmailLists.FirstOrDefault(t => t.EmailListID == emailList.EmailListID);
+            //if (EmailListUpdate == null)
+            //{
+            //    return NotFound();
+            //}
 
-            return CreatedAtRoute("DefaultApi", new { id = emailList.EmailListID }, emailList);
+            //EmailListUpdate.EmailListName = emailList.EmailListName;
+            //ICollection<Contact> UpdatedContacts = new List<Contact>();
+            //foreach (string item in emailList.Contacts)
+            //{
+            //    UpdatedContacts.Add(db.Contacts.FirstOrDefault(x => x.Email == item));
+            //}
+
+            //EmailListUpdate.Contacts.Clear();
+            //EmailListUpdate.Contacts = UpdatedContacts;
+            ////TODO:
+            //db.Entry(EmailListUpdate).State = EntityState.Modified;
+            //try
+            //{
+            //    db.SaveChanges();
+            //}
+            //catch (DbUpdateConcurrencyException)
+            //{
+            //    if (!EmailListExists(emailList.EmailListID))
+            //    {
+            //        return NotFound();
+            //    }
+            //    else
+            //    {
+            //        throw;
+            //    }
+            //}
+
+            return StatusCode(HttpStatusCode.NoContent);
         }
 
         // DELETE: api/EmailLists/5
