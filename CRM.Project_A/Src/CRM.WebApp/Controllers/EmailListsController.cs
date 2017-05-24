@@ -35,8 +35,6 @@ namespace CRM.WebApp.Controllers
         [ResponseType(typeof(EmailList))]
         public IHttpActionResult GetEmailList(int id)
         {
-
-
             var email = db.EmailLists.FirstOrDefault(t => t.EmailListID == id);
             if (email == null)
             {
@@ -44,7 +42,6 @@ namespace CRM.WebApp.Controllers
             }
 
             return Ok(new EmailListModel(email));
-
         }
 
         // PUT: api/EmailLists/5
@@ -61,7 +58,6 @@ namespace CRM.WebApp.Controllers
             {
                 return NotFound();
             }
-
             EmailListUpdate.EmailListName = emailList.EmailListName;
             ICollection<Contact> UpdatedContacts = new List<Contact>();
             foreach (string item in emailList.Contacts)
@@ -71,7 +67,7 @@ namespace CRM.WebApp.Controllers
 
             EmailListUpdate.Contacts.Clear();
             EmailListUpdate.Contacts = UpdatedContacts;
-            //TODO:
+            // TODO:
             db.Entry(EmailListUpdate).State = EntityState.Modified;
             try
             {
@@ -94,44 +90,29 @@ namespace CRM.WebApp.Controllers
 
         // POST: api/EmailLists
         [ResponseType(typeof(EmailList))]
-        public IHttpActionResult PostEmailList(EmailList emailList)
+        public IHttpActionResult PostEmailList([FromBody]EmailListModel emailList)
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    return BadRequest(ModelState);
-            //}
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            //EmailList EmailListUpdate = db.EmailLists.FirstOrDefault(t => t.EmailListID == emailList.EmailListID);
-            //if (EmailListUpdate == null)
-            //{
-            //    return NotFound();
-            //}
+
+            var AddeddContacts = new List<Contact>();
+            foreach (string listItem in emailList.Contacts)
+            {
+                AddeddContacts.Add(db.Contacts.FirstOrDefault(e => e.Email == listItem));
+            }
+
+
+            db.EmailLists.Add(new EmailList { EmailListName = emailList.EmailListName, Contacts = AddeddContacts });
+            db.SaveChanges();
 
             //EmailListUpdate.EmailListName = emailList.EmailListName;
             //ICollection<Contact> UpdatedContacts = new List<Contact>();
             //foreach (string item in emailList.Contacts)
             //{
             //    UpdatedContacts.Add(db.Contacts.FirstOrDefault(x => x.Email == item));
-            //}
-
-            //EmailListUpdate.Contacts.Clear();
-            //EmailListUpdate.Contacts = UpdatedContacts;
-            ////TODO:
-            //db.Entry(EmailListUpdate).State = EntityState.Modified;
-            //try
-            //{
-            //    db.SaveChanges();
-            //}
-            //catch (DbUpdateConcurrencyException)
-            //{
-            //    if (!EmailListExists(emailList.EmailListID))
-            //    {
-            //        return NotFound();
-            //    }
-            //    else
-            //    {
-            //        throw;
-            //    }
             //}
 
             return StatusCode(HttpStatusCode.NoContent);
