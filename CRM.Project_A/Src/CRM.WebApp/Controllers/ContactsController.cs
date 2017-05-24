@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using EntityLibrary;
+using CRM.WebApi.Models;
 
 namespace CRM.WebApp.Controllers
 {
@@ -17,12 +18,20 @@ namespace CRM.WebApp.Controllers
         private DataBaseCRMEntityes db = new DataBaseCRMEntityes();
 
         // GET: api/Contacts
-        public List<Contact> GetContacts()
+        public List<ApiContactsModel> GetContacts()
         {
-            return db.Contacts.ToListAsync().Result;
+            List<Contact> DbContactList = db.Contacts.ToListAsync().Result;
+            List<ApiContactsModel> MyContactList = new List<ApiContactsModel>();
+
+            foreach (var contact in DbContactList)
+            {
+                MyContactList.Add(new ApiContactsModel(contact));
+            }
+
+            return MyContactList;
         }
 
-        // GET: api/Contacts/5
+        // GET: api/Contacts/paje
         [ResponseType(typeof(Contact))]
         public IHttpActionResult GetContact(int start, int numberRows, bool flag)
         {
@@ -36,6 +45,27 @@ namespace CRM.WebApp.Controllers
             return Ok(query);
         }
 
+        // GET: api/Contacts/guid
+        [ResponseType(typeof(ApiContactsModel))]
+        public IHttpActionResult GetContact(Guid id)
+        {
+            
+            var contact = db.Contacts.FirstOrDefault(t => t.GuID==id);
+            if (contact == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(new ApiContactsModel(contact));
+        }
+
+
+        //GET: api/Contacts/Npaje
+        [Route("api/Contact/pages")]
+        public int GetContactsPageCount()
+        {
+            return db.Contacts.Count() > 10 ? db.Contacts.Count() / 10 : 1;
+        }
 
         // PUT: api/Contacts/5
         [ResponseType(typeof(void))]
@@ -61,6 +91,7 @@ namespace CRM.WebApp.Controllers
             ContactsUpdate.EmailLists = contact.EmailLists;
 
             db.Entry(ContactsUpdate).State = EntityState.Modified;
+
             try
             {
                 db.SaveChanges();
@@ -101,7 +132,7 @@ namespace CRM.WebApp.Controllers
         [ResponseType(typeof(Contact))]
         public IHttpActionResult DeleteContact(int id)
         {
-            Contact contact = db.Contacts.FindAsync(id).Result;
+            Contact contact = db.Contacts.Find(id);
             if (contact == null)
             {
                 return NotFound();
@@ -113,6 +144,15 @@ namespace CRM.WebApp.Controllers
             return Ok(contact);
         }
 
+        //// POST: api/Contacts
+        //[Route("api/Contacts/upload")]
+        //[ResponseType(typeof(Contact))]
+        //public IHttpActionResult PostContactUpload([FromBody]byte[] array)
+        //{
+            
+
+        //   // return CreatedAtRoute("DefaultApi", new { id = contact.ContactId }, contact);
+        //}
         protected override void Dispose(bool disposing)
         {
             if (disposing)
