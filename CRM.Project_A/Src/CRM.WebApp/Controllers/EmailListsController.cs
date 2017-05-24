@@ -35,8 +35,6 @@ namespace CRM.WebApp.Controllers
         [ResponseType(typeof(EmailList))]
         public IHttpActionResult GetEmailList(int id)
         {
-
-
             var email = db.EmailLists.FirstOrDefault(t => t.EmailListID == id);
             if (email == null)
             {
@@ -44,7 +42,6 @@ namespace CRM.WebApp.Controllers
             }
 
             return Ok(new EmailListModel(email));
-
         }
 
         // PUT: api/EmailLists/5
@@ -61,7 +58,6 @@ namespace CRM.WebApp.Controllers
             {
                 return NotFound();
             }
-
             EmailListUpdate.EmailListName = emailList.EmailListName;
             ICollection<Contact> UpdatedContacts = new List<Contact>();
             foreach (string item in emailList.Contacts)
@@ -71,7 +67,7 @@ namespace CRM.WebApp.Controllers
 
             EmailListUpdate.Contacts.Clear();
             EmailListUpdate.Contacts = UpdatedContacts;
-            //TODO:
+            // TODO:
             db.Entry(EmailListUpdate).State = EntityState.Modified;
             try
             {
