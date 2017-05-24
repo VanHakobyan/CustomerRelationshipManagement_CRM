@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:TestWPF"
         mc:Ignorable="d"
         Title="Testing" Height="700" Width="1100">
-    <Grid>
+    <!--<Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="125" />
             <ColumnDefinition Width="367*" />
@@ -94,5 +94,5 @@
 
 
 
-    </Grid>
+    </Grid>-->
 </Window>
