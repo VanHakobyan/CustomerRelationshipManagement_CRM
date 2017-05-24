@@ -21,7 +21,7 @@ namespace CRM.WebApp.Controllers
         {
             return db.Contacts.ToListAsync().Result;
         }
-        
+
         // GET: api/Contacts/5
         [ResponseType(typeof(Contact))]
         public IHttpActionResult GetContact(int start, int numberRows, bool flag)
@@ -39,20 +39,28 @@ namespace CRM.WebApp.Controllers
 
         // PUT: api/Contacts/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutContact(int id,[FromBody] Contact contact)
+        public IHttpActionResult PutContact([FromBody]Contact contact)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != contact.ContactId)
+            int id = contact.ContactId;
+            Contact ContactsUpdate = db.Contacts.Find(id);
+
+            if (ContactsUpdate == null)
             {
                 return BadRequest();
             }
 
-            db.Entry(contact).State = EntityState.Modified;
+            ContactsUpdate.FullName = contact.FullName;
+            ContactsUpdate.Country = contact.Country;
+            ContactsUpdate.CompanyName = contact.CompanyName;
+            ContactsUpdate.Email = contact.Email;
+            ContactsUpdate.EmailLists = contact.EmailLists;
 
+            db.Entry(ContactsUpdate).State = EntityState.Modified;
             try
             {
                 db.SaveChanges();
@@ -70,6 +78,7 @@ namespace CRM.WebApp.Controllers
             }
 
             return StatusCode(HttpStatusCode.NoContent);
+
         }
 
         // POST: api/Contacts
@@ -92,7 +101,7 @@ namespace CRM.WebApp.Controllers
         [ResponseType(typeof(Contact))]
         public IHttpActionResult DeleteContact(int id)
         {
-            Contact contact = db.Contacts.Find(id);
+            Contact contact = db.Contacts.FindAsync(id).Result;
             if (contact == null)
             {
                 return NotFound();
