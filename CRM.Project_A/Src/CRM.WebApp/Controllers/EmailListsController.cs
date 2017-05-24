@@ -49,27 +49,37 @@ namespace CRM.WebApp.Controllers
 
         // PUT: api/EmailLists/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutEmailList(int id, EmailList emailList)
+        public IHttpActionResult PutEmailList([FromBody] EmailListModel emailList)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != emailList.EmailListID)
+            EmailList EmailListUpdate = db.EmailLists.FirstOrDefault(t => t.EmailListID == emailList.EmailListID);
+            if (EmailListUpdate == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            db.Entry(emailList).State = EntityState.Modified;
+            EmailListUpdate.EmailListName = emailList.EmailListName;
+            ICollection<Contact> UpdatedContacts = new List<Contact>();
+            foreach (string item in emailList.Contacts)
+            {
+                UpdatedContacts.Add(db.Contacts.FirstOrDefault(x => x.Email == item));
+            }
 
+            EmailListUpdate.Contacts.Clear();
+            EmailListUpdate.Contacts = UpdatedContacts;
+            //TODO:
+            db.Entry(EmailListUpdate).State = EntityState.Modified;
             try
             {
                 db.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!EmailListExists(id))
+                if (!EmailListExists(emailList.EmailListID))
                 {
                     return NotFound();
                 }

@@ -20,7 +20,7 @@ namespace CRM.WebApi.Models
                 Contacts.Add(emails.Email);
             }
         }
-
+        public EmailListModel(){}
         public int EmailListID { get; set; }
         public string EmailListName { get; set; }
         public virtual List<string> Contacts { get; set; }
