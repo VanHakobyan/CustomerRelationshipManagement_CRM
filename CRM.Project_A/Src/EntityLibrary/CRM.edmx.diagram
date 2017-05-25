@@ -4,11 +4,11 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="8f490ad82d24418194bc7c234b2a3ae4" Name="Diagram1">
-        <EntityTypeShape EntityType="DataBaseCRMModel.Contact" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="DataBaseCRMModel.EmailList" Width="1.5" PointX="3" PointY="1.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="DataBaseCRMModel.Template" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
-        <AssociationConnector Association="DataBaseCRMModel.EmailListContacts" ManuallyRouted="false" />
+      <Diagram DiagramId="186d19313ae74f7ebbd6b4457e3cf586" Name="Diagram1">
+        <EntityTypeShape EntityType="crmAModel.Contact" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="crmAModel.EmailList" Width="1.5" PointX="3" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="crmAModel.Template" Width="1.5" PointX="6.5" PointY="1.75" IsExpanded="true" />
+        <AssociationConnector Association="crmAModel.EmailListContacts" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

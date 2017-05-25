@@ -104,6 +104,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+    <None Include="Properties\PublishProfiles\crmbeta - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\crmbeta - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -118,10 +120,6 @@
     <ProjectReference Include="..\EntityLibrary\EntityLibrary.csproj">
       <Project>{225247e8-99a0-4411-ac45-24f9cf2c1a3b}</Project>
       <Name>EntityLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\HelpMethods\HelpMethods.csproj">
-      <Project>{9e9289d5-d8da-46f3-9c17-716d32a829f5}</Project>
-      <Name>HelpMethods</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
