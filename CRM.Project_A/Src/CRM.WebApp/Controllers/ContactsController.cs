@@ -34,9 +34,9 @@ namespace CRM.WebApp.Controllers
 
         // GET: api/Contacts/paje
         [ResponseType(typeof(Contact))]
-        public IHttpActionResult GetContact(int start, int numberRows, bool flag)
+        public async Task<IHttpActionResult> GetContact(int start, int numberRows, bool flag)
         {
-            var query = db.Contacts.OrderBy(x => x.DateInserted).Skip(start).Take(numberRows).ToList();
+            var query = await db.Contacts.OrderBy(x => x.DateInserted).Skip(start).Take(numberRows).ToListAsync();
 
             for (int i = 0; i < query.Count; i++)
             {
@@ -48,10 +48,10 @@ namespace CRM.WebApp.Controllers
 
         // GET: api/Contacts/guid
         [ResponseType(typeof(ApiContactsModel))]
-        public IHttpActionResult GetContact(Guid id)
+        public async Task<IHttpActionResult> GetContact(Guid id)
         {
 
-            var contact = db.Contacts.FirstOrDefault(t => t.GuID == id);
+            var contact = await db.Contacts.FirstOrDefaultAsync(t => t.GuID == id);
             if (contact == null)
             {
                 return NotFound();
@@ -63,14 +63,14 @@ namespace CRM.WebApp.Controllers
 
         //GET: api/Contacts/Npaje
         [Route("api/Contact/pages")]
-        public int GetContactsPageCount()
+        public async Task<int> GetContactsPageCount()
         {
-            return db.Contacts.Count() > 10 ? db.Contacts.Count() / 10 : 1;
+            return await db.Contacts.CountAsync() > 10 ?await db.Contacts.CountAsync() / 10 : 1;
         }
 
         // PUT: api/Contacts/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutContact([FromBody]Contact contact)
+        public async Task<IHttpActionResult> PutContact([FromBody]Contact contact)
         {
             if (!ModelState.IsValid)
             {
@@ -78,7 +78,7 @@ namespace CRM.WebApp.Controllers
             }
 
             int id = contact.ContactId;
-            Contact ContactsUpdate = db.Contacts.Find(id);
+            Contact ContactsUpdate = await db.Contacts.FindAsync(id);
 
             if (ContactsUpdate == null)
             {
@@ -95,17 +95,17 @@ namespace CRM.WebApp.Controllers
 
             try
             {
-                db.SaveChanges();
+                await db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ContactExists(id))
+                if (await ContactExists(id))
                 {
-                    return NotFound();
+                    throw;
                 }
                 else
                 {
-                    throw;
+                    return NotFound();
                 }
             }
 
@@ -115,7 +115,7 @@ namespace CRM.WebApp.Controllers
 
         // POST: api/Contacts
         [ResponseType(typeof(Contact))]
-        public IHttpActionResult PostContact(Contact contact)
+        public async Task<IHttpActionResult> PostContact(Contact contact)
         {
             if (!ModelState.IsValid)
             {
@@ -124,23 +124,23 @@ namespace CRM.WebApp.Controllers
             contact.GuID = Guid.NewGuid();
             contact.DateInserted = DateTime.UtcNow;
             db.Contacts.Add(contact);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
             return CreatedAtRoute("DefaultApi", new { id = contact.ContactId }, contact);
         }
 
         // DELETE: api/Contacts/5
         [ResponseType(typeof(Contact))]
-        public IHttpActionResult DeleteContact(int id)
+        public async Task<IHttpActionResult> DeleteContact(int id)
         {
-            Contact contact = db.Contacts.Find(id);
+            Contact contact = await db.Contacts.FindAsync(id);
             if (contact == null)
             {
                 return NotFound();
             }
 
             db.Contacts.Remove(contact);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
             return Ok(contact);
         }
@@ -150,8 +150,6 @@ namespace CRM.WebApp.Controllers
         //[ResponseType(typeof(Contact))]
         //public IHttpActionResult PostContactUpload([FromBody]byte[] array)
         //{
-
-
         //   // return CreatedAtRoute("DefaultApi", new { id = contact.ContactId }, contact);
         //}
         protected override void Dispose(bool disposing)
@@ -163,9 +161,9 @@ namespace CRM.WebApp.Controllers
             base.Dispose(disposing);
         }
 
-        private bool ContactExists(int id)
+        private async Task<bool> ContactExists(int id)
         {
-            return db.Contacts.Count(e => e.ContactId == id) > 0;
+            return  await db.Contacts.CountAsync(e => e.ContactId == id) > 0;
         }
     }
 }
