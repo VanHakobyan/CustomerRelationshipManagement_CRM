@@ -10,6 +10,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using EntityLibrary;
 using CRM.WebApi.Models;
+using System.Threading.Tasks;
 
 namespace CRM.WebApp.Controllers
 {
@@ -18,9 +19,9 @@ namespace CRM.WebApp.Controllers
         private DataBaseCRMEntityes db = new DataBaseCRMEntityes();
 
         // GET: api/Contacts
-        public List<ApiContactsModel> GetContacts()
+        public async Task<List<ApiContactsModel>> GetContacts()
         {
-            List<Contact> DbContactList = db.Contacts.ToListAsync().Result;
+            List<Contact> DbContactList = await db.Contacts.ToListAsync();
             List<ApiContactsModel> MyContactList = new List<ApiContactsModel>();
 
             foreach (var contact in DbContactList)
@@ -49,8 +50,8 @@ namespace CRM.WebApp.Controllers
         [ResponseType(typeof(ApiContactsModel))]
         public IHttpActionResult GetContact(Guid id)
         {
-            
-            var contact = db.Contacts.FirstOrDefault(t => t.GuID==id);
+
+            var contact = db.Contacts.FirstOrDefault(t => t.GuID == id);
             if (contact == null)
             {
                 return NotFound();
@@ -149,7 +150,7 @@ namespace CRM.WebApp.Controllers
         //[ResponseType(typeof(Contact))]
         //public IHttpActionResult PostContactUpload([FromBody]byte[] array)
         //{
-            
+
 
         //   // return CreatedAtRoute("DefaultApi", new { id = contact.ContactId }, contact);
         //}
