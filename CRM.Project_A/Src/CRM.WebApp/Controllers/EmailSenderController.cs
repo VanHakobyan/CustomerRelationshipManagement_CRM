@@ -15,15 +15,14 @@ namespace CRM.WebApp.Controllers
     public class EmailSenderController : ApiController
     {
         ApplicationManager manager = new ApplicationManager();
-       // EmailProvider emailProvider = new EmailProvider();
+        //EmailProvider emailProvider = new EmailProvider();
         //[ResponseType(typeof(Contact))]
         //[HttpPost]
-        public async Task<IHttpActionResult> PostSendEmailsPost([FromBody] List<Guid> GuIdList, [FromUri] int TamplateId)
+        public async Task<IHttpActionResult> PostSendEmails([FromBody] List<Guid> GuIdList, [FromUri] int TamplateId)
         {
-            List<Contact> ContactsToSend = await manager.GetContactsByGuIdList(GuIdList);
-            if (ReferenceEquals(ContactsToSend, null)) return NotFound();
-
-            EmailProvider.SendEmail(ContactsToSend, TamplateId);
+            List<Contact> ContactsForSending = await manager.GetContactsByGuIdList(GuIdList);
+            if (ReferenceEquals(ContactsForSending, null)) return NotFound();
+            EmailProvider.SendEmail(ContactsForSending, TamplateId);
             return Ok();
         }
 
@@ -35,6 +34,6 @@ namespace CRM.WebApp.Controllers
             }
             base.Dispose(disposing);
         }
-       
+
     }
 }

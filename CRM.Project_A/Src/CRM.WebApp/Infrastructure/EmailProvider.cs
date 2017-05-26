@@ -21,7 +21,7 @@ namespace CRM.WebApp.Infrastructure
                     msg.To.Add(item.Email);
                 }
                 msg.Subject = "Heloo API";
-                msg.Body = "Ba chimacar";
+                msg.Body = "First Step";
                 SmtpClient client =
                 new SmtpClient
                 {
@@ -29,7 +29,7 @@ namespace CRM.WebApp.Infrastructure
                     Port = 587,
                     EnableSsl = true,
                     UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential("tsovinar.ghazarian@gmail.com", "123345667899")
+                    Credentials = new NetworkCredential("vanhakobyan1996@gmail.com", "******")
                 };
 
                 try
