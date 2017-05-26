@@ -21,7 +21,7 @@ namespace CRM.WebApp.Controllers
         // GET: api/EmailLists
         public async Task<List<EmailListModel>> GetEmailLists()
         {
-            List<EmailList> EntityContactList =await db.EmailLists.ToListAsync();
+            List<EmailList> EntityContactList = await db.EmailLists.ToListAsync();
             List<EmailListModel> ModelContactList = new List<EmailListModel>();
 
             foreach (var contact in EntityContactList)
@@ -47,14 +47,14 @@ namespace CRM.WebApp.Controllers
 
         // PUT: api/EmailLists/5
         [ResponseType(typeof(void))]
-        public async Task< IHttpActionResult> PutEmailList([FromBody] EmailListModel emailList)
+        public async Task<IHttpActionResult> PutEmailList([FromBody] EmailListModel emailList)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            EmailList EmailListUpdate =await db.EmailLists.FirstOrDefaultAsync(t => t.EmailListID == emailList.EmailListID);
+            EmailList EmailListUpdate = await db.EmailLists.FirstOrDefaultAsync(t => t.EmailListID == emailList.EmailListID);
             if (EmailListUpdate == null)
             {
                 return NotFound();
@@ -68,12 +68,12 @@ namespace CRM.WebApp.Controllers
 
             EmailListUpdate.Contacts.Clear();
             EmailListUpdate.Contacts = UpdatedContacts;
-            // TODO:
             db.Entry(EmailListUpdate).State = EntityState.Modified;
             try
             {
-              await  db.SaveChangesAsync();
+                await db.SaveChangesAsync();
             }
+            // TODO: swaped if and else
             catch (DbUpdateConcurrencyException)
             {
                 if (await EmailListExists(emailList.EmailListID))
@@ -91,7 +91,7 @@ namespace CRM.WebApp.Controllers
 
         // POST: api/EmailLists
         [ResponseType(typeof(EmailList))]
-        public async Task< IHttpActionResult > PostEmailList([FromBody]EmailListModel emailList)
+        public async Task<IHttpActionResult> PostEmailList([FromBody]EmailListModel emailList)
         {
             if (!ModelState.IsValid)
             {
@@ -121,9 +121,9 @@ namespace CRM.WebApp.Controllers
 
         // DELETE: api/EmailLists/5
         [ResponseType(typeof(EmailList))]
-        public async Task< IHttpActionResult >DeleteEmailList(int id)
+        public async Task<IHttpActionResult> DeleteEmailList(int id)
         {
-            EmailList emailList =await db.EmailLists.FindAsync(id);
+            EmailList emailList = await db.EmailLists.FindAsync(id);
             if (emailList == null)
             {
                 return NotFound();

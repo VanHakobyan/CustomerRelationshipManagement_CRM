@@ -97,6 +97,7 @@ namespace CRM.WebApp.Controllers
             {
                 await db.SaveChangesAsync();
             }
+            // TODO: swaped if and else
             catch (DbUpdateConcurrencyException)
             {
                 if (await ContactExists(id))
