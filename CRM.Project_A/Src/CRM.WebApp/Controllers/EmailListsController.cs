@@ -76,13 +76,13 @@ namespace CRM.WebApp.Controllers
             // TODO: swaped if and else
             catch (DbUpdateConcurrencyException)
             {
-                if (await EmailListExists(emailList.EmailListID))
+                if (!(await EmailListExists(emailList.EmailListID)))
                 {
-                    throw;
+                    return NotFound();
                 }
                 else
                 {
-                    return NotFound();
+                    throw;
                 }
             }
 

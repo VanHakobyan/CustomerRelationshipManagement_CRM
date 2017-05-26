@@ -11,47 +11,40 @@ using System.Web.Http.Description;
 using EntityLibrary;
 using CRM.WebApi.Models;
 using System.Threading.Tasks;
+using CRM.WebApp.Infrastructure;
+using CRM.WebApp.Models;
 
 namespace CRM.WebApp.Controllers
 {
     public class ContactsController : ApiController
     {
-        private DataBaseCRMEntityes db = new DataBaseCRMEntityes();
+        //private DataBaseCRMEntityes db = new DataBaseCRMEntityes();
+        private ApplicationManager manager = new ApplicationManager();
 
         // GET: api/Contacts
         public async Task<List<ApiContactsModel>> GetContacts()
         {
-            List<Contact> DbContactList = await db.Contacts.ToListAsync();
-            List<ApiContactsModel> MyContactList = new List<ApiContactsModel>();
-
-            foreach (var contact in DbContactList)
-            {
-                MyContactList.Add(new ApiContactsModel(contact));
-            }
-
-            return MyContactList;
+            
+            return await manager.GetAllContacts();
         }
 
         // GET: api/Contacts/paje
         [ResponseType(typeof(Contact))]
         public async Task<IHttpActionResult> GetContact(int start, int numberRows, bool flag)
         {
-            var query = await db.Contacts.OrderBy(x => x.DateInserted).Skip(start).Take(numberRows).ToListAsync();
-
-            for (int i = 0; i < query.Count; i++)
+            var contact = await manager.GetContactPaje(start, numberRows, flag);
+            if (contact == null)
             {
-                query[i].EmailLists = new List<EmailList>();
+                return NotFound();
             }
-
-            return Ok(query);
+            return Ok(contact);
         }
 
         // GET: api/Contacts/guid
         [ResponseType(typeof(ApiContactsModel))]
-        public async Task<IHttpActionResult> GetContact(Guid id)
+        public async Task<IHttpActionResult> GetContactGuid(Guid id)
         {
-
-            var contact = await db.Contacts.FirstOrDefaultAsync(t => t.GuID == id);
+            var contact = await manager.GetContactByGuid(id);
             if (contact == null)
             {
                 return NotFound();
@@ -65,55 +58,61 @@ namespace CRM.WebApp.Controllers
         [Route("api/Contact/pages")]
         public async Task<int> GetContactsPageCount()
         {
-            return await db.Contacts.CountAsync() > 10 ?await db.Contacts.CountAsync() / 10 : 1;
+            return await manager.GetContactsPageCounter();
         }
 
+        //// PUT: api/Contacts/5
+        //[ResponseType(typeof(void))]
+        //public async Task<bool> UpdateContact(ViewContact contact)
+        //{
+        //    Contact dbContactToUpdate = await GetContactGuid(contact.GuID);
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+
+        //    int id = contact.ContactId;
+        //    Contact ContactsUpdate = await manager.UpdateContact(contact);
+
+        //    if (ContactsUpdate == null)
+        //    {
+        //        return BadRequest(modelState);
+        //    }
+
+        //    try
+        //    {
+        //        manager.SaveDb();
+        //    }
+
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!(await ContactExists(id)))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
+
+        //    return StatusCode(HttpStatusCode.NoContent);
+
+        //}
         // PUT: api/Contacts/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutContact([FromBody]Contact contact)
+        public async Task<IHttpActionResult>PutContact([FromBody]ViewContact contact)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            int id = contact.ContactId;
-            Contact ContactsUpdate = await db.Contacts.FindAsync(id);
+            if (await manager.UpdateContact(contact)) return StatusCode(HttpStatusCode.NoContent);
 
-            if (ContactsUpdate == null)
-            {
-                return BadRequest();
-            }
-
-            ContactsUpdate.FullName = contact.FullName;
-            ContactsUpdate.Country = contact.Country;
-            ContactsUpdate.CompanyName = contact.CompanyName;
-            ContactsUpdate.Email = contact.Email;
-            ContactsUpdate.EmailLists = contact.EmailLists;
-
-            db.Entry(ContactsUpdate).State = EntityState.Modified;
-
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            // TODO: swaped if and else
-            catch (DbUpdateConcurrencyException)
-            {
-                if (await ContactExists(id))
-                {
-                    throw;
-                }
-                else
-                {
-                    return NotFound();
-                }
-            }
-
-            return StatusCode(HttpStatusCode.NoContent);
+            return NotFound();
 
         }
-
         // POST: api/Contacts
         [ResponseType(typeof(Contact))]
         public async Task<IHttpActionResult> PostContact(Contact contact)
@@ -122,10 +121,9 @@ namespace CRM.WebApp.Controllers
             {
                 return BadRequest(ModelState);
             }
-            contact.GuID = Guid.NewGuid();
-            contact.DateInserted = DateTime.UtcNow;
-            db.Contacts.Add(contact);
-            await db.SaveChangesAsync();
+
+
+            await manager.AddContact(contact);
 
             return CreatedAtRoute("DefaultApi", new { id = contact.ContactId }, contact);
         }
@@ -134,14 +132,11 @@ namespace CRM.WebApp.Controllers
         [ResponseType(typeof(Contact))]
         public async Task<IHttpActionResult> DeleteContact(int id)
         {
-            Contact contact = await db.Contacts.FindAsync(id);
+            Contact contact = await manager.RemoveContact(id);
             if (contact == null)
             {
                 return NotFound();
             }
-
-            db.Contacts.Remove(contact);
-            await db.SaveChangesAsync();
 
             return Ok(contact);
         }
@@ -157,14 +152,14 @@ namespace CRM.WebApp.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                manager.Dispose();
             }
             base.Dispose(disposing);
         }
 
-        private async Task<bool> ContactExists(int id)
+        private async Task<bool> ContactExists(Guid id)
         {
-            return  await db.Contacts.CountAsync(e => e.ContactId == id) > 0;
+            return await manager.ContactExistsAsync(id);
         }
     }
 }

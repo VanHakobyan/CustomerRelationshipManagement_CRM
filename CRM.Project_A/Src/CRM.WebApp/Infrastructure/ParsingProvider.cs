@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LinqToExcel;
 using System.IO;
 using EntityLibrary;
+using LinqToExcel;
 
-namespace HelperMethods
+namespace CRM.WebApp.Infrastructure
 {
-    public class Parser
+    public class ParsingProvider
     {
         public static List<ResultType> ParseExcel<ResultType>(byte[] array)
         {
             File.WriteAllBytes(@"D:\TestExel.xlsx", array);
-        
+
             var pathToExcelFile = @"D:\TestExel.xlsx";
             var sheetName = @"Sheet";
             var excelFile = new ExcelQueryFactory(pathToExcelFile);
@@ -40,13 +38,13 @@ namespace HelperMethods
                 contact =>
                  new Contact
                  {
-                    ContactId = int.Parse(contact["ContactId"]),
-                    FullName = contact["FullName"],
-                    CompanyName = contact["CompanyName"],
-                    Position = contact["Position"],
-                    Country = contact["Country"],
-                    Email = contact["Email"]
-                }) as List<ResultType>;
+                     ContactId = int.Parse(contact["ContactId"]),
+                     FullName = contact["FullName"],
+                     CompanyName = contact["CompanyName"],
+                     Position = contact["Position"],
+                     Country = contact["Country"],
+                     Email = contact["Email"]
+                 }) as List<ResultType>;
 
                 return listOfContacts;
             }
@@ -84,7 +82,5 @@ namespace HelperMethods
             return null;
 
         }
-
-
     }
 }
