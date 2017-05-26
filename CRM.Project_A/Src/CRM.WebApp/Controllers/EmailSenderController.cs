@@ -3,34 +3,40 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Threading.Tasks;
 using System.Web.Http;
-using CRM.WebApp.Infrastructure;
-using EntityLibrary;
+
 namespace CRM.WebApp.Controllers
 {
     public class EmailSenderController : ApiController
     {
-
-        ApplicationManager manager = new ApplicationManager();
-        //public async Task<IHttpActionResult> PostSendEmails([FromBody] List<Guid> GuIdList, [FromUri] int TamplateId)
-        //{
-        //    List<Contact> ContactsToSend = await manager.GetContactList(GuIdList);
-        //    if (ReferenceEquals(ContactsToSend, null)) return NotFound();
-
-        //    await manager.SendContactsEmail(ContactsToSend, TamplateId);
-        //    return Ok();
-
-        //}
-
-        protected override void Dispose(bool disposing)
+        public static void SendEmail(string emailaddress)//List<Contact> list)
         {
-            if (disposing)
+            using (MailMessage msg = new MailMessage())
             {
-                manager.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+                msg.From = new MailAddress("tsovinar.ghazarian@gmail.com");
+                msg.To.Add(emailaddress);
+                msg.Subject = "Heloo API";
+                msg.Body = "Ba chimacar";
+                SmtpClient client =
+                new SmtpClient
+                {
+                    Host = "smtp.gmail.com",
+                    Port = 587,
+                    EnableSsl = true,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential("tsovinar.ghazarian@gmail.com", "123345667899")
+                };
 
+                try
+                {
+                    client.Send(msg);
+                }
+                catch (Exception ex)
+                {
+                    throw;
+               
+                }
+            }
+        }
     }
 }
