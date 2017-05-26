@@ -3,40 +3,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
+using CRM.WebApp.Infrastructure;
+using EntityLibrary;
+using System.Net.Mail;
+using System.Web.Http.Description;
 
 namespace CRM.WebApp.Controllers
 {
     public class EmailSenderController : ApiController
     {
-        public static void SendEmail(string emailaddress)//List<Contact> list)
+        ApplicationManager manager = new ApplicationManager();
+       // EmailProvider emailProvider = new EmailProvider();
+        //[ResponseType(typeof(Contact))]
+        //[HttpPost]
+        public async Task<IHttpActionResult> PostSendEmailsPost([FromBody] List<Guid> GuIdList, [FromUri] int TamplateId)
         {
-            using (MailMessage msg = new MailMessage())
-            {
-                msg.From = new MailAddress("tsovinar.ghazarian@gmail.com");
-                msg.To.Add(emailaddress);
-                msg.Subject = "Heloo API";
-                msg.Body = "Ba chimacar";
-                SmtpClient client =
-                new SmtpClient
-                {
-                    Host = "smtp.gmail.com",
-                    Port = 587,
-                    EnableSsl = true,
-                    UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential("tsovinar.ghazarian@gmail.com", "123345667899")
-                };
+            List<Contact> ContactsToSend = await manager.GetContactsByGuIdList(GuIdList);
+            if (ReferenceEquals(ContactsToSend, null)) return NotFound();
 
-                try
-                {
-                    client.Send(msg);
-                }
-                catch (Exception ex)
-                {
-                    throw;
-               
-                }
-            }
+            EmailProvider.SendEmail(ContactsToSend, TamplateId);
+            return Ok();
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                manager.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+       
     }
 }
