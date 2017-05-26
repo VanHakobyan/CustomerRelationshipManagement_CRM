@@ -63,7 +63,7 @@ namespace CRM.WebApp.Controllers
 
         //// PUT: api/Contacts/5
         //[ResponseType(typeof(void))]
-        //public async Task<bool> UpdateContact(ViewContact contact)
+        //public async Task<bool> PutContact(ViewContact contact)
         //{
         //    Contact dbContactToUpdate = await GetContactGuid(contact.GuID);
         //    if (!ModelState.IsValid)

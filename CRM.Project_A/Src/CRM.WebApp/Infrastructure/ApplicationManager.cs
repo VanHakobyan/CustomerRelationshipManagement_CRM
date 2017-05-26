@@ -83,8 +83,8 @@ namespace CRM.WebApp.Infrastructure
             }
             catch (DbUpdateConcurrencyException)
             {
-                // need to add transaction rollback
-                if (!(await ContactExistsAsync(contact.GuID)))
+
+                if (!await ContactExistsAsync(contact.GuID))
                 {
                     return false;
                 }
@@ -97,37 +97,37 @@ namespace CRM.WebApp.Infrastructure
 
 
         public async Task<Contact> AddContact(Contact contact)
-    {
+        {
 
-        contact.GuID = Guid.NewGuid();
-        contact.DateInserted = DateTime.UtcNow;
-        db.Contacts.Add(contact);
-        await db.SaveChangesAsync();
+            contact.GuID = Guid.NewGuid();
+            contact.DateInserted = DateTime.UtcNow;
+            db.Contacts.Add(contact);
+            await db.SaveChangesAsync();
 
-        return contact;
-    }
-    public async Task<Contact> RemoveContact(int id)
-    {
-        Contact contact = await db.Contacts.FindAsync(id);
+            return contact;
+        }
+        public async Task<Contact> RemoveContact(int id)
+        {
+            Contact contact = await db.Contacts.FindAsync(id);
 
 
-        db.Contacts.Remove(contact);
-        await db.SaveChangesAsync();
+            db.Contacts.Remove(contact);
+            await db.SaveChangesAsync();
 
-        return contact;
+            return contact;
+        }
+        public async Task<bool> ContactExistsAsync(Guid id)
+        {
+            return await db.Contacts.CountAsync(e => e.GuID == id) > 0;
+        }
+        public async void SaveDb()
+        {
+            await db.SaveChangesAsync();
+        }
+        public void Dispose()
+        {
+            db.Dispose();
+        }
     }
-    public async Task<bool> ContactExistsAsync(Guid id)
-    {
-        return await db.Contacts.CountAsync(e => e.GuID == id) > 0;
-    }
-    public async void SaveDb()
-    {
-        await db.SaveChangesAsync();
-    }
-    public void Dispose()
-    {
-        db.Dispose();
-    }
-}
 
 }

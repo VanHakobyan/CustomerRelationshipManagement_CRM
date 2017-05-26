@@ -25,9 +25,9 @@ namespace CRM.WebApp.Models
             DateInserted = contact.DateInserted;
             GuID = contact.GuID;
 
-            foreach (var item in contact.EmailLists)
+            foreach (var EmailList in contact.EmailLists)
             {
-                EmailLists.Add(item.EmailListID, item.EmailListName);
+                EmailLists.Add(EmailList.EmailListID, EmailList.EmailListName);
             }
         }
 

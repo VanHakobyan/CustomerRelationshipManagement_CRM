@@ -21,7 +21,10 @@ namespace CRM.WebApp.Controllers
         public async Task<IHttpActionResult> PostSendEmails([FromBody] List<Guid> GuIdList, [FromUri] int TamplateId)
         {
             List<Contact> ContactsForSending = await manager.GetContactsByGuIdList(GuIdList);
-            if (ReferenceEquals(ContactsForSending, null)) return NotFound();
+            if (ContactsForSending == null)
+            {
+                return NotFound();
+            }
             EmailProvider.SendEmail(ContactsForSending, TamplateId);
             return Ok();
         }
