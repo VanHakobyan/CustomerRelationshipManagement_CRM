@@ -71,8 +71,8 @@ namespace CRM.WebApp.Infrastructure
                     template =>
                      new Template
                      {
-                         TemplateId = int.Parse(template["TemplateId"]),
-                         TemplateName = template["TemplateName"],
+                        // TemplateId = int.Parse(template["TemplateId"]),
+                        // TemplateName = template["TemplateName"],
                      }) as List<ResultType>;
 
                     return listOfContacts;
