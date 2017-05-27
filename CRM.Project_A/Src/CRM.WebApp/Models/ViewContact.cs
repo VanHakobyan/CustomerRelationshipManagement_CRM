@@ -18,12 +18,12 @@ namespace CRM.WebApp.Models
         {
             EmailLists = new Dictionary<int, string>();
             FullName = contact.FullName;
-            Position = contact.Position;
-            Email = contact.Email;
-            Country = contact.Country;
             CompanyName = contact.CompanyName;
-            DateInserted = contact.DateInserted;
+            Position = contact.Position;
+            Country = contact.Country;
+            Email = contact.Email;
             GuID = contact.GuID;
+            DateInserted = contact.DateInserted;
 
             foreach (var EmailList in contact.EmailLists)
             {

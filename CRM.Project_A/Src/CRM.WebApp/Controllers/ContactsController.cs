@@ -101,7 +101,7 @@ namespace CRM.WebApp.Controllers
         //}
         // PUT: api/Contacts/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult>PutContact([FromBody]ViewContact contact)
+        public async Task<IHttpActionResult>PutContact([FromBody] ViewContact contact)
         {
             if (!ModelState.IsValid)
             {
