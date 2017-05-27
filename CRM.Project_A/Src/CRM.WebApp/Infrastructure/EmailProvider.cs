@@ -8,10 +8,9 @@ using System.Web;
 
 namespace CRM.WebApp.Infrastructure
 {
-    public static class EmailProvider
+    public class EmailProvider
     {
-      
-        public static void SendEmail(List<Contact> list, int TemplateID)//List<Contact> list)
+        public void SendEmail(List<Contact> list, int TemplateID)//List<Contact> list)
         {
             using (MailMessage msg = new MailMessage())
             {
@@ -29,14 +28,14 @@ namespace CRM.WebApp.Infrastructure
                     Port = 587,
                     EnableSsl = true,
                     UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential("vanhakobyan1996@gmail.com", "******")
+                    Credentials = new NetworkCredential("vanhakobyan1996@gmail.com", "VAN606580")
                 };
 
                 try
                 {
                     client.Send(msg);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     throw;
 

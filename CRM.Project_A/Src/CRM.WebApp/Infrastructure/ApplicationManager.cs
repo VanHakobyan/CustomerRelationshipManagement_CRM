@@ -17,6 +17,7 @@ namespace CRM.WebApp.Infrastructure
     public class ApplicationManager : IDisposable
     {
 
+        // public ApplicationManager(){}
         DataBaseCRMEntityes db = new DataBaseCRMEntityes();
 
         public async Task<List<ApiContactsModel>> GetAllContacts()
