@@ -14,14 +14,14 @@ namespace CRM.WebApp.Controllers
     {
         EmailProvider provider = new EmailProvider();
         ApplicationManager manager = new ApplicationManager();
-        public async Task<IHttpActionResult> PostSendEmails([FromBody] List<Guid> GuIdList, [FromUri] int TamplateId)
+        public async Task<IHttpActionResult> PostSendEmails([FromBody] List<Guid> GuIdList, [FromUri] int TemplateId)
         {
             List<Contact> ContactsForSending = await manager.GetContactsByGuIdList(GuIdList);
             if (ContactsForSending == null)
             {
                 return NotFound();
             }
-           provider.SendEmail(ContactsForSending, TamplateId);
+           provider.SendEmail(ContactsForSending, TemplateId);
             return Ok();
         }
 
