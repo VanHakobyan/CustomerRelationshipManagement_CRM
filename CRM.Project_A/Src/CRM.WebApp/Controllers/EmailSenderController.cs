@@ -21,7 +21,15 @@ namespace CRM.WebApp.Controllers
             {
                 return NotFound();
             }
-           provider.SendEmail(ContactsForSending, TemplateId);
+            try
+            {
+                provider.SendEmail(ContactsForSending, TemplateId);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+                
+            }
             return Ok();
         }
 

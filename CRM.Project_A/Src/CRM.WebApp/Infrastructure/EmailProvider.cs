@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Web;
 
 namespace CRM.WebApp.Infrastructure
@@ -14,7 +16,8 @@ namespace CRM.WebApp.Infrastructure
         {
             using (MailMessage msg = new MailMessage())
             {
-                msg.From = new MailAddress("tsovinar.ghazarian@gmail.com");
+               
+                msg.From = new MailAddress("vanhakobyan1996@gmail.com");
                 foreach (var item in list)
                 {
                     msg.To.Add(item.Email);
@@ -35,12 +38,15 @@ namespace CRM.WebApp.Infrastructure
                 {
                     client.Send(msg);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    throw new  Exception(ex.Message);
 
                 }
+               
             }
+           
         }
+       
     }
 }
