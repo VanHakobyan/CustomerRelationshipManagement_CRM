@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using EntityLibrary;
+using System.Threading.Tasks;
 
 namespace CRM.WebApp.Controllers
 {
@@ -17,16 +18,16 @@ namespace CRM.WebApp.Controllers
         private DataBaseCRMEntityes db = new DataBaseCRMEntityes();
 
         // GET: api/Templates
-        public IQueryable<Template> GetTemplates()
+        public async Task<List<Template>> GetTemplates()
         {
-            return db.Templates;
+            return await db.Templates.ToListAsync();
         }
 
         // GET: api/Templates/5
         [ResponseType(typeof(Template))]
-        public IHttpActionResult GetTemplate(int id)
+        public async Task<IHttpActionResult> GetTemplate(int id)
         {
-            Template template = db.Templates.Find(id);
+            Template template = await db.Templates.FindAsync(id);
             if (template == null)
             {
                 return NotFound();
@@ -37,7 +38,7 @@ namespace CRM.WebApp.Controllers
 
         // PUT: api/Templates/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutTemplate(int id, Template template)
+        public async Task<IHttpActionResult> PutTemplate(int id, Template template)
         {
             if (!ModelState.IsValid)
             {
@@ -53,11 +54,11 @@ namespace CRM.WebApp.Controllers
 
             try
             {
-                db.SaveChanges();
+                await db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TemplateExists(id))
+                if (!await TemplateExistsAsync(id))
                 {
                     return NotFound();
                 }
@@ -72,7 +73,7 @@ namespace CRM.WebApp.Controllers
 
         // POST: api/Templates
         [ResponseType(typeof(Template))]
-        public IHttpActionResult PostTemplate(Template template)
+        public async Task<IHttpActionResult> PostTemplate(Template template)
         {
             if (!ModelState.IsValid)
             {
@@ -80,23 +81,23 @@ namespace CRM.WebApp.Controllers
             }
 
             db.Templates.Add(template);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
             return CreatedAtRoute("DefaultApi", new { id = template.TemplateId }, template);
         }
 
         // DELETE: api/Templates/5
         [ResponseType(typeof(Template))]
-        public IHttpActionResult DeleteTemplate(int id)
+        public async Task<IHttpActionResult> DeleteTemplate(int id)
         {
-            Template template = db.Templates.Find(id);
+            Template template = await db.Templates.FindAsync(id);
             if (template == null)
             {
                 return NotFound();
             }
 
             db.Templates.Remove(template);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
             return Ok(template);
         }
@@ -110,9 +111,9 @@ namespace CRM.WebApp.Controllers
             base.Dispose(disposing);
         }
 
-        private bool TemplateExists(int id)
+        private async Task<bool> TemplateExistsAsync(int id)
         {
-            return db.Templates.Count(e => e.TemplateId == id) > 0;
+            return await db.Templates.CountAsync(e => e.TemplateId == id) > 0;
         }
     }
 }
