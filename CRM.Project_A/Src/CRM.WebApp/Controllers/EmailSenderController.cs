@@ -23,7 +23,7 @@ namespace CRM.WebApp.Controllers
             }
             try
             {
-                provider.SendEmail(ContactsForSending, TemplateId);
+                provider.SendEmailList(ContactsForSending, TemplateId);
             }
             catch (Exception ex)
             {
