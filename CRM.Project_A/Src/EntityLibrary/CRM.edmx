@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="crmAModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="crmAModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Contacts">
           <Key>
             <PropertyRef Name="ContactId" />
@@ -39,6 +39,7 @@
           </Key>
           <Property Name="TemplateId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TemplateName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="FilePath" Type="varchar" MaxLength="200" />
         </EntityType>
         <Association Name="FK_dbo_EmailListContacts_dbo_Contacts_Contact_Id">
           <End Role="Contacts" Type="Self.Contacts" Multiplicity="1">
@@ -82,8 +83,7 @@
             <End Role="EmailListContacts" EntitySet="EmailListContacts" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="crmAModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -115,6 +115,7 @@
           </Key>
           <Property Name="TemplateId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="TemplateName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FilePath" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
         </EntityType>
         <Association Name="EmailListContacts">
           <End Role="Contacts" Type="Self.Contact" Multiplicity="*" />
@@ -160,6 +161,7 @@
           <EntitySetMapping Name="Templates">
             <EntityTypeMapping TypeName="crmAModel.Template">
               <MappingFragment StoreEntitySet="Templates">
+                <ScalarProperty Name="FilePath" ColumnName="FilePath" />
                 <ScalarProperty Name="TemplateId" ColumnName="TemplateId" />
                 <ScalarProperty Name="TemplateName" ColumnName="TemplateName" />
               </MappingFragment>

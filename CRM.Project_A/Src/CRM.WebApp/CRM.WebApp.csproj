@@ -127,7 +127,10 @@
     <Compile Include="Infrastructure\ModelFactory.cs" />
     <Compile Include="Infrastructure\ParsingProvider.cs" />
     <Compile Include="Models\ApiContactsModel.cs" />
+    <Compile Include="Models\ContactRequestModel.cs" />
+    <Compile Include="Models\ContactResponseModel.cs" />
     <Compile Include="Models\EmailListModel.cs" />
+    <Compile Include="Models\MailingListModel.cs" />
     <Compile Include="Models\ViewContact.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
