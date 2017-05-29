@@ -1,4 +1,5 @@
 ﻿using CRM.WebApp.Infrastructure;
+using CRM.WebApp.Models;
 using EntityLibrary;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace CRM.WebApp.Controllers
         ApplicationManager manager = new ApplicationManager();
         public async Task<IHttpActionResult> PostSendEmails([FromBody] List<Guid> GuIdList, [FromUri] int TemplateId)
         {
-            List<Contact> ContactsForSending = await manager.GetContactsByGuIdList(GuIdList);
+            List<ContactResponseModel> ContactsForSending = await manager.GetContactsByGuIdList(GuIdList);
             if (ContactsForSending == null)
             {
                 return NotFound();
@@ -28,7 +29,7 @@ namespace CRM.WebApp.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-                
+
             }
             return Ok();
         }

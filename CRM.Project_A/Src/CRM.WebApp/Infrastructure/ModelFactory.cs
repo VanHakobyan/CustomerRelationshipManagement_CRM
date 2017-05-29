@@ -9,9 +9,9 @@ namespace CRM.WebApp.Infrastructure
 {
     public class ModelFactory
     {
-        private  DataBaseCRMEntityes db = new DataBaseCRMEntityes();
+        private DataBaseCRMEntityes db = new DataBaseCRMEntityes();
 
-        public  ContactResponseModel CreateContactResponseModel(ContactRequestModel crmRequest)
+        public ContactResponseModel CreateContactResponseModel(ContactRequestModel crmRequest)
         {
             return new ContactResponseModel
             {
@@ -21,11 +21,11 @@ namespace CRM.WebApp.Infrastructure
                 Country = crmRequest.Country,
                 Email = crmRequest.Email,
                 Guid = Guid.NewGuid(),
-                DateInserted = DateTime.UtcNow,
+                //DateInserted = DateTime.UtcNow,
                 EmailLists = new List<string>()
             };
         }
-        public  ContactResponseModel CreateContactResponseModel(Contact contacts)
+        public ContactResponseModel CreateContactResponseModel(Contact contacts)
         {
             return new ContactResponseModel
             {
@@ -35,13 +35,12 @@ namespace CRM.WebApp.Infrastructure
                 Country = contacts.Country,
                 Email = contacts.Email,
                 Guid = contacts.GuID,
-                DateInserted = contacts.DateInserted,
                 EmailLists = contacts.EmailLists.Select(e => e.EmailListName).ToList()
             };
         }
-        public  Contact CreateContact(ContactRequestModel crmRequest)
+        public Contact CreateContact(ContactRequestModel crmRequest)
         {
-            var contacts = new Contact
+            Contact contacts = new Contact
             {
                 FullName = crmRequest.FullName,
                 CompanyName = crmRequest.CompanyName,
@@ -50,17 +49,22 @@ namespace CRM.WebApp.Infrastructure
                 Email = crmRequest.Email,
                 GuID = Guid.NewGuid(),
                 DateInserted = DateTime.Now,
+                EmailLists = new List<EmailList>()
             };
-            var list = new List<EmailList>();
-            using (db)
-            {
-                foreach (var emailListName in crmRequest.MailingLists)
-                {
-                    list.AddRange(db.EmailLists.Where(emailList => emailList.EmailListName == emailListName));
-                }
-            }
-            contacts.EmailLists = list;
             return contacts;
+        }
+        public EmailList CreateEmailRequestModel(EmailListRequestModel requestModel)
+        {
+            EmailList emailList = new EmailList()
+            {
+                Contacts = new List<Contact>(),
+                EmailListName = requestModel.MailingListName
+            };
+            return emailList;
+        }
+        public EmailListResponseModel CreateEmailRequestModel(EmailList emailList)
+        {
+            return new EmailListResponseModel() { EmailListID = emailList.EmailListID, EmailListName = emailList.EmailListName, Contacts = emailList.Contacts.Select(x => x.Email).ToList() };
         }
 
     }

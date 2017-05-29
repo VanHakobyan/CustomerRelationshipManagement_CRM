@@ -130,7 +130,8 @@
     <Compile Include="Models\ContactRequestModel.cs" />
     <Compile Include="Models\ContactResponseModel.cs" />
     <Compile Include="Models\EmailListModel.cs" />
-    <Compile Include="Models\MailingListModel.cs" />
+    <Compile Include="Models\EmailListRequestModel.cs" />
+    <Compile Include="Models\EmailListResponseModel.cs" />
     <Compile Include="Models\ViewContact.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

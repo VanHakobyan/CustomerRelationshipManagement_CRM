@@ -13,7 +13,6 @@ namespace CRM.WebApp.Models
         public string Country { get; set; }
         public string Email { get; set; }
         public Guid? Guid { get; set; }
-        public DateTime? DateInserted { get; set; }
         public List<string> EmailLists { get; set; }
     }
 }

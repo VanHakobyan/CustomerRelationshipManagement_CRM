@@ -19,34 +19,32 @@ namespace CRM.WebApp.Infrastructure
 
         // public ApplicationManager(){}
         DataBaseCRMEntityes db = new DataBaseCRMEntityes();
-
-        public async Task<List<ApiContactsModel>> GetAllContacts()
+        ModelFactory factory = new ModelFactory();
+        public async Task<List<ContactResponseModel>> GetAllContacts()
         {
-            db.Configuration.LazyLoadingEnabled = false;
-            List<Contact> DbContactList = await db.Contacts.ToListAsync();
-            List<ApiContactsModel> MyContactList = new List<ApiContactsModel>();
-            foreach (var contact in DbContactList)
-            {
-                MyContactList.Add(new ApiContactsModel(contact));
-            }
-            return MyContactList;
+            //db.Configuration.LazyLoadingEnabled = false;
+            List<Contact> dbContactList = await db.Contacts.ToListAsync();
+            List<ContactResponseModel> responseContactList = new List<ContactResponseModel>();
+
+            return dbContactList.Select(x => factory.CreateContactResponseModel(x)).ToList();
+
         }
-        public async Task<List<Contact>> GetContactPaje(int start, int numberRows, bool flag)
+        //public async Task<List<Contact>> GetContactPage(int start, int numberRows, bool flag)
+        //{
+        //    var query = await db.Contacts.OrderBy(x => x.DateInserted).Skip(start).Take(numberRows).ToListAsync();
+
+        //    for (int i = 0; i < query.Count; i++)
+        //    {
+        //        query[i].EmailLists = new List<EmailList>();
+        //    }
+        //    return query;
+        //}
+
+        public async Task<ContactResponseModel> GetContactByGuid(Guid id)
         {
-            var query = await db.Contacts.OrderBy(x => x.DateInserted).Skip(start).Take(numberRows).ToListAsync();
-
-            for (int i = 0; i < query.Count; i++)
-            {
-                query[i].EmailLists = new List<EmailList>();
-            }
-            return query;
-        }
-
-        public async Task<Contact> GetContactByGuid(Guid id)
-        {
-
             var contact = await db.Contacts.FirstOrDefaultAsync(t => t.GuID == id);
-            return contact;
+
+            return factory.CreateContactResponseModel(contact);
         }
 
         public async Task<int> GetContactsPageCounter()
@@ -54,9 +52,9 @@ namespace CRM.WebApp.Infrastructure
             return await db.Contacts.CountAsync() > 10 ? await db.Contacts.CountAsync() / 10 : 1;
         }
 
-        public async Task<List<Contact>> GetContactsByGuIdList(List<Guid> GuIdList)
+        public async Task<List<ContactResponseModel>> GetContactsByGuIdList(List<Guid> GuIdList)
         {
-            List<Contact> ContactsList = new List<Contact>();
+            List<ContactResponseModel> ContactsList = new List<ContactResponseModel>();
             foreach (var guid in GuIdList)
             {
                 ContactsList.Add(await GetContactByGuid(guid));
@@ -64,14 +62,15 @@ namespace CRM.WebApp.Infrastructure
 
             return ContactsList;
         }
-        public async Task<bool> UpdateContact(ViewContact contact)
+        public async Task<bool> UpdateContact(string guid, ContactRequestModel contact)
         {
-            Contact dbContactToUpdate = await GetContactByGuid(contact.GuID);
+            var dbContactToUpdate = await db.Contacts.FirstOrDefaultAsync(c => c.GuID.ToString() == guid);
 
             if (dbContactToUpdate == null) return false;
 
             dbContactToUpdate.FullName = contact.FullName;
             dbContactToUpdate.Country = contact.Country;
+            dbContactToUpdate.Position = contact.Position;
             dbContactToUpdate.CompanyName = contact.CompanyName;
             dbContactToUpdate.Email = contact.Email;
 
@@ -80,42 +79,42 @@ namespace CRM.WebApp.Infrastructure
             try
             {
                 await db.SaveChangesAsync();
-                return true;
             }
             catch (DbUpdateConcurrencyException)
             {
 
-                if (!await ContactExistsAsync(contact.GuID))
-                {
-                    return false;
-                }
-                else
-                {
-                    throw;
-                }
+                //if (!await ContactExistsAsync(Guid.Parse(guid)))
+                //{
+                //    return false;
+                //}
+                //else
+                //{
+                //    throw;
+                //}
+
             }
+            return true;
         }
 
 
-        public async Task<Contact> AddContact(Contact contact)
+        public async Task<Contact> AddContact(ContactRequestModel contact)
         {
+            Contact contacts = factory.CreateContact(contact);
 
-            contact.GuID = Guid.NewGuid();
-            contact.DateInserted = DateTime.UtcNow;
-            db.Contacts.Add(contact);
+            db.Contacts.Add(contacts);
             await db.SaveChangesAsync();
 
-            return contact;
+            return contacts;
         }
-        public async Task<Contact> RemoveContact(int id)
+        public async Task<ContactResponseModel> RemoveContact(string guid)
         {
-            Contact contact = await db.Contacts.FindAsync(id);
+            var contact = await db.Contacts.FirstOrDefaultAsync(c => c.GuID.ToString() == guid);
 
-
+            var resModel = factory.CreateContactResponseModel(contact);
             db.Contacts.Remove(contact);
             await db.SaveChangesAsync();
 
-            return contact;
+            return resModel;
         }
         public async Task<bool> ContactExistsAsync(Guid id)
         {

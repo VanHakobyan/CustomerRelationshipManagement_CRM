@@ -22,23 +22,22 @@ namespace CRM.WebApp.Controllers
         private ApplicationManager manager = new ApplicationManager();
 
         // GET: api/Contacts
-        public async Task<List<ApiContactsModel>> GetContacts()
+        public async Task<List<ContactResponseModel>> GetContacts()
         {
-            
             return await manager.GetAllContacts();
         }
 
         // GET: api/Contacts/paje
-        [ResponseType(typeof(Contact))]
-        public async Task<IHttpActionResult> GetContact(int start, int numberRows, bool flag)
-        {
-            var contact = await manager.GetContactPaje(start, numberRows, flag);
-            if (contact == null)
-            {
-                return NotFound();
-            }
-            return Ok(contact);
-        }
+        //[ResponseType(typeof(Contact))]
+        //public async Task<IHttpActionResult> GetContact(int start, int numberRows, bool flag)
+        //{
+        //    var contact = await manager.GetContactPage(start, numberRows, flag);
+        //    if (contact == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return Ok(contact);
+        //}
 
         // GET: api/Contacts/guid
         [ResponseType(typeof(ApiContactsModel))]
@@ -50,7 +49,7 @@ namespace CRM.WebApp.Controllers
                 return NotFound();
             }
 
-            return Ok(new ApiContactsModel(contact));
+            return Ok(contact);
         }
 
 
@@ -101,21 +100,22 @@ namespace CRM.WebApp.Controllers
         //}
         // PUT: api/Contacts/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult>PutContact([FromBody] ViewContact contact)
+        [HttpPut]
+        public async Task<IHttpActionResult> PutContact(string guid, [FromBody] ContactRequestModel contact)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            if (await manager.UpdateContact(contact)) return StatusCode(HttpStatusCode.NoContent);
+            if (await manager.UpdateContact(guid, contact))
+                return StatusCode(HttpStatusCode.NoContent);
 
             return NotFound();
 
         }
         // POST: api/Contacts
-        [ResponseType(typeof(Contact))]
-        public async Task<IHttpActionResult> PostContact(Contact contact)
+        [ResponseType(typeof(ContactRequestModel))]
+        public async Task<IHttpActionResult> PostContact(ContactRequestModel contact)
         {
             if (!ModelState.IsValid)
             {
@@ -125,14 +125,14 @@ namespace CRM.WebApp.Controllers
 
             await manager.AddContact(contact);
 
-            return CreatedAtRoute("DefaultApi", new { id = contact.ContactId }, contact);
+            return CreatedAtRoute("DefaultApi", new { }, contact);
         }
 
         // DELETE: api/Contacts/5
-        [ResponseType(typeof(Contact))]
-        public async Task<IHttpActionResult> DeleteContact(int id)
+        [ResponseType(typeof(ContactResponseModel))]
+        public async Task<IHttpActionResult> DeleteContact(string guid)
         {
-            Contact contact = await manager.RemoveContact(id);
+            var contact = await manager.RemoveContact(guid);
             if (contact == null)
             {
                 return NotFound();

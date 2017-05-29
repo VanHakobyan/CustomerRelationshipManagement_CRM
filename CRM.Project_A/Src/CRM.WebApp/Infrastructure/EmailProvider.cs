@@ -10,6 +10,7 @@ using System.Text;
 using System.Web;
 using System.IO;
 using System.Threading.Tasks;
+using CRM.WebApp.Models;
 
 namespace CRM.WebApp.Infrastructure
 {
@@ -30,7 +31,7 @@ namespace CRM.WebApp.Infrastructure
                     .Replace("{Email}", contact.Email)
                     .Replace("{DateTimeNow}", DateTime.UtcNow.ToString());
         }
-        public void SendEmail(Contact contact, int TemplateID)//List<Contact> list)
+        public void SendEmail(ContactResponseModel contact, int TemplateID)//List<Contact> list)
         {
 
             using (MailMessage msg = new MailMessage())
@@ -42,7 +43,7 @@ namespace CRM.WebApp.Infrastructure
 
                 msg.Subject = "BetConstruct Team BETA";
                 msg.IsBodyHtml = true;
-                msg.Body = GetMessageText(TemplateID, contact);
+                //msg.Body = GetMessageText(TemplateID, contact);
                 SmtpClient client =
                 new SmtpClient
                 {
@@ -66,9 +67,9 @@ namespace CRM.WebApp.Infrastructure
             }
 
         }
-        public void SendEmailList(List<Contact> list, int TemplateID)
+        public void SendEmailList(List<ContactResponseModel> list, int TemplateID)
         {
-            foreach (Contact contact in list)
+            foreach (var contact in list)
                 SendEmail(contact, TemplateID);
         }
 
