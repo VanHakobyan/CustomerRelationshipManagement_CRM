@@ -17,7 +17,7 @@ namespace CRM.WebApp.Infrastructure
     public class EmailProvider
     {
         DataBaseCRMEntityes db = new DataBaseCRMEntityes();
-        private string GetMessageText(int templateId, Contact contact)
+        private string GetMessageText(int templateId, ContactResponseModel contact)
         {
             //var template = await db.Templates.FindAsync(templateId);
             var template = db.Templates.Find(templateId);
@@ -38,12 +38,10 @@ namespace CRM.WebApp.Infrastructure
             {
 
                 msg.From = new MailAddress("vanhakobyan1996@gmail.com");
-
                 msg.To.Add(contact.Email);
-
                 msg.Subject = "BetConstruct Team BETA";
                 msg.IsBodyHtml = true;
-                //msg.Body = GetMessageText(TemplateID, contact);
+                msg.Body = GetMessageText(TemplateID, contact);
                 SmtpClient client =
                 new SmtpClient
                 {
@@ -125,16 +123,16 @@ namespace CRM.WebApp.Infrastructure
 
         //}
 
-        public class EmailContent
-        {
-            public string html;
-            public byte[] Image;
-        }
-        public enum Template
-        {
-            anniversary,
-            birthday,
-            christmas
-        }
+        //public class EmailContent
+        //{
+        //    public string html;
+        //    public byte[] Image;
+        //}
+        //public enum Template
+        //{
+        //    anniversary,
+        //    birthday,
+        //    christmas
+        //}
     }
 }

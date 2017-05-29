@@ -22,7 +22,7 @@ namespace CRM.WebApp.Infrastructure
         ModelFactory factory = new ModelFactory();
         public async Task<List<ContactResponseModel>> GetAllContacts()
         {
-            //db.Configuration.LazyLoadingEnabled = false;
+            db.Configuration.LazyLoadingEnabled = false;
             List<Contact> dbContactList = await db.Contacts.ToListAsync();
             List<ContactResponseModel> responseContactList = new List<ContactResponseModel>();
 
