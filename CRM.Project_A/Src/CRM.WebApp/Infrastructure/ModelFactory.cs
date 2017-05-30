@@ -58,13 +58,16 @@ namespace CRM.WebApp.Infrastructure
             EmailList emailList = new EmailList()
             {
                 Contacts = new List<Contact>(),
-                EmailListName = requestModel.MailingListName
+                EmailListName = requestModel.EmailListName
             };
             return emailList;
         }
-        public EmailListResponseModel CreateEmailRequestModel(EmailList emailList)
+        public EmailListResponseModel CreateEmailResponseModel(EmailList emailList)
         {
-            return new EmailListResponseModel() { EmailListID = emailList.EmailListID, EmailListName = emailList.EmailListName, Contacts = emailList.Contacts.Select(x => x.Email).ToList() };
+            return new EmailListResponseModel() {
+                EmailListID = emailList.EmailListID,
+                EmailListName = emailList.EmailListName,
+                Contacts = emailList.Contacts.Select(x => x.Email).ToList() };
         }
 
     }

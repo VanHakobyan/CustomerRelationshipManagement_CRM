@@ -98,21 +98,21 @@ namespace CRM.WebApp.Controllers
         //    return StatusCode(HttpStatusCode.NoContent);
 
         //}
-        // PUT: api/Contacts/5
-        [ResponseType(typeof(void))]
-        [HttpPut]
-        public async Task<IHttpActionResult> PutContact(string guid, [FromBody] ContactRequestModel contact)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            if (await manager.UpdateContact(guid, contact))
-                return StatusCode(HttpStatusCode.NoContent);
+        //// PUT: api/Contacts/5
+        //[ResponseType(typeof(void))]
+        //[HttpPut]
+        //public async Task<IHttpActionResult> PutContact(string guid, [FromBody] ContactRequestModel contact)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+        //    if (await manager.UpdateContact(guid, contact))
+        //        return StatusCode(HttpStatusCode.NoContent);
 
-            return NotFound();
+        //    return NotFound();
 
-        }
+        //}
         // POST: api/Contacts
         [ResponseType(typeof(ContactRequestModel))]
         public async Task<IHttpActionResult> PostContact(ContactRequestModel contact)

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -62,39 +63,39 @@ namespace CRM.WebApp.Infrastructure
 
             return ContactsList;
         }
-        public async Task<bool> UpdateContact(string guid, ContactRequestModel contact)
-        {
-            var dbContactToUpdate = await db.Contacts.FirstOrDefaultAsync(c => c.GuID.ToString() == guid);
+        //public async Task<bool> UpdateContact(string guid, ContactRequestModel contact)
+        //{
+        //    var dbContactToUpdate = await db.Contacts.FirstOrDefaultAsync(c => c.GuID.ToString() == guid);
 
-            if (dbContactToUpdate == null) return false;
+        //    if (dbContactToUpdate == null) return false;
 
-            dbContactToUpdate.FullName = contact.FullName;
-            dbContactToUpdate.Country = contact.Country;
-            dbContactToUpdate.Position = contact.Position;
-            dbContactToUpdate.CompanyName = contact.CompanyName;
-            dbContactToUpdate.Email = contact.Email;
+        //    dbContactToUpdate.FullName = contact.FullName;
+        //    dbContactToUpdate.Country = contact.Country;
+        //    dbContactToUpdate.Position = contact.Position;
+        //    dbContactToUpdate.CompanyName = contact.CompanyName;
+        //    dbContactToUpdate.Email = contact.Email;
 
-            db.Entry(dbContactToUpdate).State = EntityState.Modified;
+        //    db.Entry(dbContactToUpdate).State = EntityState.Modified;
 
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
+        //    try
+        //    {
+        //        await db.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
 
-                //if (!await ContactExistsAsync(Guid.Parse(guid)))
-                //{
-                //    return false;
-                //}
-                //else
-                //{
-                //    throw;
-                //}
+        //        //if (!await ContactExistsAsync(Guid.Parse(guid)))
+        //        //{
+        //        //    return false;
+        //        //}
+        //        //else
+        //        //{
+        //        //    throw;
+        //        //}
 
-            }
-            return true;
-        }
+        //    }
+        //    return true;
+        //}
 
 
         public async Task<Contact> AddContact(ContactRequestModel contact)
@@ -120,7 +121,69 @@ namespace CRM.WebApp.Infrastructure
         {
             return await db.Contacts.CountAsync(e => e.GuID == id) > 0;
         }
-        public async void SaveDb()
+
+
+        public async Task<List<EmailListResponseModel>> GetAllEmailLis()
+        {
+            List<EmailList> entityContactList = await db.EmailLists.ToListAsync();
+            List<EmailListResponseModel> ModelContactList = new List<EmailListResponseModel>();
+
+
+            return entityContactList.Select(f => factory.CreateEmailResponseModel(f)).ToList();
+        }
+
+        public async Task<EmailListResponseModel> GetEmailListById(int id)
+        {
+            EmailList email = await db.EmailLists.FirstOrDefaultAsync(t => t.EmailListID == id);
+            return factory.CreateEmailResponseModel(email);
+        }
+
+        public async Task<EmailList> AddOrUpdateEmailList(EmailList emailListToAddOrUpdate, EmailListRequestModel requestEmailList)
+        {
+            using (DbContextTransaction transaction = db.Database.BeginTransaction())
+            {
+                emailListToAddOrUpdate.EmailListName = requestEmailList.EmailListName;
+
+                if (requestEmailList.Contacts != null)
+                {
+                    emailListToAddOrUpdate.Contacts.Clear();
+                    foreach (Guid guid in requestEmailList.Contacts)
+                    {
+                        var cont = await db.Contacts.FirstOrDefaultAsync(x => x.GuID == guid);
+                        if (cont != null) emailListToAddOrUpdate.Contacts.Add(cont);
+                    }
+                }
+
+                db.EmailLists.AddOrUpdate(emailListToAddOrUpdate);
+
+                try
+                {
+                    await db.SaveChangesAsync();
+                    transaction.Commit();
+                    return emailListToAddOrUpdate;
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    if ((await EmailListExists(emailListToAddOrUpdate.EmailListID)))
+                    {
+                        return null;
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+        }
+
+
+
+        public async Task<bool> EmailListExists(int id)
+        {
+            return await db.EmailLists.CountAsync(e => e.EmailListID == id) > 0;
+        }
+        public async Task SaveDb()
         {
             await db.SaveChangesAsync();
         }

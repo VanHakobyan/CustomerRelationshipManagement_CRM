@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace CRM.WebApi.Models
+namespace CRM.WebApp.Models
 {
     public class EmailListModel
     {

@@ -9,81 +9,49 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using EntityLibrary;
-using CRM.WebApi.Models;
 using System.Threading.Tasks;
+using CRM.WebApp.Infrastructure;
+using CRM.WebApp.Models;
+
 
 namespace CRM.WebApp.Controllers
 {
     public class EmailListsController : ApiController
     {
         private DataBaseCRMEntityes db = new DataBaseCRMEntityes();
-
+        private ApplicationManager manager = new ApplicationManager();
         // GET: api/EmailLists
-        public async Task<List<EmailListModel>> GetEmailLists()
+        public async Task<List<EmailListResponseModel>> GetEmailLists()
         {
-            List<EmailList> EntityContactList = await db.EmailLists.ToListAsync();
-            List<EmailListModel> ModelContactList = new List<EmailListModel>();
-
-            foreach (var contact in EntityContactList)
-            {
-                ModelContactList.Add(new EmailListModel(contact));
-            }
-
-            return ModelContactList;
+            return await manager.GetAllEmailLis();
         }
 
         // GET: api/EmailLists/5
-        [ResponseType(typeof(EmailList))]
+        [ResponseType(typeof(EmailListResponseModel))]
         public async Task<IHttpActionResult> GetEmailList(int id)
         {
-            var email = await db.EmailLists.FirstOrDefaultAsync(t => t.EmailListID == id);
+            var email = await manager.GetEmailListById(id);
             if (email == null)
             {
                 return NotFound();
             }
 
-            return Ok(new EmailListModel(email));
+            return Ok(email);
         }
 
         // PUT: api/EmailLists/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutEmailList([FromBody] EmailListModel emailList)
+        public async Task<IHttpActionResult> PutEmailList([FromBody] EmailListRequestModel emailList)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            EmailList EmailListUpdate = await db.EmailLists.FirstOrDefaultAsync(t => t.EmailListID == emailList.EmailListID);
-            if (EmailListUpdate == null)
+            EmailList list = new EmailList();
+            var res = await manager.AddOrUpdateEmailList(list, emailList);
+            if (res==null)
             {
                 return NotFound();
-            }
-            EmailListUpdate.EmailListName = emailList.EmailListName;
-            ICollection<Contact> UpdatedContacts = new List<Contact>();
-            foreach (string item in emailList.Contacts)
-            {
-                UpdatedContacts.Add(await db.Contacts.FirstOrDefaultAsync(x => x.Email == item));
-            }
-
-            EmailListUpdate.Contacts.Clear();
-            EmailListUpdate.Contacts = UpdatedContacts;
-            db.Entry(EmailListUpdate).State = EntityState.Modified;
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            // TODO: swaped if and else
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!(await EmailListExists(emailList.EmailListID)))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
             }
 
             return StatusCode(HttpStatusCode.NoContent);
@@ -91,24 +59,15 @@ namespace CRM.WebApp.Controllers
 
         // POST: api/EmailLists
         [ResponseType(typeof(EmailList))]
-        public async Task<IHttpActionResult> PostEmailList([FromBody]EmailListModel emailList)
+        public async Task<IHttpActionResult> PostEmailList([FromBody]EmailListRequestModel emailListRequest)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-
-            var AddeddContacts = new List<Contact>();
-            foreach (string listItem in emailList.Contacts)
-            {
-                AddeddContacts.Add(await db.Contacts.FirstOrDefaultAsync(e => e.Email == listItem));
-            }
-
-
-            db.EmailLists.Add(new EmailList { EmailListName = emailList.EmailListName, Contacts = AddeddContacts });
-            await db.SaveChangesAsync();
-
+            EmailList emailListSend = new EmailList();
+            EmailList emailList = await manager.AddOrUpdateEmailList(emailListSend, emailListRequest);
             //EmailListUpdate.EmailListName = emailList.EmailListName;
             //ICollection<Contact> UpdatedContacts = new List<Contact>();
             //foreach (string item in emailList.Contacts)

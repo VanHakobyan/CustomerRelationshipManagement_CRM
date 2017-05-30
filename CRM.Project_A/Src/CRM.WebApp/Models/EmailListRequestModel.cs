@@ -1,7 +1,12 @@
-﻿namespace CRM.WebApp.Models
+﻿using System;
+using System.Collections.Generic;
+
+namespace CRM.WebApp.Models
 {
     public class EmailListRequestModel
     {
-        public string MailingListName { get; set; }
+       
+        public string EmailListName { get; set; }
+        public List<Guid> Contacts { get; set; }
     }
 }
