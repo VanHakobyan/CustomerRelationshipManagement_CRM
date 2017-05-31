@@ -214,6 +214,7 @@ namespace CRM.WebApp.Infrastructure
                     }
 
                     //-------------------------------------------------------
+                    File.Delete(filePath);
                     return await UploadHelper(listOfContacts);
                 }
 
@@ -241,6 +242,7 @@ namespace CRM.WebApp.Infrastructure
                     }).ToArray();
 
                 //-------------------------------------------------------
+                File.Delete(filePath);
                 return await UploadHelper(listOfContacts);
             });
         }
