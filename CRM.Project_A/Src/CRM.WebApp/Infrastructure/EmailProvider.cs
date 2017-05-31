@@ -31,6 +31,7 @@ namespace CRM.WebApp.Infrastructure
                     .Replace("{Email}", contact.Email)
                     .Replace("{DateTimeNow}", DateTime.UtcNow.ToString());
         }
+
         public void SendEmail(ContactResponseModel contact, int TemplateID)//List<Contact> list)
         {
 
@@ -65,6 +66,7 @@ namespace CRM.WebApp.Infrastructure
             }
 
         }
+
         public void SendEmailList(List<ContactResponseModel> list, int TemplateID)
         {
             foreach (var contact in list)

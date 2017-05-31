@@ -3,10 +3,14 @@ using CRM.WebApp.Models;
 using EntityLibrary;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.Entity;
+using System.Data.Entity.Core;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Migrations;
+using System.Data.SqlClient;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -23,11 +27,18 @@ namespace CRM.WebApp.Infrastructure
         ModelFactory factory = new ModelFactory();
         public async Task<List<ContactResponseModel>> GetAllContacts()
         {
-            db.Configuration.LazyLoadingEnabled = false;
-            List<Contact> dbContactList = await db.Contacts.ToListAsync();
-            List<ContactResponseModel> responseContactList = new List<ContactResponseModel>();
+            try
+            {
+                db.Configuration.LazyLoadingEnabled = false;
+                List<Contact> dbContactList = await db.Contacts.ToListAsync();
+                List<ContactResponseModel> responseContactList = new List<ContactResponseModel>();
+                return dbContactList.Select(x => factory.CreateContactResponseModel(x)).ToList();
+            }
+            catch (EntitySqlException dbEx)
+            {
 
-            return dbContactList.Select(x => factory.CreateContactResponseModel(x)).ToList();
+                throw new EntitySqlException(dbEx.Message);
+            }
 
         }
         //public async Task<List<Contact>> GetContactPage(int start, int numberRows, bool flag)
@@ -63,39 +74,49 @@ namespace CRM.WebApp.Infrastructure
 
             return ContactsList;
         }
-        //public async Task<bool> UpdateContact(string guid, ContactRequestModel contact)
-        //{
-        //    var dbContactToUpdate = await db.Contacts.FirstOrDefaultAsync(c => c.GuID.ToString() == guid);
+        public async Task<bool> UpdateContact(string guid, ContactRequestModel contact)
+        {
+            Contact dbContactToUpdate;
+            try
+            {
+                dbContactToUpdate = await db.Contacts.FirstOrDefaultAsync(c => c.GuID.ToString() == guid);
+            }
+            catch (Exception)
+            {
 
-        //    if (dbContactToUpdate == null) return false;
+                throw;
+            }
+            if (dbContactToUpdate == null) return false;
 
-        //    dbContactToUpdate.FullName = contact.FullName;
-        //    dbContactToUpdate.Country = contact.Country;
-        //    dbContactToUpdate.Position = contact.Position;
-        //    dbContactToUpdate.CompanyName = contact.CompanyName;
-        //    dbContactToUpdate.Email = contact.Email;
+            dbContactToUpdate.FullName = contact.FullName;
+            dbContactToUpdate.Country = contact.Country;
+            dbContactToUpdate.Position = contact.Position;
+            dbContactToUpdate.CompanyName = contact.CompanyName;
+            dbContactToUpdate.Email = contact.Email;
 
-        //    db.Entry(dbContactToUpdate).State = EntityState.Modified;
+            db.Entry(dbContactToUpdate).State = EntityState.Modified;
 
-        //    try
-        //    {
-        //        await db.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
 
-        //        //if (!await ContactExistsAsync(Guid.Parse(guid)))
-        //        //{
-        //        //    return false;
-        //        //}
-        //        //else
-        //        //{
-        //        //    throw;
-        //        //}
 
-        //    }
-        //    return true;
-        //}
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+
+                if (!await ContactExistsAsync(Guid.Parse(guid)))
+                {
+                    return false;
+                }
+                else
+                {
+                    throw;
+                }
+
+            }
+            return true;
+        }
 
 
         public async Task<Contact> AddContact(ContactRequestModel contact)
@@ -194,6 +215,13 @@ namespace CRM.WebApp.Infrastructure
         public async Task SaveDb()
         {
             await db.SaveChangesAsync();
+        }
+        public bool RegexEmail(string email)
+        {
+            if (!Regex.IsMatch(email, @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z", RegexOptions.IgnoreCase))
+                return false;
+            return true;
+
         }
         public void Dispose()
         {

@@ -13,6 +13,7 @@ using CRM.WebApi.Models;
 using System.Threading.Tasks;
 using CRM.WebApp.Infrastructure;
 using CRM.WebApp.Models;
+using System.Text.RegularExpressions;
 
 namespace CRM.WebApp.Controllers
 {
@@ -22,9 +23,18 @@ namespace CRM.WebApp.Controllers
         private ApplicationManager manager = new ApplicationManager();
 
         // GET: api/Contacts
-        public async Task<List<ContactResponseModel>> GetContacts()
+        public async Task<HttpResponseMessage> GetContacts()
         {
-            return await manager.GetAllContacts();
+            try
+            {
+                List<ContactResponseModel> contacts = await manager.GetAllContacts();
+                return Request.CreateResponse(HttpStatusCode.OK, contacts);
+            }
+            catch 
+            {
+                return Request.CreateResponse(HttpStatusCode.Conflict);
+            }
+            
         }
 
         // GET: api/Contacts/paje
@@ -60,7 +70,7 @@ namespace CRM.WebApp.Controllers
             return await manager.GetContactsPageCounter();
         }
 
-        //// PUT: api/Contacts/5
+        // PUT: api/Contacts/5
         //[ResponseType(typeof(void))]
         //public async Task<bool> PutContact(ViewContact contact)
         //{
@@ -98,25 +108,30 @@ namespace CRM.WebApp.Controllers
         //    return StatusCode(HttpStatusCode.NoContent);
 
         //}
-        //// PUT: api/Contacts/5
-        //[ResponseType(typeof(void))]
-        //[HttpPut]
-        //public async Task<IHttpActionResult> PutContact(string guid, [FromBody] ContactRequestModel contact)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-        //    if (await manager.UpdateContact(guid, contact))
-        //        return StatusCode(HttpStatusCode.NoContent);
+        //PUT: api/Contacts/5
+        [ResponseType(typeof(void))]
+        [HttpPut]
+        public async Task<IHttpActionResult> PutContact(string guid, [FromBody] ContactRequestModel contact)
+        {
+            if (!manager.RegexEmail(contact.Email))
+                return BadRequest("Email address is not valid");
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (await manager.UpdateContact(guid, contact))
+                return StatusCode(HttpStatusCode.NoContent);
 
-        //    return NotFound();
+            return NotFound();
 
-        //}
+        }
         // POST: api/Contacts
         [ResponseType(typeof(ContactRequestModel))]
         public async Task<IHttpActionResult> PostContact(ContactRequestModel contact)
         {
+            if (!manager.RegexEmail(contact.Email))
+                return BadRequest("Email address is not valid");
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

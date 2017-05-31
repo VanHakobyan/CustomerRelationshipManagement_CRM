@@ -25,6 +25,7 @@ namespace CRM.WebApp.Infrastructure
                 EmailLists = new List<string>()
             };
         }
+
         public ContactResponseModel CreateContactResponseModel(Contact contacts)
         {
             return new ContactResponseModel
@@ -38,6 +39,7 @@ namespace CRM.WebApp.Infrastructure
                 EmailLists = contacts.EmailLists.Select(e => e.EmailListName).ToList()
             };
         }
+
         public Contact CreateContact(ContactRequestModel crmRequest)
         {
             Contact contacts = new Contact
@@ -53,6 +55,7 @@ namespace CRM.WebApp.Infrastructure
             };
             return contacts;
         }
+
         public EmailList CreateEmailRequestModel(EmailListRequestModel requestModel)
         {
             EmailList emailList = new EmailList()
@@ -62,6 +65,7 @@ namespace CRM.WebApp.Infrastructure
             };
             return emailList;
         }
+
         public EmailListResponseModel CreateEmailResponseModel(EmailList emailList)
         {
             return new EmailListResponseModel() {
