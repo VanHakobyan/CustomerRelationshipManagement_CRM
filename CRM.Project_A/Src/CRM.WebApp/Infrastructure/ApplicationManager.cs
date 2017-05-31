@@ -134,39 +134,39 @@ namespace CRM.WebApp.Infrastructure
 
         public async Task<EmailList> GetEmailListById(int id)
         {
-          
-           
+
+
             return await db.EmailLists.FirstOrDefaultAsync(t => t.EmailListID == id); //factory.CreateEmailResponseModel(email);
         }
 
-        public async Task<EmailList> AddOrUpdateEmailList(EmailList emailListToAddOrUpdate, EmailListRequestModel requestEmailList)
+        public async Task<EmailList> AddOrUpdateEmailList(EmailList еmailListForAddOrUpdate, EmailListRequestModel requestEmailListModel)
         {
             using (DbContextTransaction transaction = db.Database.BeginTransaction())
             {
-                emailListToAddOrUpdate.EmailListName = requestEmailList.EmailListName;
+                еmailListForAddOrUpdate.EmailListName = requestEmailListModel.EmailListName;
 
-                if (requestEmailList.Contacts != null)
+                if (requestEmailListModel.Contacts != null)
                 {
-                    emailListToAddOrUpdate.Contacts.Clear();
-                    foreach (Guid guid in requestEmailList.Contacts)
+                    еmailListForAddOrUpdate.Contacts.Clear();
+                    foreach (Guid guid in requestEmailListModel.Contacts)
                     {
                         var cont = await db.Contacts.FirstOrDefaultAsync(x => x.GuID == guid);
-                        if (cont != null) emailListToAddOrUpdate.Contacts.Add(cont);
+                        if (cont != null) еmailListForAddOrUpdate.Contacts.Add(cont);
                     }
                 }
 
-                db.EmailLists.AddOrUpdate(emailListToAddOrUpdate);
+                db.EmailLists.AddOrUpdate(еmailListForAddOrUpdate);
 
                 try
                 {
                     await db.SaveChangesAsync();
                     transaction.Commit();
-                    return emailListToAddOrUpdate;
+                    return еmailListForAddOrUpdate;
                 }
                 catch (Exception)
                 {
                     transaction.Rollback();
-                    if ((await EmailListExists(emailListToAddOrUpdate.EmailListID)))
+                    if ((await EmailListExists(еmailListForAddOrUpdate.EmailListID)))
                     {
                         return null;
                     }
@@ -179,6 +179,13 @@ namespace CRM.WebApp.Infrastructure
         }
 
 
+        public async Task<EmailListResponseModel> RemoveEmailList(int id)
+        {
+            EmailList emailList = await db.EmailLists.FindAsync(id);
+            db.EmailLists.Remove(emailList);
+            await db.SaveChangesAsync();
+            return factory.CreateEmailResponseModel(emailList);
+        }
 
         public async Task<bool> EmailListExists(int id)
         {

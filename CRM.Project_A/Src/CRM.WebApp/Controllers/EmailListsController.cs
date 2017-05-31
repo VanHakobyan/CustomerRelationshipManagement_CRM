@@ -18,7 +18,7 @@ namespace CRM.WebApp.Controllers
 {
     public class EmailListsController : ApiController
     {
-        private DataBaseCRMEntityes db = new DataBaseCRMEntityes();
+        //private DataBaseCRMEntityes db = new DataBaseCRMEntityes();
         private ApplicationManager manager = new ApplicationManager();
         // GET: api/EmailLists
         public async Task<List<EmailListResponseModel>> GetEmailLists()
@@ -83,14 +83,15 @@ namespace CRM.WebApp.Controllers
         [ResponseType(typeof(EmailList))]
         public async Task<IHttpActionResult> DeleteEmailList(int id)
         {
-            EmailList emailList = await db.EmailLists.FindAsync(id);
+            var emailList = await manager.RemoveEmailList(id);
             if (emailList == null)
             {
                 return NotFound();
             }
 
-            db.EmailLists.Remove(emailList);
-            await db.SaveChangesAsync();
+            // EmailList emailList = await db.EmailLists.FindAsync(id);
+            //db.EmailLists.Remove(emailList);
+            //await db.SaveChangesAsync();
 
             return Ok(emailList);
         }
@@ -99,14 +100,14 @@ namespace CRM.WebApp.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                manager.Dispose();
             }
             base.Dispose(disposing);
         }
 
         private async Task<bool> EmailListExists(int id)
         {
-            return await db.EmailLists.CountAsync(e => e.EmailListID == id) > 0;
+            return await manager.EmailListExists(id);
         }
     }
 }
