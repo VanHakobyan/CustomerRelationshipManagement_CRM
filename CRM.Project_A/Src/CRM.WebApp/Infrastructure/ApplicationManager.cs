@@ -132,10 +132,11 @@ namespace CRM.WebApp.Infrastructure
             return entityContactList.Select(f => factory.CreateEmailResponseModel(f)).ToList();
         }
 
-        public async Task<EmailListResponseModel> GetEmailListById(int id)
+        public async Task<EmailList> GetEmailListById(int id)
         {
-            EmailList email = await db.EmailLists.FirstOrDefaultAsync(t => t.EmailListID == id);
-            return factory.CreateEmailResponseModel(email);
+          
+           
+            return await db.EmailLists.FirstOrDefaultAsync(t => t.EmailListID == id); //factory.CreateEmailResponseModel(email);
         }
 
         public async Task<EmailList> AddOrUpdateEmailList(EmailList emailListToAddOrUpdate, EmailListRequestModel requestEmailList)

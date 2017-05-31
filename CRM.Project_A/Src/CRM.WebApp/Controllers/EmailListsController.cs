@@ -28,15 +28,16 @@ namespace CRM.WebApp.Controllers
 
         // GET: api/EmailLists/5
         [ResponseType(typeof(EmailListResponseModel))]
-        public async Task<IHttpActionResult> GetEmailList(int id)
+        public async Task<IHttpActionResult> GetEmailList(int? id)
         {
-            var email = await manager.GetEmailListById(id);
+            var email = await manager.GetEmailListById(id.Value);
             if (email == null)
             {
                 return NotFound();
             }
+            ModelFactory factory = new ModelFactory();
+            return Ok(factory.CreateEmailResponseModel(email));
 
-            return Ok(email);
         }
 
         // PUT: api/EmailLists/5
@@ -47,9 +48,9 @@ namespace CRM.WebApp.Controllers
             {
                 return BadRequest(ModelState);
             }
-            EmailList list = new EmailList();
-            var res = await manager.AddOrUpdateEmailList(list, emailList);
-            if (res==null)
+            var emailListToUpdate = await manager.GetEmailListById(emailList.EmailListId);
+            var res = await manager.AddOrUpdateEmailList(emailListToUpdate, emailList);
+            if (res == null)
             {
                 return NotFound();
             }
