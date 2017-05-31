@@ -77,67 +77,87 @@ namespace CRM.WebApp.Infrastructure
         }
         public async Task<bool> UpdateContact(string guid, ContactRequestModel contact)
         {
-            Contact dbContactToUpdate;
-            try
+            using (DbContextTransaction transaction = db.Database.BeginTransaction())
             {
-                dbContactToUpdate = await db.Contacts.FirstOrDefaultAsync(c => c.GuID.ToString() == guid);
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-            if (dbContactToUpdate == null) return false;
-
-            dbContactToUpdate.FullName = contact.FullName;
-            dbContactToUpdate.Country = contact.Country;
-            dbContactToUpdate.Position = contact.Position;
-            dbContactToUpdate.CompanyName = contact.CompanyName;
-            dbContactToUpdate.Email = contact.Email;
-
-            db.Entry(dbContactToUpdate).State = EntityState.Modified;
-
-
-
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-
-                if (!await ContactExistsAsync(Guid.Parse(guid)))
+                Contact dbContactToUpdate;
+                try
                 {
-                    return false;
+                    dbContactToUpdate = await db.Contacts.FirstOrDefaultAsync(c => c.GuID.ToString() == guid);
                 }
-                else
+                catch (Exception)
                 {
+
                     throw;
                 }
+                if (dbContactToUpdate == null) return false;
 
+                //dbContactToUpdate.FullName = contact.FullName;
+                //dbContactToUpdate.Country = contact.Country;
+                //dbContactToUpdate.Position = contact.Position;
+                //dbContactToUpdate.CompanyName = contact.CompanyName;
+                //dbContactToUpdate.Email = contact.Email;
+                factory.CreateContactResponseModel(dbContactToUpdate);
+
+                db.Entry(dbContactToUpdate).State = EntityState.Modified;
+
+
+
+                try
+                {
+                    await db.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+
+                    if (!await ContactExistsAsync(Guid.Parse(guid)))
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+
+                }
+                return true;
             }
-            return true;
         }
 
 
         public async Task<Contact> AddContact(ContactRequestModel contact)
         {
-            Contact contacts = factory.CreateContact(contact);
-
-            db.Contacts.Add(contacts);
-            await db.SaveChangesAsync();
-
-            return contacts;
+            using (DbContextTransaction transaction = db.Database.BeginTransaction())
+            {
+                try
+                {
+                    Contact contacts = factory.CreateContact(contact);
+                    db.Contacts.Add(contacts);
+                    await db.SaveChangesAsync();
+                    return contacts;
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
         }
         public async Task<ContactResponseModel> RemoveContact(Guid guid)
         {
-            var contact = await db.Contacts.FirstOrDefaultAsync(c => c.GuID == guid);
+            try
+            {
+                var contact = await db.Contacts.FirstOrDefaultAsync(c => c.GuID == guid);
+                var resModel = factory.CreateContactResponseModel(contact);
+                db.Contacts.Remove(contact);
+                await db.SaveChangesAsync();
+                return resModel;
 
-            var resModel = factory.CreateContactResponseModel(contact);
-            db.Contacts.Remove(contact);
-            await db.SaveChangesAsync();
-
-            return resModel;
+            }
+            catch
+            {
+                throw;
+            }
         }
         public async Task<bool> RemoveContactByGuidList(List<Guid> guidlist)
         {
@@ -149,23 +169,33 @@ namespace CRM.WebApp.Infrastructure
         }
         public async Task<bool> ContactExistsAsync(Guid id)
         {
-            return await db.Contacts.CountAsync(e => e.GuID == id) > 0;
+            try
+            {
+                return await db.Contacts.CountAsync(e => e.GuID == id) > 0;
+            }
+            catch
+            {
+                throw;
+            }
         }
 
 
         public async Task<List<EmailListResponseModel>> GetAllEmailLis()
         {
-            List<EmailList> entityContactList = await db.EmailLists.ToListAsync();
-            List<EmailListResponseModel> ModelContactList = new List<EmailListResponseModel>();
-
-
-            return entityContactList.Select(f => factory.CreateEmailResponseModel(f)).ToList();
+            try
+            {
+                List<EmailList> entityContactList = await db.EmailLists.ToListAsync();
+                List<EmailListResponseModel> ModelContactList = new List<EmailListResponseModel>();
+                return entityContactList.Select(f => factory.CreateEmailResponseModel(f)).ToList();
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public async Task<EmailList> GetEmailListById(int id)
         {
-
-
             return await db.EmailLists.FirstOrDefaultAsync(t => t.EmailListID == id); //factory.CreateEmailResponseModel(email);
         }
 
