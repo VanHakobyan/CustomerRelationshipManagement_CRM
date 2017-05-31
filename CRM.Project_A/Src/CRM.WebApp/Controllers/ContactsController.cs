@@ -40,7 +40,7 @@ namespace CRM.WebApp.Controllers
         //}
 
         // GET: api/Contacts/guid
-        [ResponseType(typeof(ApiContactsModel))]
+        [ResponseType(typeof(Contact))]
         public async Task<IHttpActionResult> GetContactGuid(Guid id)
         {
             var contact = await manager.GetContactByGuid(id);
