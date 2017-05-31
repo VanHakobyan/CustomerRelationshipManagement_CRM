@@ -1,6 +1,7 @@
 ﻿using CRM.WebApi.Models;
 using CRM.WebApp.Models;
 using EntityLibrary;
+using LinqToExcel;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -9,7 +10,9 @@ using System.Data.Entity.Core;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Migrations;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
@@ -143,6 +146,124 @@ namespace CRM.WebApp.Infrastructure
                 }
             }
         }
+
+        public async Task<string> AddContactsFromFile(HttpRequestMessage request)
+        {
+            return await Task.Run(async () =>
+            {
+                string desctopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                Contact[] listOfContacts;
+
+                var provider = new MultipartMemoryStreamProvider();
+                await request.Content.ReadAsMultipartAsync(provider);
+
+                var file = provider.Contents[0];
+                var fileName = file.Headers.ContentDisposition.FileName;
+                var filePath = desctopPath + '\\' + fileName;
+                var buffer = await file.ReadAsByteArrayAsync();
+
+                File.WriteAllBytes(filePath, buffer);
+
+                var ExcelCSVFile = new ExcelQueryFactory(filePath);
+
+                string fileExtension = fileName.Split('.').Last();
+
+
+                if (!(fileExtension == "xlsx" || fileExtension == "csv"))
+                {
+                    return "FileNotFound";
+                }
+
+                HashSet<string> ContactColumnNames = new HashSet<string>(){
+                       "FullName","CompanyName","Position","Country","Email"
+                   };
+
+                if (fileExtension == "csv")
+                {
+                    string[] CSVLines = File.ReadAllLines(filePath);
+                    string[] columnNames = CSVLines[0].Split(';');
+
+                    if (!ContactColumnNames.SetEquals(columnNames))
+                    {
+                        return "NotCorrectColumns";
+                    }
+
+                    int[] ColumnPositions = new int[columnNames.Length];
+                    ColumnPositions[0] = Array.IndexOf(columnNames, "FullName");
+                    ColumnPositions[1] = Array.IndexOf(columnNames, "CompanyName");
+                    ColumnPositions[2] = Array.IndexOf(columnNames, "Position");
+                    ColumnPositions[3] = Array.IndexOf(columnNames, "Country");
+                    ColumnPositions[4] = Array.IndexOf(columnNames, "Email");
+
+
+                    listOfContacts = new Contact[CSVLines.Length - 1];
+                    string[] CellsOfRow;
+
+                    for (int i = 1; i < CSVLines.Length; i++)
+                    {
+                        CellsOfRow = CSVLines[i].Split(';');
+
+                        listOfContacts[i - 1] = new Contact
+                        {
+                            FullName = CellsOfRow[ColumnPositions[0]],
+                            CompanyName = CellsOfRow[ColumnPositions[1]],
+                            Position = CellsOfRow[ColumnPositions[2]],
+                            Country = CellsOfRow[ColumnPositions[3]],
+                            Email = CellsOfRow[ColumnPositions[4]]
+                        };
+                    }
+
+                    //-------------------------------------------------------
+                    return await UploadHelper(listOfContacts);
+                }
+
+                string workSheetName = ExcelCSVFile.GetWorksheetNames().First();
+
+                IEnumerable<string> columns = ExcelCSVFile.GetColumnNames(workSheetName);
+
+                if (!ContactColumnNames.SetEquals(columns))
+                {
+                    return "NotCorrectColumns";
+                }
+
+                List<Row> rowsList = ExcelCSVFile.Worksheet(workSheetName).ToList();
+
+                listOfContacts =
+                    rowsList.Select(
+                    cont =>
+                    new Contact
+                    {
+                        FullName = cont["FullName"],
+                        CompanyName = cont["CompanyName"],
+                        Position = cont["Position"],
+                        Country = cont["Country"],
+                        Email = cont["Email"]
+                    }).ToArray();
+
+                //-------------------------------------------------------
+                return await UploadHelper(listOfContacts);
+            });
+        }
+
+        private async Task<string> UploadHelper(Contact[] listOfContacts)
+        {
+            foreach (var item in listOfContacts)
+            {
+                if (!RegexEmail(item.Email))
+                {
+                    return "InvalidEmail";
+                }
+            }
+
+            foreach (var item in listOfContacts)
+            {
+                db.Contacts.Add(item);
+            }
+            await db.SaveChangesAsync();
+
+            return "Ok";
+        }
+
         public async Task<ContactResponseModel> RemoveContact(Guid guid)
         {
             try

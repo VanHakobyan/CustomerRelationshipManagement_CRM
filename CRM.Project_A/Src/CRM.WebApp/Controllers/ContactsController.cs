@@ -148,13 +148,30 @@ namespace CRM.WebApp.Controllers
             return Ok();
         }
 
-        //// POST: api/Contacts
-        //[Route("api/Contacts/upload")]
-        //[ResponseType(typeof(Contact))]
-        //public IHttpActionResult PostContactUpload([FromBody]byte[] array)
-        //{
-        //    // return CreatedAtRoute("DefaultApi", new { id = contact.ContactId }, contact);
-        //}
+        [Route("api/Contacts/upload")]
+        [ResponseType(typeof(Contact))]
+        public async Task<IHttpActionResult> PostContactUpload()
+        {
+            string response;
+            try
+            {
+                response = await manager.AddContactsFromFile(Request);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+            if (response == "FileNotFound")
+                return BadRequest("Wrong File format");
+            if (response == "NotCorrectColumns")
+                return BadRequest("Wrong columns of excel/csv sheet");
+            if (response == "InvalidEmail")
+                return BadRequest("Email address is not valid");
+            if (response == "Ok")
+                return StatusCode(HttpStatusCode.OK);
+            return StatusCode(HttpStatusCode.NotFound);
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
