@@ -27,6 +27,7 @@ namespace CRM.WebApp.Infrastructure
         ModelFactory factory = new ModelFactory();
         public async Task<List<ContactResponseModel>> GetAllContacts()
         {
+
             try
             {
                 db.Configuration.LazyLoadingEnabled = false;
@@ -128,15 +129,23 @@ namespace CRM.WebApp.Infrastructure
 
             return contacts;
         }
-        public async Task<ContactResponseModel> RemoveContact(string guid)
+        public async Task<ContactResponseModel> RemoveContact(Guid guid)
         {
-            var contact = await db.Contacts.FirstOrDefaultAsync(c => c.GuID.ToString() == guid);
+            var contact = await db.Contacts.FirstOrDefaultAsync(c => c.GuID == guid);
 
             var resModel = factory.CreateContactResponseModel(contact);
             db.Contacts.Remove(contact);
             await db.SaveChangesAsync();
 
             return resModel;
+        }
+        public async Task<bool> RemoveContactByGuidList(List<Guid> guidlist)
+        {
+            foreach (var item in guidlist)
+            {
+                await RemoveContact(item);
+            }
+            return true;
         }
         public async Task<bool> ContactExistsAsync(Guid id)
         {

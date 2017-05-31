@@ -17,6 +17,7 @@ using System.Text.RegularExpressions;
 
 namespace CRM.WebApp.Controllers
 {
+    [ExceptionCustomFilterAttribute]
     public class ContactsController : ApiController
     {
         //private DataBaseCRMEntityes db = new DataBaseCRMEntityes();
@@ -24,17 +25,8 @@ namespace CRM.WebApp.Controllers
 
         // GET: api/Contacts
         public async Task<HttpResponseMessage> GetContacts()
-        {
-            try
-            {
-                List<ContactResponseModel> contacts = await manager.GetAllContacts();
-                return Request.CreateResponse(HttpStatusCode.OK, contacts);
-            }
-            catch 
-            {
-                return Request.CreateResponse(HttpStatusCode.Conflict);
-            }
-            
+        { 
+            return Request.CreateResponse(HttpStatusCode.OK, await manager.GetAllContacts());
         }
 
         // GET: api/Contacts/paje
@@ -145,15 +137,15 @@ namespace CRM.WebApp.Controllers
 
         // DELETE: api/Contacts/5
         [ResponseType(typeof(ContactResponseModel))]
-        public async Task<IHttpActionResult> DeleteContact(string guid)
+        public async Task<IHttpActionResult> DeleteContact([FromBody]List<Guid> guid)
         {
-            var contact = await manager.RemoveContact(guid);
-            if (contact == null)
+
+            if (!await manager.RemoveContactByGuidList(guid))
             {
                 return NotFound();
             }
 
-            return Ok(contact);
+            return Ok();
         }
 
         //// POST: api/Contacts
@@ -161,7 +153,7 @@ namespace CRM.WebApp.Controllers
         //[ResponseType(typeof(Contact))]
         //public IHttpActionResult PostContactUpload([FromBody]byte[] array)
         //{
-        //   // return CreatedAtRoute("DefaultApi", new { id = contact.ContactId }, contact);
+        //    // return CreatedAtRoute("DefaultApi", new { id = contact.ContactId }, contact);
         //}
         protected override void Dispose(bool disposing)
         {
