@@ -25,21 +25,21 @@ namespace CRM.WebApp.Controllers
 
         // GET: api/Contacts
         public async Task<HttpResponseMessage> GetContacts()
-        { 
+        {
             return Request.CreateResponse(HttpStatusCode.OK, await manager.GetAllContacts());
         }
 
         // GET: api/Contacts/paje
-        //[ResponseType(typeof(Contact))]
-        //public async Task<IHttpActionResult> GetContact(int start, int numberRows, bool flag)
-        //{
-        //    var contact = await manager.GetContactPage(start, numberRows, flag);
-        //    if (contact == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return Ok(contact);
-        //}
+        [ResponseType(typeof(Contact))]
+        public async Task<IHttpActionResult> GetContact(int start, int numberRows, bool flag)
+        {
+            var contact = await manager.GetContactPage(start, numberRows, flag);
+            if (contact == null)
+            {
+                return NotFound();
+            }
+            return Ok(contact);
+        }
 
         // GET: api/Contacts/guid
         [ResponseType(typeof(Contact))]
@@ -103,7 +103,7 @@ namespace CRM.WebApp.Controllers
         //PUT: api/Contacts/5
         [ResponseType(typeof(void))]
         [HttpPut]
-        public async Task<IHttpActionResult> PutContact(string guid, [FromBody] ContactRequestModel contact)
+        public async Task<IHttpActionResult> PutContact(Guid guid, [FromBody] ContactRequestModel contact)
         {
             if (!manager.RegexEmail(contact.Email))
                 return BadRequest("Email address is not valid");
@@ -119,20 +119,20 @@ namespace CRM.WebApp.Controllers
         }
         // POST: api/Contacts
         [ResponseType(typeof(ContactRequestModel))]
-        public async Task<IHttpActionResult> PostContact(ContactRequestModel contact)
+        public async Task<HttpResponseMessage> PostContact(ContactRequestModel contact)
         {
             if (!manager.RegexEmail(contact.Email))
-                return BadRequest("Email address is not valid");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Email address is not valid");
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return Request.CreateResponse(HttpStatusCode.BadRequest, ModelState);
             }
 
 
-            await manager.AddContact(contact);
+            Contact createdContacts = await manager.AddContact(contact);
 
-            return CreatedAtRoute("DefaultApi", new { }, contact);
+            return Request.CreateResponse(HttpStatusCode.Created, createdContacts);
         }
 
         // DELETE: api/Contacts/5

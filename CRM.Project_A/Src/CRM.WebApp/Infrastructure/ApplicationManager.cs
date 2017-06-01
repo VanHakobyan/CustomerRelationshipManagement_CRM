@@ -45,16 +45,16 @@ namespace CRM.WebApp.Infrastructure
             }
 
         }
-        //public async Task<List<Contact>> GetContactPage(int start, int numberRows, bool flag)
-        //{
-        //    var query = await db.Contacts.OrderBy(x => x.DateInserted).Skip(start).Take(numberRows).ToListAsync();
+        public async Task<List<Contact>> GetContactPage(int start, int numberRows, bool flag)
+        {
+            var query = await db.Contacts.OrderBy(x => x.DateInserted).Skip(start).Take(numberRows).ToListAsync();
 
-        //    for (int i = 0; i < query.Count; i++)
-        //    {
-        //        query[i].EmailLists = new List<EmailList>();
-        //    }
-        //    return query;
-        //}
+            for (int i = 0; i < query.Count; i++)
+            {
+                query[i].EmailLists = new List<EmailList>();
+            }
+            return query;
+        }
 
         public async Task<ContactResponseModel> GetContactByGuid(Guid id)
         {
@@ -78,14 +78,14 @@ namespace CRM.WebApp.Infrastructure
 
             return ContactsList;
         }
-        public async Task<bool> UpdateContact(string guid, ContactRequestModel contact)
+        public async Task<bool> UpdateContact(Guid guid, ContactRequestModel contact)
         {
             using (DbContextTransaction transaction = db.Database.BeginTransaction())
             {
                 Contact dbContactToUpdate;
                 try
                 {
-                    dbContactToUpdate = await db.Contacts.FirstOrDefaultAsync(c => c.GuID.ToString() == guid);
+                    dbContactToUpdate = await db.Contacts.FirstOrDefaultAsync(c => c.GuID == guid);
                 }
                 catch (Exception)
                 {
@@ -93,26 +93,22 @@ namespace CRM.WebApp.Infrastructure
                     throw;
                 }
                 if (dbContactToUpdate == null) return false;
-
-                //dbContactToUpdate.FullName = contact.FullName;
-                //dbContactToUpdate.Country = contact.Country;
-                //dbContactToUpdate.Position = contact.Position;
-                //dbContactToUpdate.CompanyName = contact.CompanyName;
-                //dbContactToUpdate.Email = contact.Email;
-                factory.CreateContactResponseModel(dbContactToUpdate);
+                dbContactToUpdate.FullName = contact.FullName;
+                dbContactToUpdate.Country = contact.Country;
+                dbContactToUpdate.Position = contact.Position;
+                dbContactToUpdate.CompanyName = contact.CompanyName;
+                dbContactToUpdate.Email = contact.Email;
 
                 db.Entry(dbContactToUpdate).State = EntityState.Modified;
-
-
-
                 try
                 {
                     await db.SaveChangesAsync();
+                    transaction.Commit();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
 
-                    if (!await ContactExistsAsync(Guid.Parse(guid)))
+                    if (!await ContactExistsAsync(guid))
                     {
                         return false;
                     }
@@ -137,6 +133,7 @@ namespace CRM.WebApp.Infrastructure
                     Contact contacts = factory.CreateContact(contact);
                     db.Contacts.Add(contacts);
                     await db.SaveChangesAsync();
+                    transaction.Commit();
                     return contacts;
                 }
                 catch
