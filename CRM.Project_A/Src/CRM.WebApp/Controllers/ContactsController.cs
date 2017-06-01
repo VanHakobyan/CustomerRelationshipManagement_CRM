@@ -90,9 +90,7 @@ namespace CRM.WebApp.Controllers
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, ModelState);
             }
-
-
-            Contact createdContacts = await manager.AddContact(contact);
+            ContactResponseModel createdContacts = await manager.AddContact(contact);
 
             return Request.CreateResponse(HttpStatusCode.Created, createdContacts);
         }

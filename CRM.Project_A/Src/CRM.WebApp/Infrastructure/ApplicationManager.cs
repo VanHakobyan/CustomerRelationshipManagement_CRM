@@ -124,17 +124,18 @@ namespace CRM.WebApp.Infrastructure
         }
 
 
-        public async Task<Contact> AddContact(ContactRequestModel contact)
+        public async Task<ContactResponseModel> AddContact(ContactRequestModel contact)
         {
             using (DbContextTransaction transaction = db.Database.BeginTransaction())
             {
                 try
                 {
-                    Contact contacts = factory.CreateContact(contact);
+                    var contacts = factory.CreateContact(contact);
                     db.Contacts.Add(contacts);
                     await db.SaveChangesAsync();
                     transaction.Commit();
-                    return contacts;
+                    var response = factory.CreateContactResponseModel(contacts);
+                    return response;
                 }
                 catch
                 {
