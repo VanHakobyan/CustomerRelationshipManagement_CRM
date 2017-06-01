@@ -20,9 +20,8 @@ namespace CRM.WebApp.Controllers
     [ExceptionCustomFilterAttribute]
     public class ContactsController : ApiController
     {
-        //private DataBaseCRMEntityes db = new DataBaseCRMEntityes();
         private ApplicationManager manager = new ApplicationManager();
-
+        private LoggerManager logger = new LoggerManager();
         // GET: api/Contacts
         public async Task<HttpResponseMessage> GetContacts()
         {
@@ -31,27 +30,22 @@ namespace CRM.WebApp.Controllers
 
         // GET: api/Contacts/paje
         [ResponseType(typeof(Contact))]
-        public async Task<IHttpActionResult> GetContact(int start, int numberRows, bool flag)
+        public async Task<HttpResponseMessage> GetContact(int start, int numberRows, bool flag)
         {
             var contact = await manager.GetContactPage(start, numberRows, flag);
             if (contact == null)
-            {
-                return NotFound();
-            }
-            return Ok(contact);
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            return Request.CreateResponse(HttpStatusCode.OK, contact);
         }
 
         // GET: api/Contacts/guid
         [ResponseType(typeof(Contact))]
-        public async Task<IHttpActionResult> GetContactGuid(Guid id)
+        public async Task<HttpResponseMessage> GetContactGuid(Guid id)
         {
             var contact = await manager.GetContactByGuid(id);
             if (contact == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(contact);
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            return Request.CreateResponse(HttpStatusCode.OK, contact);
         }
 
 
@@ -65,18 +59,18 @@ namespace CRM.WebApp.Controllers
         //PUT: api/Contacts/5
         [ResponseType(typeof(void))]
         [HttpPut]
-        public async Task<IHttpActionResult> PutContact(Guid guid, [FromBody] ContactRequestModel contact)
+        public async Task<HttpResponseMessage> PutContact(Guid guid, [FromBody] ContactRequestModel contact)
         {
             if (!manager.RegexEmail(contact.Email))
-                return BadRequest("Email address is not valid");
-            if (!ModelState.IsValid)
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Email address is not valid");
+            if (!ModelState.IsValid || ReferenceEquals(contact, null))
             {
-                return BadRequest(ModelState);
+                return Request.CreateResponse(HttpStatusCode.BadRequest, ModelState);
             }
             if (await manager.UpdateContact(guid, contact))
-                return StatusCode(HttpStatusCode.NoContent);
+                return Request.CreateResponse(HttpStatusCode.OK, contact);
 
-            return NotFound();
+            return Request.CreateResponse(HttpStatusCode.NotFound);
 
         }
         // POST: api/Contacts
@@ -86,31 +80,26 @@ namespace CRM.WebApp.Controllers
             if (!manager.RegexEmail(contact.Email))
                 return Request.CreateResponse(HttpStatusCode.BadRequest, "Email address is not valid");
 
-            if (!ModelState.IsValid)
-            {
+            if (!ModelState.IsValid || ReferenceEquals(contact, null))
                 return Request.CreateResponse(HttpStatusCode.BadRequest, ModelState);
-            }
-            ContactResponseModel createdContacts = await manager.AddContact(contact);
 
+            ContactResponseModel createdContacts = await manager.AddContact(contact);
             return Request.CreateResponse(HttpStatusCode.Created, createdContacts);
         }
 
         // DELETE: api/Contacts/5
         [ResponseType(typeof(ContactResponseModel))]
-        public async Task<IHttpActionResult> DeleteContact([FromBody]List<Guid> guid)
+        public async Task<HttpResponseMessage> DeleteContact([FromBody]List<Guid> guid)
         {
-
-            if (!await manager.RemoveContactByGuidList(guid))
-            {
-                return NotFound();
-            }
-
-            return Ok();
+            if (!await manager.RemoveContactByGuidList(guid) )
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            if (guid.Count == 0)
+                return Request.CreateResponse(HttpStatusCode.NotImplemented);
+            return Request.CreateResponse(HttpStatusCode.OK);
         }
 
-        [Route("api/Contacts/upload")]
-        [ResponseType(typeof(Contact))]
-        public async Task<IHttpActionResult> PostContactUpload()
+        [ResponseType(typeof(ContactRequestModel)), Route("api/Contacts/upload")]
+        public async Task<HttpResponseMessage> PostContactUpload()
         {
             string response;
             try
@@ -119,17 +108,17 @@ namespace CRM.WebApp.Controllers
             }
             catch (Exception)
             {
-                return BadRequest();
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
             if (response == "FileNotFound")
-                return BadRequest("Wrong File format");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Wrong File format");
             if (response == "NotCorrectColumns")
-                return BadRequest("Wrong columns of excel/csv sheet");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Wrong columns of excel/csv sheet");
             if (response == "InvalidEmail")
-                return BadRequest("Email address is not valid");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Email address is not valid");
             if (response == "Ok")
-                return StatusCode(HttpStatusCode.OK);
-            return StatusCode(HttpStatusCode.NotFound);
+                return Request.CreateResponse(HttpStatusCode.OK);
+            return Request.CreateResponse(HttpStatusCode.NotFound);
         }
 
         protected override void Dispose(bool disposing)

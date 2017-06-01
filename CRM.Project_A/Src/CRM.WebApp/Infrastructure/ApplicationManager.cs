@@ -282,11 +282,13 @@ namespace CRM.WebApp.Infrastructure
         }
         public async Task<bool> RemoveContactByGuidList(List<Guid> guidlist)
         {
+
             foreach (var item in guidlist)
             {
                 await RemoveContact(item);
             }
             return true;
+
         }
         public async Task<bool> ContactExistsAsync(Guid id)
         {
@@ -331,18 +333,17 @@ namespace CRM.WebApp.Infrastructure
                     еmailListForAddOrUpdate.Contacts.Clear();
                     foreach (Guid guid in requestEmailListModel.Contacts)
                     {
-                        var cont = await db.Contacts.FirstOrDefaultAsync(x => x.GuID == guid);
-                        if (cont != null) еmailListForAddOrUpdate.Contacts.Add(cont);
+                        var contacts = await db.Contacts.FirstOrDefaultAsync(x => x.GuID == guid);
+                        if (contacts != null) еmailListForAddOrUpdate.Contacts.Add(contacts);
                     }
                 }
 
-                db.EmailLists.AddOrUpdate(еmailListForAddOrUpdate);
 
                 try
                 {
+                    db.EmailLists.AddOrUpdate(еmailListForAddOrUpdate);
                     await db.SaveChangesAsync();
                     transaction.Commit();
-                    return еmailListForAddOrUpdate;
                 }
                 catch (Exception)
                 {
@@ -356,6 +357,7 @@ namespace CRM.WebApp.Infrastructure
                         throw;
                     }
                 }
+                return еmailListForAddOrUpdate;
             }
         }
 

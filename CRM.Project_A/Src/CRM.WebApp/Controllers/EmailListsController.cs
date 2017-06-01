@@ -12,13 +12,12 @@ using EntityLibrary;
 using System.Threading.Tasks;
 using CRM.WebApp.Infrastructure;
 using CRM.WebApp.Models;
-
+using System.Web;
 
 namespace CRM.WebApp.Controllers
 {
     public class EmailListsController : ApiController
     {
-        //private DataBaseCRMEntityes db = new DataBaseCRMEntityes();
         private ApplicationManager manager = new ApplicationManager();
         // GET: api/EmailLists
         public async Task<List<EmailListResponseModel>> GetEmailLists()
@@ -28,60 +27,52 @@ namespace CRM.WebApp.Controllers
 
         // GET: api/EmailLists/5
         [ResponseType(typeof(EmailListResponseModel))]
-        public async Task<IHttpActionResult> GetEmailList(int? id)
+        public async Task<HttpResponseMessage> GetEmailList(int? id)
         {
             var email = await manager.GetEmailListById(id.Value);
             if (email == null)
             {
-                return NotFound();
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
             ModelFactory factory = new ModelFactory();
-            return Ok(factory.CreateEmailResponseModel(email));
+            return Request.CreateResponse(HttpStatusCode.OK, factory.CreateEmailResponseModel(email));
 
         }
 
         // PUT: api/EmailLists/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutEmailList([FromBody] EmailListRequestModel emailList)
+        public async Task<HttpResponseMessage> PutEmailList( [FromUri] int id, [FromBody] EmailListRequestModel emailList)
         {
             if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var emailListToUpdate = await manager.GetEmailListById(emailList.EmailListId);
-            var res = await manager.AddOrUpdateEmailList(emailListToUpdate, emailList);
-            if (res == null)
-            {
-                return NotFound();
-            }
+                return Request.CreateResponse(HttpStatusCode.NotModified, ModelState);
 
-            return StatusCode(HttpStatusCode.NoContent);
+            EmailList emailListToUpdate = await manager.GetEmailListById(id);
+            EmailList response = await manager.AddOrUpdateEmailList(emailListToUpdate, emailList);
+            if (response == null)
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            return Request.CreateResponse(HttpStatusCode.OK,response);
         }
 
         // POST: api/EmailLists
-        [ResponseType(typeof(EmailList))]
-        public async Task<IHttpActionResult> PostEmailList([FromBody]EmailListRequestModel emailListRequest)
+        [ResponseType(typeof(EmailList))]//not working
+        public async Task<HttpResponseMessage> PostEmailList([FromBody]EmailListRequestModel emailListRequest)
         {
             if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+                return Request.CreateResponse(HttpStatusCode.BadRequest, ModelState);
 
             EmailList emailListSend = new EmailList();
             EmailList emailList = await manager.AddOrUpdateEmailList(emailListSend, emailListRequest);
-            return StatusCode(HttpStatusCode.NoContent);
+            return Request.CreateResponse(HttpStatusCode.Created, emailList);
         }
 
         // DELETE: api/EmailLists/5
         [ResponseType(typeof(EmailList))]
-        public async Task<IHttpActionResult> DeleteEmailList(int id)
+        public async Task<HttpResponseMessage> DeleteEmailList(int id)
         {
             var emailList = await manager.RemoveEmailList(id);
             if (emailList == null)
-            {
-                return NotFound();
-            }
-            return Ok(emailList);
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            return Request.CreateResponse(HttpStatusCode.OK,emailList);
         }
 
         protected override void Dispose(bool disposing)
