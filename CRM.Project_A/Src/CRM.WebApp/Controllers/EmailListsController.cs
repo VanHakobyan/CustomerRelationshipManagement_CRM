@@ -69,13 +69,6 @@ namespace CRM.WebApp.Controllers
 
             EmailList emailListSend = new EmailList();
             EmailList emailList = await manager.AddOrUpdateEmailList(emailListSend, emailListRequest);
-            //EmailListUpdate.EmailListName = emailList.EmailListName;
-            //ICollection<Contact> UpdatedContacts = new List<Contact>();
-            //foreach (string item in emailList.Contacts)
-            //{
-            //    UpdatedContacts.Add(db.Contacts.FirstOrDefault(x => x.Email == item));
-            //}
-
             return StatusCode(HttpStatusCode.NoContent);
         }
 
@@ -88,11 +81,6 @@ namespace CRM.WebApp.Controllers
             {
                 return NotFound();
             }
-
-            // EmailList emailList = await db.EmailLists.FindAsync(id);
-            //db.EmailLists.Remove(emailList);
-            //await db.SaveChangesAsync();
-
             return Ok(emailList);
         }
 

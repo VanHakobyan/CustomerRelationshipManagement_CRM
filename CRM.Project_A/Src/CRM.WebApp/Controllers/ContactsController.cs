@@ -62,44 +62,6 @@ namespace CRM.WebApp.Controllers
             return await manager.GetContactsPageCounter();
         }
 
-        // PUT: api/Contacts/5
-        //[ResponseType(typeof(void))]
-        //public async Task<bool> PutContact(ViewContact contact)
-        //{
-        //    Contact dbContactToUpdate = await GetContactGuid(contact.GuID);
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-
-        //    int id = contact.ContactId;
-        //    Contact ContactsUpdate = await manager.UpdateContact(contact);
-
-        //    if (ContactsUpdate == null)
-        //    {
-        //        return BadRequest(modelState);
-        //    }
-
-        //    try
-        //    {
-        //        manager.SaveDb();
-        //    }
-
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!(await ContactExists(id)))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
-
-        //    return StatusCode(HttpStatusCode.NoContent);
-
-        //}
         //PUT: api/Contacts/5
         [ResponseType(typeof(void))]
         [HttpPut]
