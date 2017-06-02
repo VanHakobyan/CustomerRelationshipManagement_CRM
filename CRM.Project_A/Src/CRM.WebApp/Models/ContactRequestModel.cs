@@ -13,7 +13,6 @@ namespace CRM.WebApp.Models
         public string CompanyName { get; set; }
         public string Position { get; set; }
         public string Country { get; set; }
-        [RegularExpression("...")]
         public string Email { get; set; }
         //public Guid? Guid { get; set; }
         //public DateTime? DateInserted { get; set; }
