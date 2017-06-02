@@ -13,7 +13,6 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -344,20 +343,22 @@ namespace CRM.WebApp.Infrastructure
                     string desctopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
                     List<ContactResponseModel> response = new List<ContactResponseModel>();
-                    Contact[] listOfContacts = null;
+                    ContactRequestModel[] listOfContactRequests = null;
 
                     var provider = new MultipartMemoryStreamProvider();
                     await request.Content.ReadAsMultipartAsync(provider);
 
                     var file = provider.Contents[0];
                     var fileName = file.Headers.ContentDisposition.FileName;
-                    var filePath = desctopPath + fileName;
+                    var correctedFileName = fileName.Split('"', '\\').First(s => !string.IsNullOrEmpty(s));
+                    var filePath = desctopPath + '\\' + correctedFileName;
+
                     var buffer = await file.ReadAsByteArrayAsync();
 
-                    File.WriteAllBytes(@filePath, buffer);
+                    File.WriteAllBytes(filePath, buffer);
 
-                    var ExcelCSVFile = new ExcelQueryFactory(@filePath);
-                    string fileExtension = fileName.Split('.').Last();
+                    var ExcelCSVFile = new ExcelQueryFactory(filePath);
+                    string fileExtension = correctedFileName.Split('.').Last();
 
                     if (!(fileExtension == "xlsx" || fileExtension == "csv"))
                     {
@@ -385,14 +386,14 @@ namespace CRM.WebApp.Infrastructure
                         ColumnPositions[3] = Array.IndexOf(columnNames, "Country");
                         ColumnPositions[4] = Array.IndexOf(columnNames, "Email");
 
-                        listOfContacts = new Contact[CSVLines.Length - 1];
+                        listOfContactRequests = new ContactRequestModel[CSVLines.Length - 1];
                         string[] CellsOfRow;
 
                         for (int i = 1; i < CSVLines.Length; i++)
                         {
                             CellsOfRow = CSVLines[i].Split(';');
 
-                            listOfContacts[i - 1] = new Contact
+                            listOfContactRequests[i - 1] = new ContactRequestModel
                             {
                                 FullName = CellsOfRow[ColumnPositions[0]],
                                 CompanyName = CellsOfRow[ColumnPositions[1]],
@@ -415,10 +416,10 @@ namespace CRM.WebApp.Infrastructure
 
                         List<Row> rowsList = ExcelCSVFile.Worksheet(workSheetName).ToList();
 
-                        listOfContacts =
+                        listOfContactRequests =
                             rowsList.Select(
                             cont =>
-                            new Contact
+                            new ContactRequestModel
                             {
                                 FullName = cont["FullName"],
                                 CompanyName = cont["CompanyName"],
@@ -429,15 +430,17 @@ namespace CRM.WebApp.Infrastructure
                     }
                     //-------------------------------------------------------
                     File.Delete(filePath);
-                    //foreach (var item in listOfContacts)
-                    //{
-                    //    if (!RegexEmail(item.Email))
-                    //    {
-                    //        throw new FileNotFoundException("Wrong extension of file");
-                    //    }
-                    //}
 
-                    foreach (var item in listOfContacts)
+                    IEnumerable<Contact> resultContacts = listOfContactRequests.Select(contRequest => new Contact
+                    {
+                        FullName = contRequest.FullName,
+                        CompanyName = contRequest.CompanyName,
+                        Position = contRequest.Position,
+                        Country = contRequest.Country,
+                        Email = contRequest.Email
+                    });
+
+                    foreach (var item in resultContacts)
                     {
                         db.Contacts.Add(item);
                         response.Add(factory.CreateContactResponseModel(item));
@@ -455,12 +458,7 @@ namespace CRM.WebApp.Infrastructure
         }
 
         #endregion
-        //public bool RegexEmail(string email)
-        //{
-        //    if (!Regex.IsMatch(email, @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z", RegexOptions.IgnoreCase))
-        //        return false;
-        //    return true;
-        //}
+
         public async Task SaveDb()
         {
             await db.SaveChangesAsync();
