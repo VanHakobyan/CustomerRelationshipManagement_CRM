@@ -101,24 +101,14 @@ namespace CRM.WebApp.Controllers
         [ResponseType(typeof(ContactRequestModel)), Route("api/Contacts/upload")]
         public async Task<HttpResponseMessage> PostContactUpload()
         {
-            string response;
-            try
-            {
-                response = await manager.AddContactsFromFile(Request);
-            }
-            catch (Exception)
+            ContactResponseModel[] response;
+            response = await manager.AddContactsFromFile(Request);
+
+            if (response == null)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
-            if (response == "FileNotFound")
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Wrong File format");
-            if (response == "NotCorrectColumns")
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Wrong columns of excel/csv sheet");
-            if (response == "InvalidEmail")
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Email address is not valid");
-            if (response == "Ok")
-                return Request.CreateResponse(HttpStatusCode.OK);
-            return Request.CreateResponse(HttpStatusCode.NotFound);
+            return Request.CreateResponse(HttpStatusCode.OK, response);
         }
 
         protected override void Dispose(bool disposing)
