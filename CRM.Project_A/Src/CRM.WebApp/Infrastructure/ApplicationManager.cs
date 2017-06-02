@@ -322,7 +322,7 @@ namespace CRM.WebApp.Infrastructure
             return await db.EmailLists.FirstOrDefaultAsync(t => t.EmailListID == id); //factory.CreateEmailResponseModel(email);
         }
 
-        public async Task<EmailList> AddOrUpdateEmailList(EmailList еmailListForAddOrUpdate, EmailListRequestModel requestEmailListModel)
+        public async Task<EmailListResponseModel> AddOrUpdateEmailList(EmailList еmailListForAddOrUpdate, EmailListRequestModel requestEmailListModel)
         {
             using (DbContextTransaction transaction = db.Database.BeginTransaction())
             {
@@ -337,8 +337,6 @@ namespace CRM.WebApp.Infrastructure
                         if (contacts != null) еmailListForAddOrUpdate.Contacts.Add(contacts);
                     }
                 }
-
-
                 try
                 {
                     db.EmailLists.AddOrUpdate(еmailListForAddOrUpdate);
@@ -349,15 +347,12 @@ namespace CRM.WebApp.Infrastructure
                 {
                     transaction.Rollback();
                     if ((await EmailListExists(еmailListForAddOrUpdate.EmailListID)))
-                    {
                         return null;
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
-                return еmailListForAddOrUpdate;
+
+                return factory.CreateEmailResponseModel(еmailListForAddOrUpdate);
             }
         }
 

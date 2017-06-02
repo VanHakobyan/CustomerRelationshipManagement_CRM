@@ -20,9 +20,9 @@ namespace CRM.WebApp
         {
             Logger.Info($"Request: [ {request} ] | URL [ {uri} ]");
         }
-        public void LogError(Exception ex, HttpMethod request, Uri uri)
+        public void LogError(Exception exception, HttpMethod request, Uri uri)
         {
-            Logger.Error($"\nRequest: [ {request} ] | URL [ {uri} ]\nErr: [ {ex.Message} ] Inner: [ {ex.InnerException?.Message} ]\n" + new string('-', 120));
+            Logger.Error($"\nRequest: [ {request} ] | URL [ {uri} ]\nErr: [ {exception.Message} ] Inner: [ {exception.InnerException?.Message} ]\n" + new string('-', 120));
         }
         public void LogException(Exception ex)
         {

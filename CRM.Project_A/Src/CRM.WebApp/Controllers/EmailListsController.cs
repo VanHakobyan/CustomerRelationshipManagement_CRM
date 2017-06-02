@@ -16,6 +16,7 @@ using System.Web;
 
 namespace CRM.WebApp.Controllers
 {
+    [ExceptionCustomFilterAttribute]
     public class EmailListsController : ApiController
     {
         private ApplicationManager manager = new ApplicationManager();
@@ -47,21 +48,21 @@ namespace CRM.WebApp.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotModified, ModelState);
 
             EmailList emailListToUpdate = await manager.GetEmailListById(id);
-            EmailList response = await manager.AddOrUpdateEmailList(emailListToUpdate, emailList);
+            EmailListResponseModel response = await manager.AddOrUpdateEmailList(emailListToUpdate, emailList);
             if (response == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             return Request.CreateResponse(HttpStatusCode.OK,response);
         }
 
         // POST: api/EmailLists
-        [ResponseType(typeof(EmailList))]//not working
+        [ResponseType(typeof(EmailList))]
         public async Task<HttpResponseMessage> PostEmailList([FromBody]EmailListRequestModel emailListRequest)
         {
             if (!ModelState.IsValid)
                 return Request.CreateResponse(HttpStatusCode.BadRequest, ModelState);
 
             EmailList emailListSend = new EmailList();
-            EmailList emailList = await manager.AddOrUpdateEmailList(emailListSend, emailListRequest);
+            EmailListResponseModel emailList = await manager.AddOrUpdateEmailList(emailListSend, emailListRequest);
             return Request.CreateResponse(HttpStatusCode.Created, emailList);
         }
 
