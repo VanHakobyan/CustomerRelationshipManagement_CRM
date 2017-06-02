@@ -16,6 +16,6 @@ namespace EntityLibrary
     {
         public int TemplateId { get; set; }
         public string TemplateName { get; set; }
-        public string FilePath { get; set; }
+        public string Path { get; set; }
     }
 }

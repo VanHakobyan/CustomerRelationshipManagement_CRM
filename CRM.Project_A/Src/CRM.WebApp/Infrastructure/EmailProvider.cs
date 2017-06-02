@@ -21,7 +21,7 @@ namespace CRM.WebApp.Infrastructure
         {
             //var template = await db.Templates.FindAsync(templateId);
             var template = db.Templates.Find(templateId);
-            string path = HttpContext.Current?.Request.MapPath(template.FilePath);
+            string path = HttpContext.Current?.Request.MapPath(template.Path);
             var templateText = File.ReadAllText(path);
             return
                 templateText.Replace("{FullName}", contact.FullName)

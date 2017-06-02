@@ -28,6 +28,7 @@ namespace EntityLibrary
         public string Email { get; set; }
         public System.Guid GuID { get; set; }
         public System.DateTime DateInserted { get; set; }
+        public Nullable<System.DateTime> DateModified { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EmailList> EmailLists { get; set; }
