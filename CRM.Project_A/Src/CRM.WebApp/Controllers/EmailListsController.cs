@@ -37,23 +37,26 @@ namespace CRM.WebApp.Controllers
             }
             ModelFactory factory = new ModelFactory();
             return Request.CreateResponse(HttpStatusCode.OK, factory.CreateEmailResponseModel(email));
-
         }
 
-        // PUT: api/EmailLists/5
-        [ResponseType(typeof(void))]
-        public async Task<HttpResponseMessage> PutEmailList( [FromUri] int id, [FromBody] EmailListRequestModel emailList)
+        [ResponseType(typeof(EmailListResponseModel)),Route("api/EmailLists/add/{id}")]
+        public async Task<HttpResponseMessage> PutEmailListAdd([FromUri] int id,[FromBody] EmailListRequestModel emailList)
         {
             if (!ModelState.IsValid)
                 return Request.CreateResponse(HttpStatusCode.NotModified, ModelState);
-
             EmailList emailListToUpdate = await manager.GetEmailListById(id);
-            EmailListResponseModel response = await manager.AddOrUpdateEmailList(emailListToUpdate, emailList);
-            if (response == null)
-                return Request.CreateResponse(HttpStatusCode.NotFound);
-            return Request.CreateResponse(HttpStatusCode.OK,response);
+            EmailListResponseModel emailListRes = await manager.AddAtEmailList(emailListToUpdate, emailList);
+            return Request.CreateResponse(HttpStatusCode.OK, emailListRes);
         }
-
+        [ResponseType(typeof(EmailListResponseModel)), Route("api/EmailLists/remove/{id}")]
+        public async Task<HttpResponseMessage> PutEmailListRemove([FromUri] int id, [FromBody] EmailListRequestModel emailList)
+        {
+            if (!ModelState.IsValid)
+                return Request.CreateResponse(HttpStatusCode.NotModified, ModelState);
+            EmailList emailListToUpdate = await manager.GetEmailListById(id);
+            EmailListResponseModel emailListRes = await manager.RemoveAtEmailList(emailListToUpdate, emailList);
+            return Request.CreateResponse(HttpStatusCode.OK, emailListRes);
+        }
         // POST: api/EmailLists
         [ResponseType(typeof(EmailList))]
         public async Task<HttpResponseMessage> PostEmailList([FromBody]EmailListRequestModel emailListRequest)
@@ -62,7 +65,7 @@ namespace CRM.WebApp.Controllers
                 return Request.CreateResponse(HttpStatusCode.BadRequest, ModelState);
 
             EmailList emailListSend = new EmailList();
-            EmailListResponseModel emailList = await manager.AddOrUpdateEmailList(emailListSend, emailListRequest);
+            EmailListResponseModel emailList = await manager.AddEmailList(emailListSend, emailListRequest);
             return Request.CreateResponse(HttpStatusCode.Created, emailList);
         }
 

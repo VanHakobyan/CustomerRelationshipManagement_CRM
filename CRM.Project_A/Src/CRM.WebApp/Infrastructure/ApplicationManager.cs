@@ -28,6 +28,7 @@ namespace CRM.WebApp.Infrastructure
         // public ApplicationManager(){}
         DataBaseCRMEntityes db = new DataBaseCRMEntityes();
         ModelFactory factory = new ModelFactory();
+        #region Contacts
         public async Task<List<ContactResponseModel>> GetAllContacts()
         {
 
@@ -144,7 +145,196 @@ namespace CRM.WebApp.Infrastructure
                 }
             }
         }
+        public async Task<ContactResponseModel> RemoveContact(Guid guid)
+        {
+            try
+            {
+                var contact = await db.Contacts.FirstOrDefaultAsync(c => c.GuID == guid);
+                var resModel = factory.CreateContactResponseModel(contact);
+                db.Contacts.Remove(contact);
+                await db.SaveChangesAsync();
+                return resModel;
 
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        public async Task<bool> RemoveContactByGuidList(List<Guid> guidlist)
+        {
+
+            foreach (var item in guidlist)
+            {
+                await RemoveContact(item);
+            }
+            return true;
+
+        }
+        public async Task<bool> ContactExistsAsync(Guid id)
+        {
+            try
+            {
+                return await db.Contacts.CountAsync(e => e.GuID == id) > 0;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        #endregion
+
+
+        #region EmailLists
+        public async Task<List<EmailListResponseModel>> GetAllEmailLis()
+        {
+            try
+            {
+                List<EmailList> entityContactList = await db.EmailLists.ToListAsync();
+                List<EmailListResponseModel> ModelContactList = new List<EmailListResponseModel>();
+                return entityContactList.Select(f => factory.CreateEmailResponseModel(f)).ToList();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<EmailList> GetEmailListById(int id)
+        {
+            return await db.EmailLists.FirstOrDefaultAsync(t => t.EmailListID == id); //factory.CreateEmailResponseModel(email);
+        }
+
+        public async Task<EmailListResponseModel> AddEmailList(EmailList еmailListForAddOrUpdate, EmailListRequestModel requestEmailListModel)
+        {
+            using (DbContextTransaction transaction = db.Database.BeginTransaction())
+            {
+                еmailListForAddOrUpdate.EmailListName = requestEmailListModel.EmailListName;
+
+                if (requestEmailListModel.Contacts != null)
+                {
+                    еmailListForAddOrUpdate.Contacts.Clear();
+                    foreach (Guid guid in requestEmailListModel.Contacts)
+                    {
+                        var contacts = await db.Contacts.FirstOrDefaultAsync(x => x.GuID == guid);
+                        if (contacts != null) еmailListForAddOrUpdate.Contacts.Add(contacts);
+                    }
+                }
+                try
+                {
+                    db.EmailLists.AddOrUpdate(еmailListForAddOrUpdate);
+                    await db.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    if ((await EmailListExists(еmailListForAddOrUpdate.EmailListID)))
+                        return null;
+                    else
+                        throw;
+                }
+
+                return factory.CreateEmailResponseModel(еmailListForAddOrUpdate);
+            }
+        }
+        public async Task<EmailListResponseModel> AddAtEmailList(EmailList еmailListForAddOrUpdate, EmailListRequestModel requestEmailListModel)
+        {
+            using (DbContextTransaction transaction = db.Database.BeginTransaction())
+            {
+                еmailListForAddOrUpdate.EmailListName = requestEmailListModel.EmailListName;
+
+                if (requestEmailListModel.Contacts != null)
+                {
+                    foreach (Guid guid in requestEmailListModel.Contacts)
+                    {
+                        var contacts = await db.Contacts.FirstOrDefaultAsync(x => x.GuID == guid);
+                        if (contacts != null)
+                            еmailListForAddOrUpdate.Contacts.Add(contacts);
+                    }
+                }
+                try
+                {
+
+                    await db.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    if ((await EmailListExists(еmailListForAddOrUpdate.EmailListID)))
+                        return null;
+                    else
+                        throw;
+                }
+
+                return factory.CreateEmailResponseModel(еmailListForAddOrUpdate);
+            }
+        }
+        public async Task<EmailListResponseModel> RemoveAtEmailList(EmailList еmailListForAddOrUpdate, EmailListRequestModel requestEmailListModel)
+        {
+            using (DbContextTransaction transaction = db.Database.BeginTransaction())
+            {
+                еmailListForAddOrUpdate.EmailListName = requestEmailListModel.EmailListName;
+
+                if (requestEmailListModel.Contacts != null)
+                {
+                    foreach (Guid guid in requestEmailListModel.Contacts)
+                    {
+                        var contacts = await db.Contacts.FirstOrDefaultAsync(x => x.GuID == guid);
+                        if (contacts != null)
+                            еmailListForAddOrUpdate.Contacts.Remove(contacts);
+                    }
+                }
+                try
+                {
+
+                    await db.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    if ((await EmailListExists(еmailListForAddOrUpdate.EmailListID)))
+                        return null;
+                    else
+                        throw;
+                }
+
+                return factory.CreateEmailResponseModel(еmailListForAddOrUpdate);
+            }
+        }
+
+        public async Task<EmailListResponseModel> RemoveEmailList(int id)
+        {
+            EmailList emailList = await db.EmailLists.FindAsync(id);
+            db.EmailLists.Remove(emailList);
+            await db.SaveChangesAsync();
+            return factory.CreateEmailResponseModel(emailList);
+        }
+
+        public async Task<bool> EmailListExists(int id)
+        {
+            return await db.EmailLists.CountAsync(e => e.EmailListID == id) > 0;
+        }
+        #endregion
+
+
+       
+        
+        #region Templates
+        public async Task<List<TemplateResponseModel>> GetTemplates()
+        {
+            var templateList = await db.Templates.ToListAsync();
+            var response = new List<TemplateResponseModel>();
+            return templateList.Select(x => factory.CreateTemplateResponseModel(x)).ToList();
+        }
+        public async Task<bool> TemplateExistsAsync(int id)
+        {
+            return await db.Templates.CountAsync(e => e.TemplateId == id) > 0;
+        }
+        #endregion
+        #region uploading
         public async Task<ContactResponseModel[]> AddContactsFromFile(HttpRequestMessage request)
         {
             using (DbContextTransaction transaction = db.Database.BeginTransaction())
@@ -264,133 +454,16 @@ namespace CRM.WebApp.Infrastructure
             }
         }
 
-
-
-        public async Task<ContactResponseModel> RemoveContact(Guid guid)
-        {
-            try
-            {
-                var contact = await db.Contacts.FirstOrDefaultAsync(c => c.GuID == guid);
-                var resModel = factory.CreateContactResponseModel(contact);
-                db.Contacts.Remove(contact);
-                await db.SaveChangesAsync();
-                return resModel;
-
-            }
-            catch
-            {
-                throw;
-            }
-        }
-        public async Task<bool> RemoveContactByGuidList(List<Guid> guidlist)
-        {
-
-            foreach (var item in guidlist)
-            {
-                await RemoveContact(item);
-            }
-            return true;
-
-        }
-        public async Task<bool> ContactExistsAsync(Guid id)
-        {
-            try
-            {
-                return await db.Contacts.CountAsync(e => e.GuID == id) > 0;
-            }
-            catch
-            {
-                throw;
-            }
-        }
-
-
-        public async Task<List<EmailListResponseModel>> GetAllEmailLis()
-        {
-            try
-            {
-                List<EmailList> entityContactList = await db.EmailLists.ToListAsync();
-                List<EmailListResponseModel> ModelContactList = new List<EmailListResponseModel>();
-                return entityContactList.Select(f => factory.CreateEmailResponseModel(f)).ToList();
-            }
-            catch
-            {
-                throw;
-            }
-        }
-
-        public async Task<EmailList> GetEmailListById(int id)
-        {
-            return await db.EmailLists.FirstOrDefaultAsync(t => t.EmailListID == id); //factory.CreateEmailResponseModel(email);
-        }
-
-        public async Task<EmailListResponseModel> AddOrUpdateEmailList(EmailList еmailListForAddOrUpdate, EmailListRequestModel requestEmailListModel)
-        {
-            using (DbContextTransaction transaction = db.Database.BeginTransaction())
-            {
-                еmailListForAddOrUpdate.EmailListName = requestEmailListModel.EmailListName;
-
-                if (requestEmailListModel.Contacts != null)
-                {
-                    еmailListForAddOrUpdate.Contacts.Clear();
-                    foreach (Guid guid in requestEmailListModel.Contacts)
-                    {
-                        var contacts = await db.Contacts.FirstOrDefaultAsync(x => x.GuID == guid);
-                        if (contacts != null) еmailListForAddOrUpdate.Contacts.Add(contacts);
-                    }
-                }
-                try
-                {
-                    db.EmailLists.AddOrUpdate(еmailListForAddOrUpdate);
-                    await db.SaveChangesAsync();
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    if ((await EmailListExists(еmailListForAddOrUpdate.EmailListID)))
-                        return null;
-                    else
-                        throw;
-                }
-
-                return factory.CreateEmailResponseModel(еmailListForAddOrUpdate);
-            }
-        }
-
-
-        public async Task<EmailListResponseModel> RemoveEmailList(int id)
-        {
-            EmailList emailList = await db.EmailLists.FindAsync(id);
-            db.EmailLists.Remove(emailList);
-            await db.SaveChangesAsync();
-            return factory.CreateEmailResponseModel(emailList);
-        }
-
-        public async Task<bool> EmailListExists(int id)
-        {
-            return await db.EmailLists.CountAsync(e => e.EmailListID == id) > 0;
-        }
-        public async Task SaveDb()
-        {
-            await db.SaveChangesAsync();
-        }
+        #endregion
         //public bool RegexEmail(string email)
         //{
         //    if (!Regex.IsMatch(email, @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z", RegexOptions.IgnoreCase))
         //        return false;
         //    return true;
         //}
-
-        public async Task<List<TemplateResponseModel>> GetTemplates()
+        public async Task SaveDb()
         {
-            var templateList = await db.Templates.ToListAsync();
-            var response = new List<TemplateResponseModel>();
-            return templateList.Select(x => factory.CreateTemplateResponseModel(x)).ToList();
-        }
-        public async Task<bool> TemplateExistsAsync(int id)
-        {
-            return await db.Templates.CountAsync(e => e.TemplateId == id) > 0;
+            await db.SaveChangesAsync();
         }
         public void Dispose()
         {
