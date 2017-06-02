@@ -51,6 +51,7 @@ namespace CRM.WebApp.Infrastructure
                 Email = crmRequest.Email,
                 GuID = Guid.NewGuid(),
                 DateInserted = DateTime.Now,
+                DateModified = DateTime.Now,
                 EmailLists = new List<EmailList>()
             };
             return contacts;
@@ -72,6 +73,14 @@ namespace CRM.WebApp.Infrastructure
                 EmailListID = emailList.EmailListID,
                 EmailListName = emailList.EmailListName,
                 Contacts = emailList.Contacts.Select(x => x.Email).ToList() };
+        }
+        public TemplateResponseModel CreateTemplateResponseModel(Template template)
+        {
+            return new TemplateResponseModel
+            {
+                Id = template.TemplateId,
+                TemplateName = template.TemplateName
+            };
         }
 
     }

@@ -61,8 +61,8 @@ namespace CRM.WebApp.Controllers
         [HttpPut]
         public async Task<HttpResponseMessage> PutContact(Guid guid, [FromBody] ContactRequestModel contact)
         {
-            if (!manager.RegexEmail(contact.Email))
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Email address is not valid");
+            //if (!manager.RegexEmail(contact.Email))
+            //    return Request.CreateResponse(HttpStatusCode.BadRequest, "Email address is not valid");
             if (!ModelState.IsValid || ReferenceEquals(contact, null))
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, ModelState);
@@ -77,8 +77,8 @@ namespace CRM.WebApp.Controllers
         [ResponseType(typeof(ContactRequestModel))]
         public async Task<HttpResponseMessage> PostContact(ContactRequestModel contact)
         {
-            if (!manager.RegexEmail(contact.Email))
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Email address is not valid");
+            //if (!manager.RegexEmail(contact.Email))
+            //    return Request.CreateResponse(HttpStatusCode.BadRequest, "Email address is not valid");
 
             if (!ModelState.IsValid || ReferenceEquals(contact, null))
                 return Request.CreateResponse(HttpStatusCode.BadRequest, ModelState);

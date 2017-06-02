@@ -154,19 +154,19 @@ namespace CRM.WebApp.Infrastructure
                     string desctopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
                     List<ContactResponseModel> response = new List<ContactResponseModel>();
-                    Contact[] listOfContacts = null;            
+                    Contact[] listOfContacts = null;
 
                     var provider = new MultipartMemoryStreamProvider();
                     await request.Content.ReadAsMultipartAsync(provider);
 
                     var file = provider.Contents[0];
                     var fileName = file.Headers.ContentDisposition.FileName;
-                    var filePath = desctopPath + '\\' + fileName;
+                    var filePath = desctopPath + fileName;
                     var buffer = await file.ReadAsByteArrayAsync();
 
-                    File.WriteAllBytes(filePath, buffer);
+                    File.WriteAllBytes(@filePath, buffer);
 
-                    var ExcelCSVFile = new ExcelQueryFactory(filePath);
+                    var ExcelCSVFile = new ExcelQueryFactory(@filePath);
                     string fileExtension = fileName.Split('.').Last();
 
                     if (!(fileExtension == "xlsx" || fileExtension == "csv"))
@@ -239,13 +239,13 @@ namespace CRM.WebApp.Infrastructure
                     }
                     //-------------------------------------------------------
                     File.Delete(filePath);
-                    foreach (var item in listOfContacts)
-                    {
-                        if (!RegexEmail(item.Email))
-                        {
-                            throw new FileNotFoundException("Wrong extension of file");
-                        }
-                    }     
+                    //foreach (var item in listOfContacts)
+                    //{
+                    //    if (!RegexEmail(item.Email))
+                    //    {
+                    //        throw new FileNotFoundException("Wrong extension of file");
+                    //    }
+                    //}
 
                     foreach (var item in listOfContacts)
                     {
@@ -261,7 +261,7 @@ namespace CRM.WebApp.Infrastructure
                     transaction.Rollback();
                     throw;
                 }
-            }  
+            }
         }
 
 
@@ -375,12 +375,22 @@ namespace CRM.WebApp.Infrastructure
         {
             await db.SaveChangesAsync();
         }
-        public bool RegexEmail(string email)
-        {
-            if (!Regex.IsMatch(email, @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z", RegexOptions.IgnoreCase))
-                return false;
-            return true;
+        //public bool RegexEmail(string email)
+        //{
+        //    if (!Regex.IsMatch(email, @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z", RegexOptions.IgnoreCase))
+        //        return false;
+        //    return true;
+        //}
 
+        public async Task<List<TemplateResponseModel>> GetTemplates()
+        {
+            var templateList = await db.Templates.ToListAsync();
+            var response = new List<TemplateResponseModel>();
+            return templateList.Select(x => factory.CreateTemplateResponseModel(x)).ToList();
+        }
+        public async Task<bool> TemplateExistsAsync(int id)
+        {
+            return await db.Templates.CountAsync(e => e.TemplateId == id) > 0;
         }
         public void Dispose()
         {

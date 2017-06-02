@@ -183,6 +183,7 @@
     <Compile Include="Models\EmailListModel.cs" />
     <Compile Include="Models\EmailListRequestModel.cs" />
     <Compile Include="Models\EmailListResponseModel.cs" />
+    <Compile Include="Models\TemplateResponseModel.cs" />
     <Compile Include="Models\ViewContact.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
