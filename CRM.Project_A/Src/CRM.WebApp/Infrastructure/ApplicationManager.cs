@@ -319,8 +319,8 @@ namespace CRM.WebApp.Infrastructure
         #endregion
 
 
-       
-        
+
+
         #region Templates
         public async Task<List<TemplateResponseModel>> GetTemplates()
         {
@@ -334,7 +334,7 @@ namespace CRM.WebApp.Infrastructure
         }
         #endregion
         #region uploading
-        public async Task<ContactResponseModel[]> AddContactsFromFile(HttpRequestMessage request)
+        public async Task<List<ContactResponseModel>> AddContactsFromFile(HttpRequestMessage request)
         {
             using (DbContextTransaction transaction = db.Database.BeginTransaction())
             {
@@ -343,14 +343,14 @@ namespace CRM.WebApp.Infrastructure
                     string desctopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
                     List<ContactResponseModel> response = new List<ContactResponseModel>();
-                    ContactRequestModel[] listOfContactRequests = null;
+                    List<ContactRequestModel> listOfContactRequests = null;
 
                     var provider = new MultipartMemoryStreamProvider();
                     await request.Content.ReadAsMultipartAsync(provider);
 
                     var file = provider.Contents[0];
                     var fileName = file.Headers.ContentDisposition.FileName;
-                    var correctedFileName = fileName.Split('"', '\\').First(s => !string.IsNullOrEmpty(s));
+                    var correctedFileName = "new" + fileName.Split('"', '\\').First(s => !string.IsNullOrEmpty(s));
                     var filePath = desctopPath + '\\' + correctedFileName;
 
                     var buffer = await file.ReadAsByteArrayAsync();
@@ -374,10 +374,10 @@ namespace CRM.WebApp.Infrastructure
                         string[] CSVLines = File.ReadAllLines(filePath);
                         string[] columnNames = CSVLines[0].Split(';');
 
-                        if (!ContactColumnNames.SetEquals(columnNames))
-                        {
-                            throw new FileNotFoundException("Wrong column names in CSV");
-                        }
+                        //if (!ContactColumnNames.Equals(columnNames))
+                        //{
+                        //    throw new FileNotFoundException("Wrong column names in CSV");
+                        //}
 
                         int[] ColumnPositions = new int[columnNames.Length];
                         ColumnPositions[0] = Array.IndexOf(columnNames, "FullName");
@@ -386,7 +386,7 @@ namespace CRM.WebApp.Infrastructure
                         ColumnPositions[3] = Array.IndexOf(columnNames, "Country");
                         ColumnPositions[4] = Array.IndexOf(columnNames, "Email");
 
-                        listOfContactRequests = new ContactRequestModel[CSVLines.Length - 1];
+                        listOfContactRequests = new List<ContactRequestModel>();
                         string[] CellsOfRow;
 
                         for (int i = 1; i < CSVLines.Length; i++)
@@ -406,7 +406,10 @@ namespace CRM.WebApp.Infrastructure
                     else
                         if (fileExtension == "xlsx")
                     {
-                        string workSheetName = ExcelCSVFile.GetWorksheetNames().First();
+
+
+                        var workSheetNameList = ExcelCSVFile.GetWorksheetNames();
+                        var workSheetName = ExcelCSVFile.GetWorksheetNames().First();
                         IEnumerable<string> columns = ExcelCSVFile.GetColumnNames(workSheetName);
 
                         if (!ContactColumnNames.SetEquals(columns))
@@ -426,28 +429,28 @@ namespace CRM.WebApp.Infrastructure
                                 Position = cont["Position"],
                                 Country = cont["Country"],
                                 Email = cont["Email"]
-                            }).ToArray();
+                            }).ToList();
                     }
                     //-------------------------------------------------------
                     File.Delete(filePath);
 
-                    IEnumerable<Contact> resultContacts = listOfContactRequests.Select(contRequest => new Contact
+                    List<Contact> resultContacts = listOfContactRequests.Select(contRequest => new Contact
                     {
                         FullName = contRequest.FullName,
                         CompanyName = contRequest.CompanyName,
                         Position = contRequest.Position,
                         Country = contRequest.Country,
                         Email = contRequest.Email
-                    });
+                    }).ToList();
 
                     foreach (var item in resultContacts)
                     {
                         db.Contacts.Add(item);
                         response.Add(factory.CreateContactResponseModel(item));
                     }
-                    await db.SaveChangesAsync();
                     transaction.Commit();
-                    return response.ToArray();
+                    await db.SaveChangesAsync();
+                    return response;
                 }
                 catch
                 {

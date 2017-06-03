@@ -101,7 +101,7 @@ namespace CRM.WebApp.Controllers
         [ResponseType(typeof(ContactRequestModel)), Route("api/Contacts/upload")]
         public async Task<HttpResponseMessage> PostContactUpload()
         {
-            ContactResponseModel[] response;
+            List<ContactResponseModel> response;
             response = await manager.AddContactsFromFile(Request);
 
             if (response == null)
