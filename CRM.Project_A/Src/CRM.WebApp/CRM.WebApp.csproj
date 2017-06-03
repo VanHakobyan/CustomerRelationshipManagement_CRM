@@ -176,7 +176,7 @@
     <Compile Include="Infrastructure\EmailProvider.cs" />
     <Compile Include="Infrastructure\ModelFactory.cs" />
     <Compile Include="Infrastructure\ParsingProvider.cs" />
-    <Compile Include="LoggerManager.cs" />
+    <Compile Include="Logs\LoggerManager.cs" />
     <Compile Include="Models\ApiContactsModel.cs" />
     <Compile Include="Models\ContactRequestModel.cs" />
     <Compile Include="Models\ContactResponseModel.cs" />
