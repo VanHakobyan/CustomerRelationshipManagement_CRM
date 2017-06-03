@@ -16,6 +16,7 @@ using System.Web;
 
 namespace CRM.WebApp.Controllers
 {
+    [ExceptionCustomFilter]
     public class EmailListsController : ApiController
     {
         private ApplicationManager manager = new ApplicationManager();
@@ -41,7 +42,7 @@ namespace CRM.WebApp.Controllers
 
         // PUT: api/EmailLists/5
         [ResponseType(typeof(void))]
-        public async Task<HttpResponseMessage> PutEmailList( [FromUri] int id, [FromBody] EmailListRequestModel emailList)
+        public async Task<HttpResponseMessage> PutEmailList([FromUri] int id, [FromBody] EmailListRequestModel emailList)
         {
             if (!ModelState.IsValid)
                 return Request.CreateResponse(HttpStatusCode.NotModified, ModelState);
@@ -50,7 +51,7 @@ namespace CRM.WebApp.Controllers
             EmailList response = await manager.AddOrUpdateEmailList(emailListToUpdate, emailList);
             if (response == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound);
-            return Request.CreateResponse(HttpStatusCode.OK,response);
+            return Request.CreateResponse(HttpStatusCode.OK, response);
         }
 
         // POST: api/EmailLists
@@ -72,7 +73,7 @@ namespace CRM.WebApp.Controllers
             var emailList = await manager.RemoveEmailList(id);
             if (emailList == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound);
-            return Request.CreateResponse(HttpStatusCode.OK,emailList);
+            return Request.CreateResponse(HttpStatusCode.OK, emailList);
         }
 
         protected override void Dispose(bool disposing)
