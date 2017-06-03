@@ -13,7 +13,6 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -28,6 +27,7 @@ namespace CRM.WebApp.Infrastructure
         // public ApplicationManager(){}
         DataBaseCRMEntityes db = new DataBaseCRMEntityes();
         ModelFactory factory = new ModelFactory();
+        #region Contacts
         public async Task<List<ContactResponseModel>> GetAllContacts()
         {
 
@@ -144,126 +144,6 @@ namespace CRM.WebApp.Infrastructure
                 }
             }
         }
-
-        public async Task<string> AddContactsFromFile(HttpRequestMessage request)
-        {
-            return await Task.Run(async () =>
-            {
-                string desctopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                Contact[] listOfContacts;
-
-                var provider = new MultipartMemoryStreamProvider();
-                await request.Content.ReadAsMultipartAsync(provider);
-
-                var file = provider.Contents[0];
-                var fileName = file.Headers.ContentDisposition.FileName;
-                var filePath = desctopPath + '\\' + fileName;
-                var buffer = await file.ReadAsByteArrayAsync();
-
-                File.WriteAllBytes(filePath, buffer);
-
-                var ExcelCSVFile = new ExcelQueryFactory(filePath);
-
-                string fileExtension = fileName.Split('.').Last();
-
-
-                if (!(fileExtension == "xlsx" || fileExtension == "csv"))
-                {
-                    return "FileNotFound";
-                }
-
-                HashSet<string> ContactColumnNames = new HashSet<string>(){
-                       "FullName","CompanyName","Position","Country","Email"
-                   };
-
-                if (fileExtension == "csv")
-                {
-                    string[] CSVLines = File.ReadAllLines(filePath);
-                    string[] columnNames = CSVLines[0].Split(';');
-
-                    if (!ContactColumnNames.SetEquals(columnNames))
-                    {
-                        return "NotCorrectColumns";
-                    }
-
-                    int[] ColumnPositions = new int[columnNames.Length];
-                    ColumnPositions[0] = Array.IndexOf(columnNames, "FullName");
-                    ColumnPositions[1] = Array.IndexOf(columnNames, "CompanyName");
-                    ColumnPositions[2] = Array.IndexOf(columnNames, "Position");
-                    ColumnPositions[3] = Array.IndexOf(columnNames, "Country");
-                    ColumnPositions[4] = Array.IndexOf(columnNames, "Email");
-
-
-                    listOfContacts = new Contact[CSVLines.Length - 1];
-                    string[] CellsOfRow;
-
-                    for (int i = 1; i < CSVLines.Length; i++)
-                    {
-                        CellsOfRow = CSVLines[i].Split(';');
-
-                        listOfContacts[i - 1] = new Contact
-                        {
-                            FullName = CellsOfRow[ColumnPositions[0]],
-                            CompanyName = CellsOfRow[ColumnPositions[1]],
-                            Position = CellsOfRow[ColumnPositions[2]],
-                            Country = CellsOfRow[ColumnPositions[3]],
-                            Email = CellsOfRow[ColumnPositions[4]]
-                        };
-                    }
-
-                    //-------------------------------------------------------
-                    File.Delete(filePath);
-                    return await UploadHelper(listOfContacts);
-                }
-
-                string workSheetName = ExcelCSVFile.GetWorksheetNames().First();
-
-                IEnumerable<string> columns = ExcelCSVFile.GetColumnNames(workSheetName);
-
-                if (!ContactColumnNames.SetEquals(columns))
-                {
-                    return "NotCorrectColumns";
-                }
-
-                List<Row> rowsList = ExcelCSVFile.Worksheet(workSheetName).ToList();
-
-                listOfContacts =
-                    rowsList.Select(
-                    cont =>
-                    new Contact
-                    {
-                        FullName = cont["FullName"],
-                        CompanyName = cont["CompanyName"],
-                        Position = cont["Position"],
-                        Country = cont["Country"],
-                        Email = cont["Email"]
-                    }).ToArray();
-
-                //-------------------------------------------------------
-                File.Delete(filePath);
-                return await UploadHelper(listOfContacts);
-            });
-        }
-
-        private async Task<string> UploadHelper(Contact[] listOfContacts)
-        {
-            foreach (var item in listOfContacts)
-            {
-                if (!RegexEmail(item.Email))
-                {
-                    return "InvalidEmail";
-                }
-            }
-
-            foreach (var item in listOfContacts)
-            {
-                db.Contacts.Add(item);
-            }
-            await db.SaveChangesAsync();
-
-            return "Ok";
-        }
-
         public async Task<ContactResponseModel> RemoveContact(Guid guid)
         {
             try
@@ -301,8 +181,10 @@ namespace CRM.WebApp.Infrastructure
                 throw;
             }
         }
+        #endregion
 
 
+        #region EmailLists
         public async Task<List<EmailListResponseModel>> GetAllEmailLis()
         {
             try
@@ -322,7 +204,7 @@ namespace CRM.WebApp.Infrastructure
             return await db.EmailLists.FirstOrDefaultAsync(t => t.EmailListID == id); //factory.CreateEmailResponseModel(email);
         }
 
-        public async Task<EmailList> AddOrUpdateEmailList(EmailList еmailListForAddOrUpdate, EmailListRequestModel requestEmailListModel)
+        public async Task<EmailListResponseModel> AddEmailList(EmailList еmailListForAddOrUpdate, EmailListRequestModel requestEmailListModel)
         {
             using (DbContextTransaction transaction = db.Database.BeginTransaction())
             {
@@ -337,8 +219,6 @@ namespace CRM.WebApp.Infrastructure
                         if (contacts != null) еmailListForAddOrUpdate.Contacts.Add(contacts);
                     }
                 }
-
-
                 try
                 {
                     db.EmailLists.AddOrUpdate(еmailListForAddOrUpdate);
@@ -349,18 +229,80 @@ namespace CRM.WebApp.Infrastructure
                 {
                     transaction.Rollback();
                     if ((await EmailListExists(еmailListForAddOrUpdate.EmailListID)))
-                    {
                         return null;
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
-                return еmailListForAddOrUpdate;
+
+                return factory.CreateEmailResponseModel(еmailListForAddOrUpdate);
             }
         }
+        public async Task<EmailListResponseModel> AddAtEmailList(EmailList еmailListForAddOrUpdate, EmailListRequestModel requestEmailListModel)
+        {
+            using (DbContextTransaction transaction = db.Database.BeginTransaction())
+            {
+                еmailListForAddOrUpdate.EmailListName = requestEmailListModel.EmailListName;
 
+                if (requestEmailListModel.Contacts != null)
+                {
+                    foreach (Guid guid in requestEmailListModel.Contacts)
+                    {
+                        var contacts = await db.Contacts.FirstOrDefaultAsync(x => x.GuID == guid);
+                        if (contacts != null)
+                            еmailListForAddOrUpdate.Contacts.Add(contacts);
+                    }
+                }
+                try
+                {
+
+                    await db.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    if ((await EmailListExists(еmailListForAddOrUpdate.EmailListID)))
+                        return null;
+                    else
+                        throw;
+                }
+
+                return factory.CreateEmailResponseModel(еmailListForAddOrUpdate);
+            }
+        }
+        public async Task<EmailListResponseModel> RemoveAtEmailList(EmailList еmailListForAddOrUpdate, EmailListRequestModel requestEmailListModel)
+        {
+            using (DbContextTransaction transaction = db.Database.BeginTransaction())
+            {
+                еmailListForAddOrUpdate.EmailListName = requestEmailListModel.EmailListName;
+
+                if (requestEmailListModel.Contacts != null)
+                {
+                    foreach (Guid guid in requestEmailListModel.Contacts)
+                    {
+                        var contacts = await db.Contacts.FirstOrDefaultAsync(x => x.GuID == guid);
+                        if (contacts != null)
+                            еmailListForAddOrUpdate.Contacts.Remove(contacts);
+                    }
+                }
+                try
+                {
+
+                    await db.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    if ((await EmailListExists(еmailListForAddOrUpdate.EmailListID)))
+                        return null;
+                    else
+                        throw;
+                }
+
+                return factory.CreateEmailResponseModel(еmailListForAddOrUpdate);
+            }
+        }
 
         public async Task<EmailListResponseModel> RemoveEmailList(int id)
         {
@@ -374,16 +316,148 @@ namespace CRM.WebApp.Infrastructure
         {
             return await db.EmailLists.CountAsync(e => e.EmailListID == id) > 0;
         }
+        #endregion
+
+
+
+
+        #region Templates
+        public async Task<List<TemplateResponseModel>> GetTemplates()
+        {
+            var templateList = await db.Templates.ToListAsync();
+            var response = new List<TemplateResponseModel>();
+            return templateList.Select(x => factory.CreateTemplateResponseModel(x)).ToList();
+        }
+        public async Task<bool> TemplateExistsAsync(int id)
+        {
+            return await db.Templates.CountAsync(e => e.TemplateId == id) > 0;
+        }
+        #endregion
+        #region uploading
+        public async Task<List<ContactResponseModel>> AddContactsFromFile(HttpRequestMessage request)
+        {
+            using (DbContextTransaction transaction = db.Database.BeginTransaction())
+            {
+                try
+                {
+                    string desctopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+                    List<ContactResponseModel> response = new List<ContactResponseModel>();
+                    List<ContactRequestModel> listOfContactRequests = null;
+
+                    var provider = new MultipartMemoryStreamProvider();
+                    await request.Content.ReadAsMultipartAsync(provider);
+
+                    var file = provider.Contents[0];
+                    var fileName = file.Headers.ContentDisposition.FileName;
+                    var correctedFileName = "new" + fileName.Split('"', '\\').First(s => !string.IsNullOrEmpty(s));
+                    var filePath = desctopPath + '\\' + correctedFileName;
+
+                    var buffer = await file.ReadAsByteArrayAsync();
+
+                    File.WriteAllBytes(filePath, buffer);
+
+                    var ExcelCSVFile = new ExcelQueryFactory(filePath);
+                    string fileExtension = correctedFileName.Split('.').Last();
+
+                    if (!(fileExtension == "xlsx" || fileExtension == "csv"))
+                    {
+                        throw new FileNotFoundException("Wrong extension of file");
+                    }
+
+                    HashSet<string> ContactColumnNames = new HashSet<string>(){
+                       "FullName","CompanyName","Position","Country","Email"
+                   };
+
+                    if (fileExtension == "csv")
+                    {
+                        string[] CSVLines = File.ReadAllLines(filePath);
+                        string[] columnNames = CSVLines[0].Split(';',',');
+
+                        //if (!ContactColumnNames.Equals(columnNames))
+                        //{
+                        //    throw new FileNotFoundException("Wrong column names in CSV");
+                        //}
+
+                        int[] ColumnPositions = new int[columnNames.Length];
+                        ColumnPositions[0] = Array.IndexOf(columnNames, "FullName");
+                        ColumnPositions[1] = Array.IndexOf(columnNames, "CompanyName");
+                        ColumnPositions[2] = Array.IndexOf(columnNames, "Position");
+                        ColumnPositions[3] = Array.IndexOf(columnNames, "Country");
+                        ColumnPositions[4] = Array.IndexOf(columnNames, "Email");
+
+                        listOfContactRequests = new List<ContactRequestModel>();
+                        string[] CellsOfRow;
+
+                        for (int i = 1; i < CSVLines.Length; i++)
+                        {
+                            CellsOfRow = CSVLines[i].Split(';',',');
+
+                            listOfContactRequests.Add( new ContactRequestModel
+                            {
+                                FullName = CellsOfRow[ColumnPositions[0]],
+                                CompanyName = CellsOfRow[ColumnPositions[1]],
+                                Position = CellsOfRow[ColumnPositions[2]],
+                                Country = CellsOfRow[ColumnPositions[3]],
+                                Email = CellsOfRow[ColumnPositions[4]]
+                            });
+                        }
+                    }
+                    else
+                        if (fileExtension == "xlsx")
+                    {
+
+
+                        var workSheetNameList = ExcelCSVFile.GetWorksheetNames();
+                        var workSheetName = ExcelCSVFile.GetWorksheetNames().First();
+                        IEnumerable<string> columns = ExcelCSVFile.GetColumnNames(workSheetName);
+
+                        if (!ContactColumnNames.SetEquals(columns))
+                        {
+                            throw new FileNotFoundException("Wrong column names in Excel");
+                        }
+
+                        List<Row> rowsList = ExcelCSVFile.Worksheet(workSheetName).ToList();
+
+                        listOfContactRequests =
+                            rowsList.Select(
+                            cont =>
+                            new ContactRequestModel
+                            {
+                                FullName = cont["FullName"],
+                                CompanyName = cont["CompanyName"],
+                                Position = cont["Position"],
+                                Country = cont["Country"],
+                                Email = cont["Email"]
+                            }).ToList();
+                    }
+                    //-------------------------------------------------------
+                    File.Delete(filePath);
+
+                    List<Contact> resultContacts = listOfContactRequests.Select(s => factory.CreateContact(s)).ToList();
+
+                    foreach (var item in resultContacts)
+                    {
+                        db.Contacts.Add(item);
+                        response.Add(factory.CreateContactResponseModel(item));
+                    }
+                    await db.SaveChangesAsync();
+                    transaction.Commit();
+                    return response;
+                }
+                catch(Exception ex)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+        }
+
+        #endregion
+
         public async Task SaveDb()
         {
             await db.SaveChangesAsync();
-        }
-        public bool RegexEmail(string email)
-        {
-            if (!Regex.IsMatch(email, @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z", RegexOptions.IgnoreCase))
-                return false;
-            return true;
-
         }
         public void Dispose()
         {

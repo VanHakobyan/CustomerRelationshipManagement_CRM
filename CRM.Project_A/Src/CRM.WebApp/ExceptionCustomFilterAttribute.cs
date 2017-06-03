@@ -15,7 +15,7 @@ namespace CRM.WebApp
 {
     public class ExceptionCustomFilterAttribute : ExceptionFilterAttribute
     {
-        LoggerManager logger = new LoggerManager();
+        private readonly LoggerManager logger = new LoggerManager();
         public override Task OnExceptionAsync(HttpActionExecutedContext context, CancellationToken token)
         {
             logger.LogError(context.Exception, context.Request.Method, context.Request.RequestUri);
@@ -46,17 +46,21 @@ namespace CRM.WebApp
                 };
             }
 
-            else
+            else if (context.Exception is NotImplementedException)
             {
                 context.Response = new HttpResponseMessage(HttpStatusCode.NotImplemented);
             }
 
-
-            var response = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+            else
             {
-                Content = new StringContent("An unhandled exception was thrown by service"),
-                ReasonPhrase = "Internal Server Error.Please Contact your Administrator."
-            };
+
+               context.Response = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                {
+                    Content = new StringContent("An unhandled exception was thrown by service"),
+                    ReasonPhrase = "Internal Server Error.Please Contact your Administrator."
+                };
+
+            }
             return base.OnExceptionAsync(context, token);
         }
     }

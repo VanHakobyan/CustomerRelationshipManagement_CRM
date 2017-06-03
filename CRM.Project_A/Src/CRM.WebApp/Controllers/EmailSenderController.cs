@@ -33,7 +33,15 @@ namespace CRM.WebApp.Controllers
             }
             return Ok();
         }
-
+        [Route("api/EmailSender/{emailListId}/{TemplateId}")]
+        public async Task<HttpResponseMessage> PostSendEmailList(int emailListId, int TemplateId)
+        {
+            if (!await manager.TemplateExistsAsync(TemplateId))
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            if (!await provider.SendMailToMailingList(emailListId,TemplateId))
+                return Request.CreateResponse(HttpStatusCode.Conflict);
+            return Request.CreateResponse(HttpStatusCode.OK);
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)
