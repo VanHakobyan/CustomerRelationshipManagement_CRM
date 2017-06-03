@@ -393,14 +393,14 @@ namespace CRM.WebApp.Infrastructure
                         {
                             CellsOfRow = CSVLines[i].Split(';',',');
 
-                            listOfContactRequests[i - 1] = new ContactRequestModel
+                            listOfContactRequests.Add( new ContactRequestModel
                             {
                                 FullName = CellsOfRow[ColumnPositions[0]],
                                 CompanyName = CellsOfRow[ColumnPositions[1]],
                                 Position = CellsOfRow[ColumnPositions[2]],
                                 Country = CellsOfRow[ColumnPositions[3]],
                                 Email = CellsOfRow[ColumnPositions[4]]
-                            };
+                            });
                         }
                     }
                     else
