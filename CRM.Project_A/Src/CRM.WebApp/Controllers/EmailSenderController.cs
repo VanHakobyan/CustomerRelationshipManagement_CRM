@@ -15,6 +15,7 @@ namespace CRM.WebApp.Controllers
     {
         EmailProvider provider = new EmailProvider();
         ApplicationManager manager = new ApplicationManager();
+        [Route("api/EmailSender/{TemplateId}")]
         public async Task<IHttpActionResult> PostSendEmails([FromBody] List<Guid> GuIdList, [FromUri] int TemplateId)
         {
             List<ContactResponseModel> ContactsForSending = await manager.GetContactsByGuIdList(GuIdList);
