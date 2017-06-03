@@ -372,7 +372,7 @@ namespace CRM.WebApp.Infrastructure
                     if (fileExtension == "csv")
                     {
                         string[] CSVLines = File.ReadAllLines(filePath);
-                        string[] columnNames = CSVLines[0].Split(';');
+                        string[] columnNames = CSVLines[0].Split(';',',');
 
                         //if (!ContactColumnNames.Equals(columnNames))
                         //{
@@ -391,7 +391,7 @@ namespace CRM.WebApp.Infrastructure
 
                         for (int i = 1; i < CSVLines.Length; i++)
                         {
-                            CellsOfRow = CSVLines[i].Split(';');
+                            CellsOfRow = CSVLines[i].Split(';',',');
 
                             listOfContactRequests[i - 1] = new ContactRequestModel
                             {
@@ -434,25 +434,18 @@ namespace CRM.WebApp.Infrastructure
                     //-------------------------------------------------------
                     File.Delete(filePath);
 
-                    List<Contact> resultContacts = listOfContactRequests.Select(contRequest => new Contact
-                    {
-                        FullName = contRequest.FullName,
-                        CompanyName = contRequest.CompanyName,
-                        Position = contRequest.Position,
-                        Country = contRequest.Country,
-                        Email = contRequest.Email
-                    }).ToList();
+                    List<Contact> resultContacts = listOfContactRequests.Select(s => factory.CreateContact(s)).ToList();
 
                     foreach (var item in resultContacts)
                     {
                         db.Contacts.Add(item);
                         response.Add(factory.CreateContactResponseModel(item));
                     }
-                    transaction.Commit();
                     await db.SaveChangesAsync();
+                    transaction.Commit();
                     return response;
                 }
-                catch
+                catch(Exception ex)
                 {
                     transaction.Rollback();
                     throw;
