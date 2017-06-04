@@ -103,11 +103,6 @@ namespace CRM.WebApp.Controllers
         {
             List<ContactResponseModel> response;
             response = await manager.AddContactsFromFile(Request);
-
-            if (response == null)
-            {
-                return Request.CreateResponse(HttpStatusCode.BadRequest);
-            }
             return Request.CreateResponse(HttpStatusCode.OK, response);
         }
 
