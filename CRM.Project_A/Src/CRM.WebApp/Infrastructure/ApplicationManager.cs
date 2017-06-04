@@ -343,6 +343,8 @@ namespace CRM.WebApp.Infrastructure
             {
                 try
                 {
+                    
+
                     string tempPath = System.Web.HttpContext.Current?.Request.MapPath("~//Templates");
 
                     
@@ -352,10 +354,6 @@ namespace CRM.WebApp.Infrastructure
                     List<ContactRequestModel> listOfContactRequests = null;
 
                     var provider = new MultipartMemoryStreamProvider();
-                    if (provider.Contents.Count == 0)
-                    {
-                        throw new FileNotFoundException("Didn't upload any file");
-                    }
                     await request.Content.ReadAsMultipartAsync(provider);
 
                     var file = provider.Contents[0];
