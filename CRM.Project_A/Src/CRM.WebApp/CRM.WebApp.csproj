@@ -149,8 +149,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Logs\2017-06-01.log" />
-    <Content Include="Logs\2017-06-02.log" />
-    <Content Include="Logs\2017-06-03.log" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
