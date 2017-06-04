@@ -9,10 +9,10 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using EntityLibrary;
-using CRM.WebApi.Models;
+using CRM.WebApp.Models;
 using System.Threading.Tasks;
 using CRM.WebApp.Infrastructure;
-using CRM.WebApp.Models;
+
 using System.Text.RegularExpressions;
 
 namespace CRM.WebApp.Controllers
@@ -39,8 +39,8 @@ namespace CRM.WebApp.Controllers
         }
 
         // GET: api/Contacts/guid
-        [ResponseType(typeof(Contact))]
-        public async Task<HttpResponseMessage> GetContactGuid(Guid id)
+        [ResponseType(typeof(Contact)),Route("api/Contacts/{id}")]
+        public async Task<HttpResponseMessage> GetContactGuid([FromUri]Guid id)
         {
             var contact = await manager.GetContactByGuid(id);
             if (contact == null)
@@ -58,7 +58,7 @@ namespace CRM.WebApp.Controllers
 
         //PUT: api/Contacts/5
         [ResponseType(typeof(void))]
-        [HttpPut]
+        [HttpPut,Route("api/contacts/{guid}")]
         public async Task<HttpResponseMessage> PutContact(Guid guid, [FromBody] ContactRequestModel contact)
         {
             //if (!manager.RegexEmail(contact.Email))
@@ -75,7 +75,7 @@ namespace CRM.WebApp.Controllers
         }
         // POST: api/Contacts
         [ResponseType(typeof(ContactRequestModel))]
-        public async Task<HttpResponseMessage> PostContact(ContactRequestModel contact)
+        public async Task<HttpResponseMessage> PostContact([FromBody]ContactRequestModel contact)
         {
             //if (!manager.RegexEmail(contact.Email))
             //    return Request.CreateResponse(HttpStatusCode.BadRequest, "Email address is not valid");

@@ -72,7 +72,8 @@ namespace CRM.WebApp.Infrastructure
             return new EmailListResponseModel() {
                 EmailListID = emailList.EmailListID,
                 EmailListName = emailList.EmailListName,
-                Contacts = emailList.Contacts.Select(x => x.Email).ToList() };
+                Contacts = emailList.Contacts.Select(CreateContactResponseModel).ToList()
+                };
         }
         public TemplateResponseModel CreateTemplateResponseModel(Template template)
         {

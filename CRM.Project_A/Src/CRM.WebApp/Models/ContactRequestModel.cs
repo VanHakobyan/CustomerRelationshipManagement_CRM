@@ -22,9 +22,6 @@ namespace CRM.WebApp.Models
 
         [Required(ErrorMessage = "Country is required"), EmailAddress(ErrorMessage = "The Email must be specified")]
         public string Email { get; set; }
-
-        //public Guid? Guid { get; set; }
-        //public DateTime? DateInserted { get; set; }
-        //public List<string> MailingLists { get; set; }
+        
     }
 }

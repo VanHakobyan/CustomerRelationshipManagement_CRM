@@ -52,7 +52,7 @@ namespace CRM.WebApp.Infrastructure
                     Port = 587,
                     EnableSsl = true,
                     UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential("vanhakobyan1996@gmail.com", "VAN606580")
+                    Credentials = new NetworkCredential("vanhakobyan1996@gmail.com", "snt606580")
                 };
 
                 try

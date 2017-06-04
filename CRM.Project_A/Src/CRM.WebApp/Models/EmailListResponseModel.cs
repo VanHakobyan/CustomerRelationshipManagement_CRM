@@ -6,6 +6,6 @@ namespace CRM.WebApp.Models
     {
         public int EmailListID { get; set; }
         public string EmailListName { get; set; }
-        public List<string> Contacts { get; set; }
+        public List<ContactResponseModel> Contacts { get; set; }
     }
 }

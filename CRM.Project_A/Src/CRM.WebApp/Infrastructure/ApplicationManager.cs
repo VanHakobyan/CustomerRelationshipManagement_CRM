@@ -1,5 +1,4 @@
-﻿using CRM.WebApi.Models;
-using CRM.WebApp.Models;
+﻿using CRM.WebApp.Models;
 using EntityLibrary;
 using LinqToExcel;
 using System;
@@ -445,7 +444,7 @@ namespace CRM.WebApp.Infrastructure
                     transaction.Commit();
                     return response;
                 }
-                catch(Exception ex)
+                catch(Exception)
                 {
                     transaction.Rollback();
                     throw;

@@ -71,7 +71,7 @@ namespace CRM.WebApp.Controllers
         }
 
         // DELETE: api/EmailLists/5
-        [ResponseType(typeof(EmailList))]
+        [ResponseType(typeof(EmailList)),Route("api/EmailLists/delete/{id}")]
         public async Task<HttpResponseMessage> DeleteEmailList(int id)
         {
             var emailList = await manager.RemoveEmailList(id);
