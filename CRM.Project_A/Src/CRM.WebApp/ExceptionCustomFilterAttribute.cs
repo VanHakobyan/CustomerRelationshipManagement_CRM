@@ -54,10 +54,10 @@ namespace CRM.WebApp
             else
             {
 
-               context.Response = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                context.Response = new HttpResponseMessage(HttpStatusCode.InternalServerError)
                 {
-                   Content = new StringContent(string.Format($"{context.Exception.Message}\n{context.Exception.InnerException?.Message}")),
-                 //  Content = new StringContent("An unhandled exception was thrown by service"),
+                    Content = new StringContent(string.Format($"{context.Exception.Message}\n{context.Exception.InnerException?.Message}")),
+                    // Content = new StringContent("An unhandled exception was thrown by service"),
                     ReasonPhrase = "Internal Server Error.Please Contact your Administrator."
                 };
 

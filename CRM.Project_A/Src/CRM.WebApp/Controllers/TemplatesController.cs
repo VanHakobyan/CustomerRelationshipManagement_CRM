@@ -33,7 +33,7 @@ namespace CRM.WebApp.Controllers
         [Route("api/Templates/errors")]
         public HttpResponseMessage GetLog()
         {
-            var response = new HttpResponseMessage { Content = new StringContent(logger.ReadLogErrorData()) };
+            var response = new HttpResponseMessage { Content = new StringContent(logger.LoggerErrors()) };
             response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
             return response;
         }

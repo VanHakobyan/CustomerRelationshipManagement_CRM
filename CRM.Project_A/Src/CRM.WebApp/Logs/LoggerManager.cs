@@ -29,7 +29,7 @@ namespace CRM.WebApp
         {
             logger.Log(LogLevel.Fatal, ex, $"\nErr: {ex.Message}\nInner: {ex.InnerException?.Message}\n");
         }
-        public string ReadLogErrorData()
+        public string LoggerErrors()
         {
             var fileTarget = (FileTarget)LogManager.Configuration.FindTargetByName("file");
             var logEventInfo = new LogEventInfo { TimeStamp = DateTime.Now };
@@ -37,7 +37,7 @@ namespace CRM.WebApp
             if (!File.Exists(fileName))
                 File.Create($"{logEventInfo.TimeStamp}.log");
             var data = File.ReadAllLines(fileName);
-            string path = System.Web.HttpContext.Current?.Request.MapPath("~//Templates//LogErrors.html");
+            string path = System.Web.HttpContext.Current?.Request.MapPath("~//Templates//LogMessage.html");
             var html = File.ReadAllText(path);
             string res = "";
             foreach (string s in data)

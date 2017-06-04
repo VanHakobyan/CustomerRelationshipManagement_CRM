@@ -171,6 +171,7 @@
     <Content Include="Templates\anniversary.html" />
     <Content Include="Templates\birthday.html" />
     <Content Include="Templates\christmas.html" />
+    <Content Include="Templates\LogMessage.html" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
