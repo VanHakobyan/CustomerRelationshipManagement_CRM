@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using CRM.WebApp.Infrastructure;
 using CRM.WebApp.Models;
 using System.Net.Http.Headers;
-using CRM.WebApp.;
+
 
 namespace CRM.WebApp.Controllers
 {
@@ -30,7 +30,7 @@ namespace CRM.WebApp.Controllers
         {
             return await manager.TemplateExistsAsync(id);
         }
-        [Route("api/templates/errors")]
+        [Route("api/Templates/errors")]
         public HttpResponseMessage GetLog()
         {
             var response = new HttpResponseMessage { Content = new StringContent(logger.ReadLogErrorData()) };
