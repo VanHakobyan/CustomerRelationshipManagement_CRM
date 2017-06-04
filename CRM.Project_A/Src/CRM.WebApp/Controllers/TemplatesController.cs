@@ -12,12 +12,15 @@ using EntityLibrary;
 using System.Threading.Tasks;
 using CRM.WebApp.Infrastructure;
 using CRM.WebApp.Models;
+using System.Net.Http.Headers;
+using CRM.WebApp.;
 
 namespace CRM.WebApp.Controllers
 {
     public class TemplatesController : ApiController
     {
-        private ApplicationManager manager = new ApplicationManager();
+        private readonly ApplicationManager manager = new ApplicationManager();
+        private readonly LoggerManager logger = new LoggerManager();
         // GET: api/Templates
         public async Task<List<TemplateResponseModel>> GetTemplates()
         {
@@ -26,6 +29,13 @@ namespace CRM.WebApp.Controllers
         public async Task<bool> TemplateExistsAsync(int id)
         {
             return await manager.TemplateExistsAsync(id);
+        }
+        [Route("api/templates/errors")]
+        public HttpResponseMessage GetLog()
+        {
+            var response = new HttpResponseMessage { Content = new StringContent(logger.ReadLogErrorData()) };
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
+            return response;
         }
         protected override void Dispose(bool disposing)
         {
