@@ -343,7 +343,9 @@ namespace CRM.WebApp.Infrastructure
             {
                 try
                 {
-                    string tempPath = System.Web.Hosting.HostingEnvironment.MapPath("~/Templates"); 
+                    string tempPath = System.Web.HttpContext.Current?.Request.MapPath("~//Templates");
+
+                    
                   //  string desctopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
                     List<ContactResponseModel> response = new List<ContactResponseModel>();
@@ -395,6 +397,7 @@ namespace CRM.WebApp.Infrastructure
                 }
                 catch(Exception ex)
                 {
+
                     transaction.Rollback();
                     throw;
                 }
