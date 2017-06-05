@@ -239,15 +239,15 @@ namespace CRM.WebApp.Infrastructure
                 return factory.CreateEmailResponseModel(еmailListForAddOrUpdate);
             }
         }
-        public async Task<EmailListResponseModel> AddAtEmailList(EmailList еmailListForAddOrUpdate, EmailListRequestModel requestEmailListModel)
+        public async Task<EmailListResponseModel> AddAtEmailList(EmailList еmailListForAddOrUpdate,List<Guid> guidList)
         {
             using (DbContextTransaction transaction = db.Database.BeginTransaction())
             {
-                еmailListForAddOrUpdate.EmailListName = requestEmailListModel.EmailListName;
+                //еmailListForAddOrUpdate.EmailListName = requestEmailListModel.EmailListName;
 
-                if (requestEmailListModel.Contacts != null)
+                if (guidList.Count != 0)
                 {
-                    foreach (Guid guid in requestEmailListModel.Contacts)
+                    foreach (Guid guid in guidList)
                     {
                         var contacts = await db.Contacts.FirstOrDefaultAsync(x => x.GuID == guid);
                         if (contacts != null)
@@ -272,15 +272,15 @@ namespace CRM.WebApp.Infrastructure
                 return factory.CreateEmailResponseModel(еmailListForAddOrUpdate);
             }
         }
-        public async Task<EmailListResponseModel> RemoveAtEmailList(EmailList еmailListForAddOrUpdate, EmailListRequestModel requestEmailListModel)
+        public async Task<EmailListResponseModel> RemoveAtEmailList(EmailList еmailListForAddOrUpdate, List<Guid> guidList)
         {
             using (DbContextTransaction transaction = db.Database.BeginTransaction())
             {
-                еmailListForAddOrUpdate.EmailListName = requestEmailListModel.EmailListName;
+                //еmailListForAddOrUpdate.EmailListName = guidList.EmailListName;
 
-                if (requestEmailListModel.Contacts != null)
+                if (guidList.Count != 0)
                 {
-                    foreach (Guid guid in requestEmailListModel.Contacts)
+                    foreach (Guid guid in guidList)
                     {
                         var contacts = await db.Contacts.FirstOrDefaultAsync(x => x.GuID == guid);
                         if (contacts != null)

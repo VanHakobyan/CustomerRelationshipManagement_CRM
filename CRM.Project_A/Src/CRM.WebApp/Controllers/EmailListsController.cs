@@ -41,21 +41,21 @@ namespace CRM.WebApp.Controllers
 
 
         [ResponseType(typeof(EmailListResponseModel)),Route("api/EmailLists/add/{id}")]
-        public async Task<HttpResponseMessage> PutEmailListAdd([FromUri] int id,[FromBody] EmailListRequestModel emailList)
+        public async Task<HttpResponseMessage> PutEmailListAdd([FromUri] int id,[FromBody] List<Guid> guidList)
         {
             if (!ModelState.IsValid)
                 return Request.CreateResponse(HttpStatusCode.NotModified, ModelState);
             EmailList emailListToUpdate = await manager.GetEmailListById(id);
-            EmailListResponseModel emailListRes = await manager.AddAtEmailList(emailListToUpdate, emailList);
+            EmailListResponseModel emailListRes = await manager.AddAtEmailList(emailListToUpdate, guidList);
             return Request.CreateResponse(HttpStatusCode.OK, emailListRes);
         }
         [ResponseType(typeof(EmailListResponseModel)), Route("api/EmailLists/remove/{id}")]
-        public async Task<HttpResponseMessage> PutEmailListRemove([FromUri] int id, [FromBody] EmailListRequestModel emailList)
+        public async Task<HttpResponseMessage> PutEmailListRemove([FromUri] int id, [FromBody] List<Guid> guidList)
         {
             if (!ModelState.IsValid)
                 return Request.CreateResponse(HttpStatusCode.NotModified, ModelState);
             EmailList emailListToUpdate = await manager.GetEmailListById(id);
-            EmailListResponseModel emailListRes = await manager.RemoveAtEmailList(emailListToUpdate, emailList);
+            EmailListResponseModel emailListRes = await manager.RemoveAtEmailList(emailListToUpdate, guidList);
             return Request.CreateResponse(HttpStatusCode.OK, emailListRes);
         }
         // POST: api/EmailLists

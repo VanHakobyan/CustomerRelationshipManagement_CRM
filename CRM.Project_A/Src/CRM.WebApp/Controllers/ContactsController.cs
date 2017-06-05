@@ -87,7 +87,7 @@ namespace CRM.WebApp.Controllers
             return Request.CreateResponse(HttpStatusCode.Created, createdContacts);
         }
 
-        // DELETE: api/Contacts/5
+        // DELETE: api/Contacts
         [ResponseType(typeof(ContactResponseModel))]
         public async Task<HttpResponseMessage> DeleteContact([FromBody]List<Guid> guid)
         {
