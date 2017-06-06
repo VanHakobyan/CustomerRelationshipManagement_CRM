@@ -80,6 +80,16 @@ namespace CRM.WebApp.Controllers
             return Request.CreateResponse(HttpStatusCode.OK,emailList);
         }
 
+        [ResponseType(typeof(EmailListResponseModel)), Route("api/EmailLists/filter")]
+        public async Task<HttpResponseMessage> PostContactsFilter([FromUri]string emailListName, [FromUri] string param)
+        {
+            List<EmailListResponseModel> response = await manager.GetFilteredEmailLists(emailListName, param);
+            if (response == null)
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "wrong Url, can't work with database");
+
+            return Request.CreateResponse(HttpStatusCode.OK, response);
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

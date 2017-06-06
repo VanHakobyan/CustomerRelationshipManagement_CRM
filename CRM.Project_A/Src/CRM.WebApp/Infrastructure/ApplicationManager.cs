@@ -546,6 +546,100 @@ namespace CRM.WebApp.Infrastructure
         }
 
         #endregion
+
+
+        #region filtering
+        public async Task<List<ContactResponseModel>> GetFilteredContacts(ContactFilterModel contactFilterData, string[] orderParams)
+        {
+            return await Task.Run(() =>
+            {
+                List<ContactResponseModel> result = new List<ContactResponseModel>();
+                string resultQuery = "SELECT * FROM Contacts";
+                List<string> conditions = new List<string>();
+
+                if (!string.IsNullOrEmpty(contactFilterData.FullName))
+                    conditions.Add($" FullName LIKE '%{contactFilterData.FullName}%'");
+
+                if (!string.IsNullOrEmpty(contactFilterData.CompanyName))
+                    conditions.Add($" CompanyName LIKE '%{contactFilterData.CompanyName}%'");
+
+                if (!string.IsNullOrEmpty(contactFilterData.Position))
+                    conditions.Add($" Position LIKE '%{contactFilterData.Position}%'");
+
+                if (!string.IsNullOrEmpty(contactFilterData.Country))
+                    conditions.Add($" Country LIKE '%{contactFilterData.Country}%'");
+
+                if (!string.IsNullOrEmpty(contactFilterData.Email))
+                    conditions.Add($" Email LIKE '%{contactFilterData.Email}%'");
+
+                if (conditions.Count != 0)
+                {
+                    resultQuery += " WHERE";
+                    foreach (var item in conditions)
+                    {
+                        resultQuery += item + " AND";
+                    }
+                    resultQuery = resultQuery.Substring(0, resultQuery.Length - 4);
+                }
+
+                if (orderParams != null && orderParams.Length != 0)
+                {
+                    resultQuery += " ORDER BY ";
+                    foreach (var item in orderParams)
+                    {
+                        resultQuery += $"{item.Replace('_', ' ')},";
+                    }
+                    resultQuery = resultQuery.TrimEnd(',');
+                }
+
+                List<Contact> contactList;
+                try
+                {
+                    contactList = db.Database.SqlQuery<Contact>(resultQuery).ToList();
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+
+                return contactList.Select(contact => factory.CreateContactResponseModel(contact)).ToList();
+            });
+        }
+
+
+        public async Task<List<EmailListResponseModel>> GetFilteredEmailLists(string emailListName, string param)
+        {
+            return await Task.Run(() =>
+            {
+                List<EmailListResponseModel> result = new List<EmailListResponseModel>();
+                string resultQuery = "SELECT * FROM EmailLists";
+
+                if (!string.IsNullOrEmpty(emailListName))
+                    resultQuery += $" WHERE EmailListName LIKE '%{emailListName}%'";
+
+                if (param != null && param.Length != 0)
+                {
+                    resultQuery += " ORDER BY ";
+                    resultQuery += $"{param.Replace('_', ' ')},";
+                    resultQuery = resultQuery.TrimEnd(',');
+                }
+
+                List<EmailList> EmailLists;
+                try
+                {
+                    EmailLists = db.Database.SqlQuery<EmailList>(resultQuery).ToList();
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+
+                return EmailLists.Select(emailList => factory.CreateEmailResponseModel(emailList)).ToList();
+            });
+        }
+
+        #endregion
+
         public async Task SaveDb()
         {
             await db.SaveChangesAsync();

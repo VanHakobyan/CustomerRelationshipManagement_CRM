@@ -185,6 +185,7 @@
     <Compile Include="Infrastructure\ModelFactory.cs" />
     <Compile Include="Infrastructure\ParsingProvider.cs" />
     <Compile Include="Logs\LoggerManager.cs" />
+    <Compile Include="Models\ContactFilterModel.cs" />
     <Compile Include="Models\ContactRequestModel.cs" />
     <Compile Include="Models\ContactResponseModel.cs" />
     <Compile Include="Models\EmailListRequestModel.cs" />
