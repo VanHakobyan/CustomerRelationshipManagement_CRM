@@ -11,6 +11,7 @@ using System.Web.Http;
 
 namespace CRM.WebApp.Controllers
 {
+    [ExceptionCustomFilter]
     public class EmailSenderController : ApiController
     {
         EmailProvider provider = new EmailProvider();
@@ -32,9 +33,9 @@ namespace CRM.WebApp.Controllers
                 return BadRequest(ex.Message);
 
             }
-            return Ok();
+            return Ok("thank you for your request email ");
         }
-        [Route("api/EmailSender/{emailListId}/{TemplateId}")]
+        [Route("api/EmailSender/{EmailListId}/{TemplateId}")]
         public async Task<HttpResponseMessage> PostSendEmailList(int emailListId, int TemplateId)
         {
             if (!await manager.TemplateExistsAsync(TemplateId))

@@ -27,7 +27,7 @@ namespace CRM.WebApp.Controllers
         }
 
         // GET: api/EmailLists/5
-        [ResponseType(typeof(EmailListResponseModel))]
+        [ResponseType(typeof(EmailListResponseModel)), Route("api/EmailLists/{id}")]
         public async Task<HttpResponseMessage> GetEmailList(int? id)
         {
             var email = await manager.GetEmailListById(id.Value);

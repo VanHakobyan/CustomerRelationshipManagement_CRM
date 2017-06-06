@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.Entity.Core;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -50,7 +51,14 @@ namespace CRM.WebApp
             {
                 context.Response = new HttpResponseMessage(HttpStatusCode.NotImplemented);
             }
-
+            else if (context.Exception is IOException)
+            {
+                context.Response = new HttpResponseMessage(HttpStatusCode.Conflict)
+                {
+                    Content = new StringContent(string.Format($"{context.Exception.Message}\n{context.Exception.InnerException?.Message}")),
+                    ReasonPhrase = "throwed IO Exception"
+                };
+            }
             else
             {
 

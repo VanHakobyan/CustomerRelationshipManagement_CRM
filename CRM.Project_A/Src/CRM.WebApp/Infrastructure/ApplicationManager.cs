@@ -20,6 +20,7 @@ using System.Web.Http.ModelBinding;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using System.ComponentModel.DataAnnotations;
 
 namespace CRM.WebApp.Infrastructure
 {
@@ -335,6 +336,7 @@ namespace CRM.WebApp.Infrastructure
             return await db.Templates.CountAsync(e => e.TemplateId == id) > 0;
         }
         #endregion
+
         #region uploading
         public async Task<List<ContactResponseModel>> AddContactsFromFile(HttpRequestMessage request)
         {
@@ -343,15 +345,11 @@ namespace CRM.WebApp.Infrastructure
             {
                 try
                 {
-                    
-
                     string tempPath = System.Web.HttpContext.Current?.Request.MapPath("~//Templates");
-
-                    
-                  //  string desctopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                    //  string desctopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
                     List<ContactResponseModel> response = new List<ContactResponseModel>();
-                    List<ContactRequestModel> listOfContactRequests = null;
+                    List<Contact> listOfContacts = null;
 
                     var provider = new MultipartMemoryStreamProvider();
                     await request.Content.ReadAsMultipartAsync(provider);
@@ -367,12 +365,12 @@ namespace CRM.WebApp.Infrastructure
 
                     if (fileExtension == "xlsx")
                     {
-                        listOfContactRequests = ReadExcelFileDOM(filePath);
+                        listOfContacts = ReadExcelFileDOM(filePath);
                     }
                     else
                         if (fileExtension == "csv")
                     {
-                        listOfContactRequests = ReadCSVFile(filePath);
+                        listOfContacts = ReadCSVFile(filePath);
                     }
                     else
                     {
@@ -380,22 +378,24 @@ namespace CRM.WebApp.Infrastructure
                     }
 
                     //--------------------------
-                    List<Contact> resultContacts = listOfContactRequests.Select(s => factory.CreateContact(s)).ToList();
+                    //      List<Contact> resultContacts = listOfContactRequests.Select(s => factory.CreateContact(s)).ToList();
 
-                    foreach (var item in resultContacts)
+                    foreach (var item in listOfContacts)
                     {
+                        item.GuID = Guid.NewGuid();
+                        item.DateInserted = DateTime.Now;
+                        item.DateModified = DateTime.Now;
+                        item.EmailLists = new List<EmailList>();
+
                         db.Contacts.Add(item);
                         response.Add(factory.CreateContactResponseModel(item));
                     }
                     await db.SaveChangesAsync();
                     transaction.Commit();
                     return response;
-
-
                 }
-                catch(Exception ex)
+                catch (Exception)
                 {
-
                     transaction.Rollback();
                     throw;
                 }
@@ -407,12 +407,12 @@ namespace CRM.WebApp.Infrastructure
             }
         }
 
-        private static List<ContactRequestModel> ReadExcelFileDOM(string filename)
+        private static List<Contact> ReadExcelFileDOM(string filename)
         {
 
             string[] strRowValues = new string[5];
-            List<ContactRequestModel> result = new List<ContactRequestModel>();
-            ContactRequestModel contact;
+            List<Contact> result = new List<Contact>();
+            Contact contact;
 
             try
             {
@@ -470,12 +470,14 @@ namespace CRM.WebApp.Infrastructure
                         j = 0;
                         i = i + 1;
                         if (strRowValues.Any(p => p == null)) continue;
-                        contact = new ContactRequestModel();
+                        contact = new Contact();
                         contact.FullName = strRowValues[valueIndexes[0]];
                         contact.CompanyName = strRowValues[valueIndexes[1]];
                         contact.Position = strRowValues[valueIndexes[2]];
                         contact.Country = strRowValues[valueIndexes[3]];
                         contact.Email = strRowValues[valueIndexes[4]];
+
+                        CheckContact(contact);
                         result.Add(contact);
                     }
                     return result;
@@ -489,40 +491,79 @@ namespace CRM.WebApp.Infrastructure
 
         }
 
-        static List<ContactRequestModel> ReadCSVFile(string filePath)
+        static List<Contact> ReadCSVFile(string filePath)
         {
-            string[] CSVLines = File.ReadAllLines(filePath);
-            string[] columnNames = CSVLines[0].Split(';', ',');
-
-            int[] ColumnPositions = new int[columnNames.Length];
-            ColumnPositions[0] = Array.IndexOf(columnNames, "FullName");
-            ColumnPositions[1] = Array.IndexOf(columnNames, "CompanyName");
-            ColumnPositions[2] = Array.IndexOf(columnNames, "Position");
-            ColumnPositions[3] = Array.IndexOf(columnNames, "Country");
-            ColumnPositions[4] = Array.IndexOf(columnNames, "Email");
-
-            if (ColumnPositions.Contains(-1))
+            try
             {
-                throw new FileNotFoundException("Wrong column names in CSV");
-            }
+                string[] CSVLines = File.ReadAllLines(filePath);
+                string[] columnNames = CSVLines[0].Split(';', ',');
 
-            List<ContactRequestModel> listOfContactRequests = new List<ContactRequestModel>();
-            string[] CellsOfRow;
+                int[] ColumnPositions = new int[columnNames.Length];
+                ColumnPositions[0] = Array.IndexOf(columnNames, "FullName");
+                ColumnPositions[1] = Array.IndexOf(columnNames, "CompanyName");
+                ColumnPositions[2] = Array.IndexOf(columnNames, "Position");
+                ColumnPositions[3] = Array.IndexOf(columnNames, "Country");
+                ColumnPositions[4] = Array.IndexOf(columnNames, "Email");
 
-            for (int i = 1; i < CSVLines.Length; i++)
-            {
-                CellsOfRow = CSVLines[i].Split(';', ',');
-
-                listOfContactRequests.Add(new ContactRequestModel
+                if (ColumnPositions.Contains(-1))
                 {
-                    FullName = CellsOfRow[ColumnPositions[0]],
-                    CompanyName = CellsOfRow[ColumnPositions[1]],
-                    Position = CellsOfRow[ColumnPositions[2]],
-                    Country = CellsOfRow[ColumnPositions[3]],
-                    Email = CellsOfRow[ColumnPositions[4]]
-                });
+                    throw new FileNotFoundException("Wrong column names in CSV");
+                }
+
+                List<Contact> listOfContacts = new List<Contact>();
+                string[] CellsOfRow;
+                Contact tempContact;
+
+                for (int i = 1; i < CSVLines.Length; i++)
+                {
+                    CellsOfRow = CSVLines[i].Split(';', ',');
+                    tempContact = new Contact
+                    {
+                        FullName = CellsOfRow[ColumnPositions[0]],
+                        CompanyName = CellsOfRow[ColumnPositions[1]],
+                        Position = CellsOfRow[ColumnPositions[2]],
+                        Country = CellsOfRow[ColumnPositions[3]],
+                        Email = CellsOfRow[ColumnPositions[4]]
+                    };
+                    CheckContact(tempContact);
+
+                    listOfContacts.Add(tempContact);
+                }
+                return listOfContacts;
             }
-            return listOfContactRequests;
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+
+
+        static void CheckContact(Contact contact)
+        {
+            if (string.IsNullOrEmpty(contact.FullName) || contact.FullName.Length > 100)
+            {
+                throw new FileNotFoundException("Wrong data of FullName");
+            }
+            if (string.IsNullOrEmpty(contact.CompanyName) || contact.CompanyName.Length > 100)
+            {
+                throw new FileNotFoundException("Wrong data of CompanyName");
+            }
+            if (string.IsNullOrEmpty(contact.Position) || contact.Position.Length > 100)
+            {
+                throw new FileNotFoundException("Wrong data of Position");
+            }
+            if (string.IsNullOrEmpty(contact.Country) || contact.Country.Length > 100)
+            {
+                throw new FileNotFoundException("Wrong data of Position");
+            }
+
+            var emailAddress = new EmailAddressAttribute();
+            if (!emailAddress.IsValid(contact.Email))
+            {
+                throw new FileNotFoundException("Wrong data of Email");
+            }
+
         }
 
         #endregion
