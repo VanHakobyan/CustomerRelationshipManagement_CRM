@@ -37,9 +37,9 @@ namespace CRM.WebApp
             if (!File.Exists(fileName))
                 File.Create($"{logEventInfo.TimeStamp}.log");
             var data = File.ReadAllLines(fileName);
-            string path = System.Web.HttpContext.Current?.Request.MapPath("~//Templates//LogMessage.html");
+            string path = HttpContext.Current?.Request.MapPath("~//Templates//LogMessage.html");
             var html = File.ReadAllText(path);
-            string res = "";
+            string res = string.Empty;
             foreach (string s in data)
                 res += s + "</br>";
             var t = html.Replace("{data}", res).Replace("{filename}", fileName);
