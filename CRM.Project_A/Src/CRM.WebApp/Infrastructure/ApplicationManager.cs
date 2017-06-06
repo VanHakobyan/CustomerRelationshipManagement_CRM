@@ -1,6 +1,5 @@
 ﻿using CRM.WebApp.Models;
 using EntityLibrary;
-//using LinqToExcel;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -27,13 +26,12 @@ namespace CRM.WebApp.Infrastructure
     public class ApplicationManager : IDisposable
     {
 
-        // public ApplicationManager(){}
-        DataBaseCRMEntityes db = new DataBaseCRMEntityes();
-        ModelFactory factory = new ModelFactory();
+
+        private readonly DataBaseCRMEntityes db = new DataBaseCRMEntityes();
+        private readonly ModelFactory factory = new ModelFactory();
         #region Contacts
         public async Task<List<ContactResponseModel>> GetAllContacts()
         {
-
             try
             {
                 db.Configuration.LazyLoadingEnabled = false;
@@ -43,11 +41,10 @@ namespace CRM.WebApp.Infrastructure
             }
             catch (EntitySqlException dbEx)
             {
-
                 throw new EntitySqlException(dbEx.Message);
             }
-
         }
+
         public async Task<List<Contact>> GetContactPage(int start, int numberRows, bool flag)
         {
             var query = await db.Contacts.OrderBy(x => x.DateInserted).Skip(start).Take(numberRows).ToListAsync();
@@ -62,7 +59,6 @@ namespace CRM.WebApp.Infrastructure
         public async Task<ContactResponseModel> GetContactByGuid(Guid id)
         {
             var contact = await db.Contacts.FirstOrDefaultAsync(t => t.GuID == id);
-
             return factory.CreateContactResponseModel(contact);
         }
 
@@ -81,6 +77,7 @@ namespace CRM.WebApp.Infrastructure
 
             return ContactsList;
         }
+
         public async Task<bool> UpdateContact(Guid guid, ContactRequestModel contact)
         {
             using (DbContextTransaction transaction = db.Database.BeginTransaction())
@@ -92,7 +89,6 @@ namespace CRM.WebApp.Infrastructure
                 }
                 catch (Exception)
                 {
-
                     throw;
                 }
                 if (dbContactToUpdate == null) return false;
@@ -110,7 +106,6 @@ namespace CRM.WebApp.Infrastructure
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-
                     if (!await ContactExistsAsync(guid))
                     {
                         return false;
@@ -120,7 +115,6 @@ namespace CRM.WebApp.Infrastructure
                         transaction.Rollback();
                         throw;
                     }
-
                 }
                 return true;
             }
@@ -163,16 +157,16 @@ namespace CRM.WebApp.Infrastructure
                 throw;
             }
         }
+
         public async Task<bool> RemoveContactByGuidList(List<Guid> guidlist)
         {
-
             foreach (var item in guidlist)
             {
                 await RemoveContact(item);
             }
             return true;
-
         }
+
         public async Task<bool> ContactExistsAsync(Guid id)
         {
             try
@@ -185,7 +179,6 @@ namespace CRM.WebApp.Infrastructure
             }
         }
         #endregion
-
 
         #region EmailLists
         public async Task<List<EmailListResponseModel>> GetAllEmailLis()
@@ -204,7 +197,7 @@ namespace CRM.WebApp.Infrastructure
 
         public async Task<EmailList> GetEmailListById(int id)
         {
-            return await db.EmailLists.FirstOrDefaultAsync(t => t.EmailListID == id); //factory.CreateEmailResponseModel(email);
+            return await db.EmailLists.FirstOrDefaultAsync(t => t.EmailListID == id); 
         }
 
         public async Task<EmailListResponseModel> AddEmailList(EmailList еmailListForAddOrUpdate, EmailListRequestModel requestEmailListModel)
@@ -236,16 +229,15 @@ namespace CRM.WebApp.Infrastructure
                     else
                         throw;
                 }
-
                 return factory.CreateEmailResponseModel(еmailListForAddOrUpdate);
             }
         }
-        public async Task<EmailListResponseModel> AddAtEmailList(EmailList еmailListForAddOrUpdate,List<Guid> guidList)
+
+        public async Task<EmailListResponseModel> AddAtEmailList(EmailList еmailListForAddOrUpdate, List<Guid> guidList)
         {
             using (DbContextTransaction transaction = db.Database.BeginTransaction())
             {
                 //еmailListForAddOrUpdate.EmailListName = requestEmailListModel.EmailListName;
-
                 if (guidList.Count != 0)
                 {
                     foreach (Guid guid in guidList)
@@ -257,7 +249,6 @@ namespace CRM.WebApp.Infrastructure
                 }
                 try
                 {
-
                     await db.SaveChangesAsync();
                     transaction.Commit();
                 }
@@ -269,7 +260,6 @@ namespace CRM.WebApp.Infrastructure
                     else
                         throw;
                 }
-
                 return factory.CreateEmailResponseModel(еmailListForAddOrUpdate);
             }
         }
@@ -278,7 +268,6 @@ namespace CRM.WebApp.Infrastructure
             using (DbContextTransaction transaction = db.Database.BeginTransaction())
             {
                 //еmailListForAddOrUpdate.EmailListName = guidList.EmailListName;
-
                 if (guidList.Count != 0)
                 {
                     foreach (Guid guid in guidList)
@@ -290,7 +279,6 @@ namespace CRM.WebApp.Infrastructure
                 }
                 try
                 {
-
                     await db.SaveChangesAsync();
                     transaction.Commit();
                 }
@@ -321,9 +309,6 @@ namespace CRM.WebApp.Infrastructure
         }
         #endregion
 
-
-
-
         #region Templates
         public async Task<List<TemplateResponseModel>> GetTemplates()
         {
@@ -331,6 +316,7 @@ namespace CRM.WebApp.Infrastructure
             var response = new List<TemplateResponseModel>();
             return templateList.Select(x => factory.CreateTemplateResponseModel(x)).ToList();
         }
+
         public async Task<bool> TemplateExistsAsync(int id)
         {
             return await db.Templates.CountAsync(e => e.TemplateId == id) > 0;
@@ -346,7 +332,6 @@ namespace CRM.WebApp.Infrastructure
                 try
                 {
                     string tempPath = System.Web.HttpContext.Current?.Request.MapPath("~//Templates");
-                    //  string desctopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
                     List<ContactResponseModel> response = new List<ContactResponseModel>();
                     List<Contact> listOfContacts = null;
@@ -376,9 +361,6 @@ namespace CRM.WebApp.Infrastructure
                     {
                         throw new FileNotFoundException("Wrong extension of file");
                     }
-
-                    //--------------------------
-                    //      List<Contact> resultContacts = listOfContactRequests.Select(s => factory.CreateContact(s)).ToList();
 
                     foreach (var item in listOfContacts)
                     {
@@ -431,8 +413,7 @@ namespace CRM.WebApp.Infrastructure
 
                     foreach (Row r in sheetData.Elements<Row>())
                     {
-                        //    if (i != 1)
-                        //    {
+
                         foreach (Cell c in r.Elements<Cell>())
                         {
                             if (c == null) continue;
@@ -466,7 +447,7 @@ namespace CRM.WebApp.Infrastructure
                             i = i + 1;
                             continue;
                         }
-                        //  }
+
                         j = 0;
                         i = i + 1;
                         if (strRowValues.Any(p => p == null)) continue;
@@ -538,7 +519,6 @@ namespace CRM.WebApp.Infrastructure
 
         }
 
-
         static void CheckContact(Contact contact)
         {
             if (string.IsNullOrEmpty(contact.FullName) || contact.FullName.Length > 100)
@@ -563,11 +543,9 @@ namespace CRM.WebApp.Infrastructure
             {
                 throw new FileNotFoundException("Wrong data of Email");
             }
-
         }
 
         #endregion
-
         public async Task SaveDb()
         {
             await db.SaveChangesAsync();
@@ -577,5 +555,4 @@ namespace CRM.WebApp.Infrastructure
             db.Dispose();
         }
     }
-
 }
