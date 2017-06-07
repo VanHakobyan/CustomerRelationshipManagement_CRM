@@ -647,9 +647,16 @@ namespace CRM.WebApp.Infrastructure
             {
                 try
                 {
-                    await db.Database.ExecuteSqlCommandAsync(@"DELETE FROM Contacts");
-                    await db.Database.ExecuteSqlCommandAsync(@"DELETE FROM EmailLists");
 
+                    var allcontacts = await db.Contacts.DefaultIfEmpty().ToListAsync();
+                    var allEmailLists = await db.EmailLists.DefaultIfEmpty().ToListAsync();
+
+                    if (allcontacts[0] != null)
+                        db.Contacts.RemoveRange(allcontacts);
+                    
+                    if (allEmailLists[0] != null)
+                        db.EmailLists.RemoveRange(allEmailLists);
+                    
                     List<EmailList> startEmailList = new List<EmailList>() { new EmailList() { EmailListName = "StartEmailList" } };
                     List<Contact> startContacts = new List<Contact>()
                     {
