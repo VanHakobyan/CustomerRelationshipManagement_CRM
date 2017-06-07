@@ -9,34 +9,75 @@ using System.Web.Http;
 
 namespace CRM.WebApp.Controllers
 {
+    [RoutePrefix("api/Account")]
     public class AccountController : ApiController
     {
-        ApplicationUserManager manager = HttpContext.Current.GetOwinContext().Get<ApplicationUserManager>();
+        private AuthRepository _repo = null;
 
+        public AccountController()
+        {
+            _repo = new AuthRepository();
+        }
+
+        // POST api/Account/Register
         [AllowAnonymous]
-        [Route("api/account/register")]
-        public async Task<IHttpActionResult> PostRegister([FromBody]RegisterModel model)
+        [Route("Register")]
+        public async Task<IHttpActionResult> Register(UserModel userModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var user = new ApplicationUser()
+            IdentityResult result = await _repo.RegisterUser(userModel);
+
+            IHttpActionResult errorResult = GetErrorResult(result);
+
+            if (errorResult != null)
             {
-                UserName = model.Email,
-                Email = model.Email
-            };
-
-
-            IdentityResult result = await manager.CreateAsync(user, model.Password);
-
-            if (!result.Succeeded)
-            {
-                return BadRequest(result.Errors.ToString());
+                return errorResult;
             }
 
             return Ok();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _repo.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
+
+        private IHttpActionResult GetErrorResult(IdentityResult result)
+        {
+            if (result == null)
+            {
+                return InternalServerError();
+            }
+
+            if (!result.Succeeded)
+            {
+                if (result.Errors != null)
+                {
+                    foreach (string error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error);
+                    }
+                }
+
+                if (ModelState.IsValid)
+                {
+                    // No ModelState errors are available to send, so just return an empty BadRequest.
+                    return BadRequest();
+                }
+
+                return BadRequest(ModelState);
+            }
+
+            return null;
         }
     }
 }

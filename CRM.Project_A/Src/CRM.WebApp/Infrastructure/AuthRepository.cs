@@ -12,21 +12,21 @@ namespace CRM.WebApp.Infrastructure
 {
     public class AuthRepository : IDisposable
     {
-        private ApplicationDbContext _ctx;
+        private AuthContext _ctx;
 
         private UserManager<IdentityUser> _userManager;
 
         public AuthRepository()
         {
-            _ctx = new ApplicationDbContext();
+            _ctx = new AuthContext();
             _userManager = new UserManager<IdentityUser>(new UserStore<IdentityUser>(_ctx));
         }
 
-        public async Task<IdentityResult> RegisterUser(RegisterModel userModel)
+        public async Task<IdentityResult> RegisterUser(UserModel userModel)
         {
             IdentityUser user = new IdentityUser
             {
-                UserName = userModel.Email
+                UserName = userModel.UserName
             };
 
             var result = await _userManager.CreateAsync(user, userModel.Password);

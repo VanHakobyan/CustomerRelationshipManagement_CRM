@@ -201,6 +201,7 @@
     <Compile Include="Controllers\ContactsController.cs" />
     <Compile Include="Controllers\EmailListsController.cs" />
     <Compile Include="Controllers\EmailSenderController.cs" />
+    <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\TemplatesController.cs" />
     <Compile Include="ExceptionCustomFilterAttribute.cs" />
     <Compile Include="Infrastructure\ApplicationManager.cs" />
@@ -210,7 +211,9 @@
     <Compile Include="Infrastructure\ModelFactory.cs" />
     <Compile Include="Infrastructure\ParsingProvider.cs" />
     <Compile Include="Logs\LoggerManager.cs" />
+    <Compile Include="Models\AutoticantionModels\AuthContext.cs" />
     <Compile Include="Models\AutoticantionModels\RegisterModel.cs" />
+    <Compile Include="Models\AutoticantionModels\UserModel.cs" />
     <Compile Include="Models\ContactFilterModel.cs" />
     <Compile Include="Models\ContactRequestModel.cs" />
     <Compile Include="Models\ContactResponseModel.cs" />
@@ -220,6 +223,7 @@
     <Compile Include="Models\TemplateResponseModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Provider\ApplicationOAuthProvider.cs" />
+    <Compile Include="Provider\SimpleAuthorizationServerProvider.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
