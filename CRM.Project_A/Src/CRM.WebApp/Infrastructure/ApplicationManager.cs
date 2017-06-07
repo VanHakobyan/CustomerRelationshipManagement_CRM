@@ -640,6 +640,54 @@ namespace CRM.WebApp.Infrastructure
 
         #endregion
 
+        #region reset
+        public async Task<bool> Reset()
+        {
+            using (DbContextTransaction transaction = db.Database.BeginTransaction())
+            {
+                try
+                {
+
+                    var allcontacts = await db.Contacts.DefaultIfEmpty().ToListAsync();
+                    var allEmailLists = await db.EmailLists.DefaultIfEmpty().ToListAsync();
+
+                    if (allcontacts[0] != null)
+                        db.Contacts.RemoveRange(allcontacts);
+                    
+                    if (allEmailLists[0] != null)
+                        db.EmailLists.RemoveRange(allEmailLists);
+                    
+                    List<EmailList> startEmailList = new List<EmailList>() { new EmailList() { EmailListName = "StartEmailList" } };
+                    List<Contact> startContacts = new List<Contact>()
+                    {
+                        new Contact() { FullName = "Tsovinar Ghazaryan",CompanyName = "VTB Bank",Country = "Armenia",Position = "Credit Controller", Email = "tsovinar.ghazaryan@yahoo.com",EmailLists = startEmailList,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Vanik Hakobyan",CompanyName = "YSU",Country = "Armenia",Position = "Student", Email = "vanhakobyan1996@gmail.com",  EmailLists = startEmailList,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Khachatur Sukiasyan",CompanyName = "Microsoft",Country = "Armenia",Position = "Freelancer", Email = "khachatur124@gmail.com", EmailLists = startEmailList,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Tigran Vardanyan",CompanyName = "Candle",Country = "Switzerland",Position = "Theoretician", Email = "tigran_vardanyan@yahoo.com", EmailLists = startEmailList,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Aram Jamkotchian",CompanyName = "MIC",Country = "Spain",Position = "Lead", Email = "aram532@yandex.ru", EmailLists = startEmailList,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Lusine Hovsepyan",CompanyName = "SCDM GmbH",Country = "Armenia",Position = "Financial Analyst", Email = "lusine@hovsepyan.am", EmailLists = startEmailList,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Gayane Khachatryan",CompanyName = "Khachatryan LLC",Country = "Armenia",Position = "Owner", Email = "gayane.jane@gmail.com", EmailLists = startEmailList,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Aghasi Lorsabyan",CompanyName = "TUMO",Country = "Armenia",Position = "Developer", Email = "lorsabyan@gmail.com", EmailLists = startEmailList,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Narek Yegoryan",CompanyName = "NPUA",Country = "Armenia",Position = "Student", Email = "yegoryan.narek@gmail.com", EmailLists = startEmailList,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Narine Boyakhchyan",CompanyName = "NB LLC",Country = "Armenia",Position = "Director", Email = "narine.boyakhchyan@gmail.com", EmailLists = startEmailList,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Tatevik Begjanyan",CompanyName = "LLC",Country = "Armenia",Position = "Foreign Affairs Manager", Email = "tkbegjanyan@gmail.com", EmailLists = startEmailList,GuID = Guid.NewGuid(),DateInserted = DateTime.Now }
+                     };
+
+                    db.Contacts.AddRange(startContacts);
+                    db.EmailLists.AddRange(startEmailList);
+                    await db.SaveChangesAsync();
+                    transaction.Commit();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    return false;
+                }
+            }
+        }
+        #endregion
+
         public async Task SaveDb()
         {
             await db.SaveChangesAsync();
