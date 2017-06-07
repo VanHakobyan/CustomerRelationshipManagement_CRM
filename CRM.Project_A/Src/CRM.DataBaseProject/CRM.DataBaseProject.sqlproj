@@ -118,6 +118,12 @@
     <Build Include="dbo\Tables\EmailLists.sql" />
     <Build Include="dbo\Tables\Templates.sql" />
     <Build Include="dbo\Stored Procedures\GetByPageProc.sql" />
+    <Build Include="dbo\Tables\__MigrationHistory.sql" />
+    <Build Include="dbo\Tables\AspNetRoles.sql" />
+    <Build Include="dbo\Tables\AspNetUserClaims.sql" />
+    <Build Include="dbo\Tables\AspNetUsers.sql" />
+    <Build Include="dbo\Tables\AspNetUserLogins.sql" />
+    <Build Include="dbo\Tables\AspNetUserRoles.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CRM.DataBaseProject.publish.xml" />

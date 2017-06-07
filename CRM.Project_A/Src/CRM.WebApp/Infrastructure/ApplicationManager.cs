@@ -512,7 +512,7 @@ namespace CRM.WebApp.Infrastructure
                 }
                 return listOfContacts;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -557,20 +557,20 @@ namespace CRM.WebApp.Infrastructure
                 string resultQuery = "SELECT * FROM Contacts";
                 List<string> conditions = new List<string>();
 
-                if (!string.IsNullOrEmpty(contactFilterData.FullName))
-                    conditions.Add($" FullName LIKE '%{contactFilterData.FullName}%'");
+                //if (!string.IsNullOrEmpty(contactFilterData.FullName))
+                //    conditions.Add($" FullName LIKE '%{contactFilterData.FullName}%'");
 
-                if (!string.IsNullOrEmpty(contactFilterData.CompanyName))
-                    conditions.Add($" CompanyName LIKE '%{contactFilterData.CompanyName}%'");
+                //if (!string.IsNullOrEmpty(contactFilterData.CompanyName))
+                //    conditions.Add($" CompanyName LIKE '%{contactFilterData.CompanyName}%'");
 
-                if (!string.IsNullOrEmpty(contactFilterData.Position))
-                    conditions.Add($" Position LIKE '%{contactFilterData.Position}%'");
+                //if (!string.IsNullOrEmpty(contactFilterData.Position))
+                //    conditions.Add($" Position LIKE '%{contactFilterData.Position}%'");
 
-                if (!string.IsNullOrEmpty(contactFilterData.Country))
-                    conditions.Add($" Country LIKE '%{contactFilterData.Country}%'");
+                //if (!string.IsNullOrEmpty(contactFilterData.Country))
+                //    conditions.Add($" Country LIKE '%{contactFilterData.Country}%'");
 
-                if (!string.IsNullOrEmpty(contactFilterData.Email))
-                    conditions.Add($" Email LIKE '%{contactFilterData.Email}%'");
+                //if (!string.IsNullOrEmpty(contactFilterData.Email))
+                //    conditions.Add($" Email LIKE '%{contactFilterData.Email}%'");
 
                 if (conditions.Count != 0)
                 {

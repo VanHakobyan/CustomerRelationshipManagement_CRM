@@ -9,6 +9,14 @@
         <EntityTypeShape EntityType="crmAModel.EmailList" Width="1.5" PointX="3" PointY="1.5" IsExpanded="true" />
         <EntityTypeShape EntityType="crmAModel.Template" Width="1.5" PointX="6.5" PointY="1.75" IsExpanded="true" />
         <AssociationConnector Association="crmAModel.EmailListContacts" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="crmAModel.C__MigrationHistory" Width="1.5" PointX="7.875" PointY="6.5" />
+        <EntityTypeShape EntityType="crmAModel.AspNetRole" Width="1.5" PointX="0.75" PointY="6.5" />
+        <EntityTypeShape EntityType="crmAModel.AspNetUserClaim" Width="1.5" PointX="5.25" PointY="7.625" />
+        <EntityTypeShape EntityType="crmAModel.AspNetUserLogin" Width="1.5" PointX="5.25" PointY="5" />
+        <EntityTypeShape EntityType="crmAModel.AspNetUser" Width="1.5" PointX="3" PointY="5.25" />
+        <AssociationConnector Association="crmAModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="crmAModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="crmAModel.AspNetUserRoles" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
