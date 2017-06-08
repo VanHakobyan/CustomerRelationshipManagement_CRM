@@ -12,6 +12,7 @@ using System.Web.Http;
 namespace CRM.WebApp.Controllers
 {
     [ExceptionCustomFilter]
+    [Authorize]
     public class EmailSenderController : ApiController
     {
         EmailProvider provider = new EmailProvider();

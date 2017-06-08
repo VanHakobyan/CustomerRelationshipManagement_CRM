@@ -17,6 +17,8 @@ using System.Net.Http.Headers;
 
 namespace CRM.WebApp.Controllers
 {
+    [ExceptionCustomFilterAttribute]
+    //[Authorize]
     public class TemplatesController : ApiController
     {
         private readonly ApplicationManager manager = new ApplicationManager();

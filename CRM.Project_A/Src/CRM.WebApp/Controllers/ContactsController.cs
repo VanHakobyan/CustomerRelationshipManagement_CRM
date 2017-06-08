@@ -18,6 +18,7 @@ using System.Text.RegularExpressions;
 namespace CRM.WebApp.Controllers
 {
     [ExceptionCustomFilterAttribute]
+    [Authorize]
     public class ContactsController : ApiController
     {
         private ApplicationManager manager = new ApplicationManager();
@@ -39,7 +40,7 @@ namespace CRM.WebApp.Controllers
         }
 
         // GET: api/Contacts/guid
-        [ResponseType(typeof(Contact)),Route("api/Contacts/{id}")]
+        [ResponseType(typeof(Contact)), Route("api/Contacts/{id}")]
         public async Task<HttpResponseMessage> GetContactGuid([FromUri]Guid id)
         {
             var contact = await manager.GetContactByGuid(id);
@@ -58,7 +59,7 @@ namespace CRM.WebApp.Controllers
 
         //PUT: api/Contacts/5
         [ResponseType(typeof(void))]
-        [HttpPut,Route("api/contacts/{guid}")]
+        [HttpPut, Route("api/contacts/{guid}")]
         public async Task<HttpResponseMessage> PutContact(Guid guid, [FromBody] ContactRequestModel contact)
         {
             //if (!manager.RegexEmail(contact.Email))
@@ -91,7 +92,7 @@ namespace CRM.WebApp.Controllers
         [ResponseType(typeof(ContactResponseModel))]
         public async Task<HttpResponseMessage> DeleteContact([FromBody]List<Guid> guid)
         {
-            if (!await manager.RemoveContactByGuidList(guid) )
+            if (!await manager.RemoveContactByGuidList(guid))
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             if (guid.Count == 0)
                 return Request.CreateResponse(HttpStatusCode.NotImplemented);

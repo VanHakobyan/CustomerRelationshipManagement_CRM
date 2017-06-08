@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System.Collections.Generic;
 using System.Web.Http;
 
 namespace CRM.WebApp.Controllers
@@ -32,11 +28,11 @@ namespace CRM.WebApp.Controllers
         {
             List<Order> OrderList = new List<Order>
             {
-                new Order {OrderID = 10248, CustomerName = "Taiseer Joudeh", ShipperCity = "Amman", IsShipped = true },
-                new Order {OrderID = 10249, CustomerName = "Ahmad Hasan", ShipperCity = "Dubai", IsShipped = false},
-                new Order {OrderID = 10250,CustomerName = "Tamer Yaser", ShipperCity = "Jeddah", IsShipped = false },
-                new Order {OrderID = 10251,CustomerName = "Lina Majed", ShipperCity = "Abu Dhabi", IsShipped = false},
-                new Order {OrderID = 10252,CustomerName = "Yasmeen Rami", ShipperCity = "Kuwait", IsShipped = true}
+                new Order {OrderID = 10248, CustomerName = "Tsovinar Ghazaryan", ShipperCity = "Madrid", IsShipped = true },
+                new Order {OrderID = 10249, CustomerName = "Khachik Sukiasyan", ShipperCity = "Dubai", IsShipped = false},
+                new Order {OrderID = 10250,CustomerName = "Tatevik Begjanyan", ShipperCity = "Jeddah", IsShipped = false },
+                new Order {OrderID = 10251,CustomerName = "Narine Boyakchyan", ShipperCity = "Abu Dhabi", IsShipped = false},
+                new Order {OrderID = 10252,CustomerName = "Zara Muradyan", ShipperCity = "Kuwait", IsShipped = true}
             };
 
             return OrderList;

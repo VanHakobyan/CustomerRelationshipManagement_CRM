@@ -17,6 +17,7 @@ using System.Web;
 namespace CRM.WebApp.Controllers
 {
     [ExceptionCustomFilterAttribute]
+    //[Authorize]
     public class EmailListsController : ApiController
     {
         private ApplicationManager manager = new ApplicationManager();
