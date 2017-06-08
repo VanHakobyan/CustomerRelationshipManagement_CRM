@@ -23,9 +23,8 @@ namespace CRM.WebApp.Infrastructure
         {
             try
             {
-                db.Configuration.LazyLoadingEnabled = false;
+                //db.Configuration.LazyLoadingEnabled = false;
                 List<Contact> dbContactList = await db.Contacts.ToListAsync();
-                List<ContactResponseModel> responseContactList = new List<ContactResponseModel>();
                 return dbContactList.Select(x => factory.CreateContactResponseModel(x)).ToList();
             }
             catch (EntitySqlException dbEx)

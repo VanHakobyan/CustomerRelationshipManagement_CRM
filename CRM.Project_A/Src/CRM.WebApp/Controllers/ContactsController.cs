@@ -18,10 +18,14 @@ namespace CRM.WebApp.Controllers
         private ApplicationManager manager = new ApplicationManager();
         private ParsingProvider provider = new ParsingProvider();
         private LoggerManager logger = new LoggerManager();
+
         // GET: api/Contacts
         public async Task<HttpResponseMessage> GetContacts()
         {
-            return Request.CreateResponse(HttpStatusCode.OK, await manager.GetAllContacts());
+            List<ContactResponseModel> contacts = await manager.GetAllContacts();
+            if (contacts == null)
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            return Request.CreateResponse(HttpStatusCode.OK, contacts);
         }
 
         // GET: api/Contacts/paje
