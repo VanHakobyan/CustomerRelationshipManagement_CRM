@@ -112,6 +112,16 @@ namespace CRM.WebApp.Controllers
 
             return Request.CreateResponse(HttpStatusCode.OK, response);
         }
+        [Route("api/Contacts/reset"), HttpGet]
+        public async Task<HttpResponseMessage> GetReset()
+        {
+            bool result = await manager.Reset();
+            if (result)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            return Request.CreateResponse(HttpStatusCode.BadRequest);
+        }
 
         protected override void Dispose(bool disposing)
         {

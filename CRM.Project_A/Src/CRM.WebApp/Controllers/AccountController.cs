@@ -10,6 +10,8 @@ namespace CRM.WebApp.Controllers
     [ExceptionCustomFilterAttribute]
     public class AccountController : ApiController
     {
+        private ApplicationManager manager = new ApplicationManager();
+
         private AuthRepository _repo = null;
 
         public AccountController()
@@ -19,7 +21,7 @@ namespace CRM.WebApp.Controllers
 
         // POST api/Account/Register
         [AllowAnonymous]
-        [Route("Register"),HttpPost]
+        [Route("Register"), HttpPost]
         public async Task<IHttpActionResult> Register(UserModel userModel)
         {
             if (!ModelState.IsValid)
@@ -38,6 +40,7 @@ namespace CRM.WebApp.Controllers
 
             return Ok();
         }
+
 
         protected override void Dispose(bool disposing)
         {

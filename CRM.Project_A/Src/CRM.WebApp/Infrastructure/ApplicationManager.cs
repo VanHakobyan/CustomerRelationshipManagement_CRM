@@ -410,7 +410,6 @@ namespace CRM.WebApp.Infrastructure
             {
                 try
                 {
-
                     var allcontacts = await db.Contacts.DefaultIfEmpty().ToListAsync();
                     var allEmailLists = await db.EmailLists.DefaultIfEmpty().ToListAsync();
 
@@ -420,24 +419,38 @@ namespace CRM.WebApp.Infrastructure
                     if (allEmailLists[0] != null)
                         db.EmailLists.RemoveRange(allEmailLists);
 
-                    List<EmailList> startEmailList = new List<EmailList>() { new EmailList() { EmailListName = "StartEmailList" } };
+                    List<EmailList> TeamA = new List<EmailList>() { new EmailList() { EmailListName = "Team A" } };
+                    List<EmailList> BetConstract = new List<EmailList>() { new EmailList() { EmailListName = "BetConstract" } };
+                    List<EmailList> OtherPeople = new List<EmailList>() { new EmailList() { EmailListName = "Other teams' people" } };
+
                     List<Contact> startContacts = new List<Contact>()
                     {
-                        new Contact() { FullName = "Tsovinar Ghazaryan",CompanyName = "VTB Bank",Country = "Armenia",Position = "Credit Controller", Email = "tsovinar.ghazaryan@yahoo.com",EmailLists = startEmailList,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
-                        new Contact() { FullName = "Vanik Hakobyan",CompanyName = "YSU",Country = "Armenia",Position = "Student", Email = "vanhakobyan1996@gmail.com",  EmailLists = startEmailList,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
-                        new Contact() { FullName = "Khachatur Sukiasyan",CompanyName = "Microsoft",Country = "Armenia",Position = "Freelancer", Email = "khachatur124@gmail.com", EmailLists = startEmailList,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
-                        new Contact() { FullName = "Tigran Vardanyan",CompanyName = "Candle",Country = "Switzerland",Position = "Theoretician", Email = "tigran_vardanyan@yahoo.com", EmailLists = startEmailList,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
-                        new Contact() { FullName = "Aram Jamkotchian",CompanyName = "MIC",Country = "Spain",Position = "Lead", Email = "aram532@yandex.ru", EmailLists = startEmailList,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
-                        new Contact() { FullName = "Lusine Hovsepyan",CompanyName = "SCDM GmbH",Country = "Armenia",Position = "Financial Analyst", Email = "lusine@hovsepyan.am", EmailLists = startEmailList,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
-                        new Contact() { FullName = "Gayane Khachatryan",CompanyName = "Khachatryan LLC",Country = "Armenia",Position = "Owner", Email = "gayane.jane@gmail.com", EmailLists = startEmailList,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
-                        new Contact() { FullName = "Aghasi Lorsabyan",CompanyName = "TUMO",Country = "Armenia",Position = "Developer", Email = "lorsabyan@gmail.com", EmailLists = startEmailList,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
-                        new Contact() { FullName = "Narek Yegoryan",CompanyName = "NPUA",Country = "Armenia",Position = "Student", Email = "yegoryan.narek@gmail.com", EmailLists = startEmailList,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
-                        new Contact() { FullName = "Narine Boyakhchyan",CompanyName = "NB LLC",Country = "Armenia",Position = "Director", Email = "narine.boyakhchyan@gmail.com", EmailLists = startEmailList,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
-                        new Contact() { FullName = "Tatevik Begjanyan",CompanyName = "LLC",Country = "Armenia",Position = "Foreign Affairs Manager", Email = "tkbegjanyan@gmail.com", EmailLists = startEmailList,GuID = Guid.NewGuid(),DateInserted = DateTime.Now }
+                        new Contact() { FullName = "Tsovinar Ghazaryan",CompanyName = "VTB Bank",Country = "Armenia",Position = "Credit Controller", Email = "tsovinar.ghazaryan@yahoo.com",EmailLists = TeamA,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Vanik Hakobyan",CompanyName = "YSU",Country = "Armenia",Position = "Student", Email = "vanhakobyan1996@gmail.com",  EmailLists = TeamA,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Khachatur Sukiasyan",CompanyName = "Microsoft",Country = "Armenia",Position = "Freelancer", Email = "khachatur124@gmail.com", EmailLists = TeamA,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Narine Boyakhchyan",CompanyName = "NB LLC",Country = "Armenia",Position = "Director", Email = "narine.boyakhchyan@gmail.com", EmailLists = TeamA,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Tatevik Begjanyan",CompanyName = "TB LLC",Country = "Armenia",Position = "Foreign Affairs Manager", Email = "tkbegjanyan@gmail.com", EmailLists = TeamA,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Zara Muradyan",CompanyName = "ZM LLC",Country = "Armenia",Position = "Director", Email = "zara.muradyann@gmail.com", EmailLists = TeamA,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+
+                        new Contact() { FullName = "Tigran Vardanyan",CompanyName = "Candle",Country = "Switzerland",Position = "Theoretician", Email = "tigran_vardanyan@yahoo.com", EmailLists = OtherPeople,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Aram Jamkotchian",CompanyName = "MIC",Country = "Spain",Position = "Lead", Email = "aram532@yandex.ru", EmailLists = OtherPeople,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Lusine Hovsepyan",CompanyName = "SCDM GmbH",Country = "Armenia",Position = "Financial Analyst", Email = "lusine@hovsepyan.am", EmailLists = OtherPeople,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Gayane Khachatryan",CompanyName = "Khachatryan LLC",Country = "Armenia",Position = "Owner", Email = "gayane.jane@gmail.com", EmailLists = OtherPeople,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Narek Yegoryan",CompanyName = "NPUA",Country = "Armenia",Position = "Student", Email = "yegoryan.narek@gmail.com", EmailLists = OtherPeople,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Lusine Khachatryan",CompanyName = "LK LLC",Country = "Armenia",Position = "Director", Email = "luskhachatryann@gmail.com", EmailLists = OtherPeople,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+
+                        new Contact() { FullName = "George Voyatzis",CompanyName = "BetConstruct",Country = "London - United Kingdom",Position = "Commercial Director", Email = "g.voyatzis@betconstruct.com", EmailLists = BetConstract,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Anna Poghosyan",CompanyName = "BetConstruct",Country = "Yerevan - Armenia",Position = "International Development Director", Email = "a.poghosyan@betconstruct.com", EmailLists = BetConstract,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Anna Shahbazyan",CompanyName = "BetConstruct",Country = "Montevideo - Uruguay",Position = "Regional Director", Email = "a.shahbazyan@betconstruct.com", EmailLists = BetConstract,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Samvel Nersisyan",CompanyName = "BetConstruct",Country = "Yerevan - Armenia",Position = "Head of Business Development", Email = "samvel.nersisyan@betconstruct.com", EmailLists = BetConstract,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Zorair Asadour",CompanyName = "BetConstruct",Country = "Cape Town - South Africa",Position = "Regional Director", Email = "z.asadour@betconstruct.com", EmailLists = BetConstract,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Stephan Mamikonjan",CompanyName = "BetConstruct",Country = "Vienna - Austria",Position = "Regional Director", Email = "stephan.mamikonjan@betconstruct.com", EmailLists = BetConstract,GuID = Guid.NewGuid(),DateInserted = DateTime.Now }
                      };
 
                     db.Contacts.AddRange(startContacts);
-                    db.EmailLists.AddRange(startEmailList);
+                    db.EmailLists.AddRange(BetConstract);
+                    db.EmailLists.AddRange(OtherPeople);
+
                     await db.SaveChangesAsync();
                     transaction.Commit();
                     return true;
@@ -450,6 +463,7 @@ namespace CRM.WebApp.Infrastructure
             }
         }
         #endregion
+     
 
         public async Task SaveDb()
         {

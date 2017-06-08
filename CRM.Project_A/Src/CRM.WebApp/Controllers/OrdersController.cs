@@ -30,8 +30,8 @@ namespace CRM.WebApp.Controllers
             List<Order> OrderList = new List<Order>
             {
                 new Order {OrderID = 10248, CustomerName = "Tsovinar Ghazaryan", ShipperCity = "Madrid", IsShipped = true },
-                new Order {OrderID = 10249, CustomerName = "Khachik Sukiasyan", ShipperCity = "Dubai", IsShipped = false},
-                new Order {OrderID = 10250,CustomerName = "Tatevik Begjanyan", ShipperCity = "Jeddah", IsShipped = false },
+                new Order {OrderID = 10249, CustomerName = "Khachik Sukiasyan", ShipperCity = "London", IsShipped = false},
+                new Order {OrderID = 10250,CustomerName = "Tatevik Begjanyan", ShipperCity = "Paris", IsShipped = false },
                 new Order {OrderID = 10251,CustomerName = "Narine Boyakchyan", ShipperCity = "Abu Dhabi", IsShipped = false},
                 new Order {OrderID = 10252,CustomerName = "Zara Muradyan", ShipperCity = "Kuwait", IsShipped = true}
             };
