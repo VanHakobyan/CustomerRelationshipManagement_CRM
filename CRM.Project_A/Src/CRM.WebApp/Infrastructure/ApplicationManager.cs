@@ -17,6 +17,7 @@ namespace CRM.WebApp.Infrastructure
 
         private readonly DataBaseCRMEntityes db = new DataBaseCRMEntityes();
         private readonly ModelFactory factory = new ModelFactory();
+
         #region Contacts
         public async Task<List<ContactResponseModel>> GetAllContacts()
         {
@@ -311,7 +312,7 @@ namespace CRM.WebApp.Infrastructure
         }
         #endregion
 
-        #region filtering
+        #region Filtering
         public async Task<List<ContactResponseModel>> GetFilteredContacts(ContactFilterModel contactFilterData, string[] orderParams)
         {
             return await Task.Run(() =>
@@ -403,7 +404,7 @@ namespace CRM.WebApp.Infrastructure
 
         #endregion
 
-        #region reset
+        #region Reset
         public async Task<bool> Reset()
         {
             using (DbContextTransaction transaction = db.Database.BeginTransaction())
@@ -420,16 +421,16 @@ namespace CRM.WebApp.Infrastructure
                         db.EmailLists.RemoveRange(allEmailLists);
 
                     List<EmailList> TeamA = new List<EmailList>() { new EmailList() { EmailListName = "Team A" } };
-                    List<EmailList> BetConstract = new List<EmailList>() { new EmailList() { EmailListName = "BetConstract" } };
+                    List<EmailList> BetConstract = new List<EmailList>() { new EmailList() { EmailListName = "BetConstruct" } };
                     List<EmailList> OtherPeople = new List<EmailList>() { new EmailList() { EmailListName = "Other teams' people" } };
 
                     List<Contact> startContacts = new List<Contact>()
                     {
-                        new Contact() { FullName = "Tsovinar Ghazaryan",CompanyName = "VTB Bank",Country = "Armenia",Position = "Credit Controller", Email = "tsovinar.ghazaryan@yahoo.com",EmailLists = TeamA,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
                         new Contact() { FullName = "Vanik Hakobyan",CompanyName = "YSU",Country = "Armenia",Position = "Student", Email = "vanhakobyan1996@gmail.com",  EmailLists = TeamA,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
                         new Contact() { FullName = "Khachatur Sukiasyan",CompanyName = "Microsoft",Country = "Armenia",Position = "Freelancer", Email = "khachatur124@gmail.com", EmailLists = TeamA,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
-                        new Contact() { FullName = "Narine Boyakhchyan",CompanyName = "NB LLC",Country = "Armenia",Position = "Director", Email = "narine.boyakhchyan@gmail.com", EmailLists = TeamA,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Tsovinar Ghazaryan",CompanyName = "VTB Bank",Country = "Armenia",Position = "Credit Controller", Email = "tsovinar.ghazaryan@yahoo.com",EmailLists = TeamA,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
                         new Contact() { FullName = "Tatevik Begjanyan",CompanyName = "TB LLC",Country = "Armenia",Position = "Foreign Affairs Manager", Email = "tkbegjanyan@gmail.com", EmailLists = TeamA,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
+                        new Contact() { FullName = "Narine Boyakhchyan",CompanyName = "NB LLC",Country = "Armenia",Position = "Director", Email = "narine.boyakhchyan@gmail.com", EmailLists = TeamA,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
                         new Contact() { FullName = "Zara Muradyan",CompanyName = "ZM LLC",Country = "Armenia",Position = "Director", Email = "zara.muradyann@gmail.com", EmailLists = TeamA,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
 
                         new Contact() { FullName = "Tigran Vardanyan",CompanyName = "Candle",Country = "Switzerland",Position = "Theoretician", Email = "tigran_vardanyan@yahoo.com", EmailLists = OtherPeople,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
@@ -463,12 +464,7 @@ namespace CRM.WebApp.Infrastructure
             }
         }
         #endregion
-     
-
-        public async Task SaveDb()
-        {
-            await db.SaveChangesAsync();
-        }
+       
         public void Dispose()
         {
             db.Dispose();

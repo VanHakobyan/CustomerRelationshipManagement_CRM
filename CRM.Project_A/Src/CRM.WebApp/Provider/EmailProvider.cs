@@ -37,20 +37,12 @@ namespace CRM.WebApp.Infrastructure
             using (MailMessage msg = new MailMessage())
             {
 
-                msg.From = new MailAddress("vanhakobyan1996@gmail.com");
                 msg.To.Add(contact.Email);
                 msg.Subject = "BetConstruct Team BETA";
                 msg.IsBodyHtml = true;
                 msg.Body = GetMessageText(TemplateID, contact);
-                SmtpClient client =
-                new SmtpClient
-                {
-                    Host = "smtp.gmail.com",
-                    Port = 587,
-                    EnableSsl = true,
-                    UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential("vanhakobyan1996@gmail.com", "snt606580")
-                };
+
+                SmtpClient client = new SmtpClient();
 
                 try
                 {
