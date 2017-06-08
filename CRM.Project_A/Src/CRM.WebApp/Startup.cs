@@ -1,16 +1,8 @@
-﻿using CRM.WebApp.Infrastructure;
-using CRM.WebApp.Models;
-using CRM.WebApp.Provider;
+﻿using CRM.WebApp.Provider;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.OAuth;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using Owin;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Formatting;
-using System.Web;
 using System.Web.Http;
 
 [assembly: OwinStartup(typeof(CRM.WebApp.Startup))]
@@ -31,13 +23,19 @@ namespace CRM.WebApp
 
         //    app.UseWebApi(httpConfig);
         //}
+
         public void Configuration(IAppBuilder app)
         {
             ConfigureOAuth(app);
+
             app.UseWelcomePage("/");
+
             HttpConfiguration config = new HttpConfiguration();
+
             WebApiConfig.Register(config);
+
             app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
+
             app.UseWebApi(config);
         }
         private void ConfigureWebApi(HttpConfiguration config)
@@ -51,29 +49,6 @@ namespace CRM.WebApp
             //var jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>().First();
             //jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
         }
-
-        //private void ConfigureOAuth(IAppBuilder app)
-        //{
-        //    app.CreatePerOwinContext(ApplicationDbContext.Create);
-        //    app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
-
-        //    var options = new OAuthAuthorizationServerOptions
-        //    {
-        //        AllowInsecureHttp = true,
-        //        TokenEndpointPath = new PathString("/api/token"),
-        //        AccessTokenExpireTimeSpan = TimeSpan.FromDays(1),
-        //        Provider = new ApplicationOAuthProvider()
-        //    };
-
-        //    app.UseOAuthAuthorizationServer(options);
-        //    app.UseOAuthBearerAuthentication
-        //    (
-        //        new OAuthBearerAuthenticationOptions
-        //        {
-        //            Provider = new OAuthBearerAuthenticationProvider()
-        //        }
-        //    );
-        //}
        
 
         public void ConfigureOAuth(IAppBuilder app)
@@ -105,9 +80,6 @@ namespace CRM.WebApp
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
-
-            //var jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>().First();
-            //jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
         }
     }
 }

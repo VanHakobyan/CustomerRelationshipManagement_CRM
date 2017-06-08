@@ -185,7 +185,7 @@ namespace CRM.WebApp.Infrastructure
 
         public async Task<EmailList> GetEmailListById(int id)
         {
-            return await db.EmailLists.FirstOrDefaultAsync(t => t.EmailListID == id); 
+            return await db.EmailLists.FirstOrDefaultAsync(t => t.EmailListID == id);
         }
 
         public async Task<EmailListResponseModel> AddEmailList(EmailList еmailListForAddOrUpdate, EmailListRequestModel requestEmailListModel)
@@ -311,7 +311,6 @@ namespace CRM.WebApp.Infrastructure
         }
         #endregion
 
-        
         #region filtering
         public async Task<List<ContactResponseModel>> GetFilteredContacts(ContactFilterModel contactFilterData, string[] orderParams)
         {
@@ -417,10 +416,10 @@ namespace CRM.WebApp.Infrastructure
 
                     if (allcontacts[0] != null)
                         db.Contacts.RemoveRange(allcontacts);
-                    
+
                     if (allEmailLists[0] != null)
                         db.EmailLists.RemoveRange(allEmailLists);
-                    
+
                     List<EmailList> startEmailList = new List<EmailList>() { new EmailList() { EmailListName = "StartEmailList" } };
                     List<Contact> startContacts = new List<Contact>()
                     {
