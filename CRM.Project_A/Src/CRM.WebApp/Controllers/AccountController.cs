@@ -1,15 +1,13 @@
 ﻿using CRM.WebApp.Infrastructure;
-using CRM.WebApp.Models;
 using CRM.WebApp.Models.AutoticantionModels;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Http;
 
 namespace CRM.WebApp.Controllers
 {
     [RoutePrefix("api/Account")]
+    [ExceptionCustomFilterAttribute]
     public class AccountController : ApiController
     {
         private AuthRepository _repo = null;

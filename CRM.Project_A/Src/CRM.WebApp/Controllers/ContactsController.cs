@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -13,15 +9,14 @@ using CRM.WebApp.Models;
 using System.Threading.Tasks;
 using CRM.WebApp.Infrastructure;
 
-using System.Text.RegularExpressions;
-
 namespace CRM.WebApp.Controllers
 {
     [ExceptionCustomFilterAttribute]
-    [Authorize]
+    //[Authorize]
     public class ContactsController : ApiController
     {
         private ApplicationManager manager = new ApplicationManager();
+        private ParsingProvider provider = new ParsingProvider();
         private LoggerManager logger = new LoggerManager();
         // GET: api/Contacts
         public async Task<HttpResponseMessage> GetContacts()
@@ -103,7 +98,7 @@ namespace CRM.WebApp.Controllers
         public async Task<HttpResponseMessage> PostContactUpload()
         {
             List<ContactResponseModel> response;
-            response = await manager.AddContactsFromFile(Request);
+            response = await provider.AddContactsFromFile(Request);
             return Request.CreateResponse(HttpStatusCode.OK, response);
         }
 

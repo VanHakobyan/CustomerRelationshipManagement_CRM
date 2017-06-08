@@ -3,6 +3,7 @@ using System.Web.Http;
 
 namespace CRM.WebApp.Controllers
 {
+    [ExceptionCustomFilterAttribute]
     [RoutePrefix("api/Orders")]
     public class OrdersController : ApiController
     {
@@ -16,7 +17,7 @@ namespace CRM.WebApp.Controllers
     }
 
     #region Helpers
-
+    [ExceptionCustomFilterAttribute]
     public class Order
     {
         public int OrderID { get; set; }

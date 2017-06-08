@@ -49,7 +49,12 @@ namespace CRM.WebApp
 
             else if (context.Exception is NotImplementedException)
             {
-                context.Response = new HttpResponseMessage(HttpStatusCode.NotImplemented);
+
+                context.Response = new HttpResponseMessage(HttpStatusCode.NotImplemented)
+                {
+                    Content = new StringContent(string.Format($"{context.Exception.Message}\n{context.Exception.InnerException?.Message}")),
+                    ReasonPhrase = "throwed Not Implemented Exception",
+                };
             }
             else if (context.Exception is IOException)
             {
