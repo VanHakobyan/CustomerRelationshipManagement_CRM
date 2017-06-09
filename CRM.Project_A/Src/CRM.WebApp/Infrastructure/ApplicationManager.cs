@@ -421,7 +421,7 @@ namespace CRM.WebApp.Infrastructure
 
                     List<EmailList> TeamA = new List<EmailList>() { new EmailList() { EmailListName = "Team A" } };
                     List<EmailList> BetConstract = new List<EmailList>() { new EmailList() { EmailListName = "BetConstruct" } };
-                    List<EmailList> OtherPeople = new List<EmailList>() { new EmailList() { EmailListName = "Other teams' people" } };
+                    List<EmailList> OtherPeople = new List<EmailList>() { new EmailList() { EmailListName = "Other team members" } };
 
                     List<Contact> startContacts = new List<Contact>()
                     {
