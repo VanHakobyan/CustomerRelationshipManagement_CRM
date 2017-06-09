@@ -14,21 +14,27 @@ namespace CRM.WebApp.Infrastructure
 {
     public class EmailProvider
     {
-        DataBaseCRMEntityes db = new DataBaseCRMEntityes();
-        ModelFactory factory = new ModelFactory();
+        private readonly DataBaseCRMEntityes db = new DataBaseCRMEntityes();
+        private readonly ModelFactory factory = new ModelFactory();
         private string GetMessageText(int templateId, ContactResponseModel contact)
         {
-            //var template = await db.Templates.FindAsync(templateId);
-            var template = db.Templates.Find(templateId);
-            string path = HttpContext.Current?.Request.MapPath(template.Path);
-            var templateText = File.ReadAllText(path);
-            return
-                templateText.Replace("{FullName}", contact.FullName)
-                    .Replace("{CompanyName}", contact.CompanyName)
-                    .Replace("{Position}", contact.Position)
-                    .Replace("{Country}", contact.Country)
-                    .Replace("{Email}", contact.Email)
-                    .Replace("{DateTimeNow}", DateTime.UtcNow.ToString());
+            try
+            {
+                var template = db.Templates.Find(templateId);
+                string path = HttpContext.Current?.Request.MapPath(template.Path);
+                var templateText = File.ReadAllText(path);
+                return
+                    templateText.Replace("{FullName}", contact.FullName)
+                        .Replace("{CompanyName}", contact.CompanyName)
+                        .Replace("{Position}", contact.Position)
+                        .Replace("{Country}", contact.Country)
+                        .Replace("{Email}", contact.Email)
+                        .Replace("{DateTimeNow}", DateTime.UtcNow.ToString());
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public void SendEmail(ContactResponseModel contact, int TemplateID)//List<Contact> list)

@@ -9,7 +9,7 @@ using System.Web.Http;
 
 namespace CRM.WebApp.Controllers
 {
-    [ExceptionCustomFilter]
+    [ExceptionCustomFilterAttribute]
     //[Authorize]
     public class EmailSenderController : ApiController
     {
@@ -32,7 +32,7 @@ namespace CRM.WebApp.Controllers
                 return BadRequest(ex.Message);
 
             }
-            return Ok("thank you for your request email ");
+            return Ok("Thank you!!! ");
         }
         [Route("api/EmailSender/{EmailListId}/{TemplateId}")]
         public async Task<HttpResponseMessage> PostSendEmailList(int emailListId, int TemplateId)

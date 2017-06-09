@@ -20,7 +20,6 @@ namespace CRM.WebApp.Infrastructure
                 Country = crmRequest.Country,
                 Email = crmRequest.Email,
                 Guid = Guid.NewGuid(),
-                //DateInserted = DateTime.UtcNow,
                 EmailLists = new List<string>()
             };
         }

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using System.Web.Http.Description;
-using EntityLibrary;
 using CRM.WebApp.Models;
 using System.Threading.Tasks;
 using CRM.WebApp.Infrastructure;
@@ -29,7 +27,6 @@ namespace CRM.WebApp.Controllers
         }
 
         // GET: api/Contacts/paje
-        [ResponseType(typeof(Contact))]
         public async Task<HttpResponseMessage> GetContact(int start, int numberRows, bool flag)
         {
             var contact = await manager.GetContactPage(start, numberRows, flag);
@@ -39,7 +36,7 @@ namespace CRM.WebApp.Controllers
         }
 
         // GET: api/Contacts/guid
-        [ResponseType(typeof(Contact)), Route("api/Contacts/{id}")]
+        [Route("api/Contacts/{id}")]
         public async Task<HttpResponseMessage> GetContactGuid([FromUri]Guid id)
         {
             var contact = await manager.GetContactByGuid(id);
@@ -57,7 +54,6 @@ namespace CRM.WebApp.Controllers
         }
 
         //PUT: api/Contacts/5
-        [ResponseType(typeof(void))]
         [HttpPut, Route("api/contacts/{guid}")]
         public async Task<HttpResponseMessage> PutContact(Guid guid, [FromBody] ContactRequestModel contact)
         {
@@ -74,7 +70,6 @@ namespace CRM.WebApp.Controllers
 
         }
         // POST: api/Contacts
-        [ResponseType(typeof(ContactRequestModel))]
         public async Task<HttpResponseMessage> PostContact([FromBody]ContactRequestModel contact)
         {
             //if (!manager.RegexEmail(contact.Email))
@@ -88,7 +83,6 @@ namespace CRM.WebApp.Controllers
         }
 
         // DELETE: api/Contacts
-        [ResponseType(typeof(ContactResponseModel))]
         public async Task<HttpResponseMessage> DeleteContact([FromBody]List<Guid> guid)
         {
             if (!await manager.RemoveContactByGuidList(guid))
@@ -98,7 +92,7 @@ namespace CRM.WebApp.Controllers
             return Request.CreateResponse(HttpStatusCode.OK);
         }
 
-        [ResponseType(typeof(ContactRequestModel)), Route("api/Contacts/upload")]
+        [Route("api/Contacts/upload")]
         public async Task<HttpResponseMessage> PostContactUpload()
         {
             List<ContactResponseModel> response;
@@ -107,7 +101,7 @@ namespace CRM.WebApp.Controllers
         }
 
 
-        [ResponseType(typeof(ContactRequestModel)), Route("api/Contacts/filter")]
+        [Route("api/Contacts/filter")]
         public async Task<HttpResponseMessage> PostContactsFilter([FromBody]ContactFilterModel contactFilterData, [FromUri] string[] param)
         {
             List<ContactResponseModel> response = await manager.GetFilteredContacts(contactFilterData, param);
@@ -122,7 +116,7 @@ namespace CRM.WebApp.Controllers
             bool result = await manager.Reset();
             if (result)
             {
-                return Request.CreateResponse(HttpStatusCode.OK);
+                return Request.CreateResponse(HttpStatusCode.OK, "Data Successfully reset");
             }
             return Request.CreateResponse(HttpStatusCode.BadRequest);
         }

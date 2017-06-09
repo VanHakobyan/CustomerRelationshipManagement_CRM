@@ -8,7 +8,6 @@ namespace CRM.WebApp.Controllers
     public class OrdersController : ApiController
     {
         [Authorize]
-      
         public IHttpActionResult Get()
         {
             return Ok(Order.CreateOrders());

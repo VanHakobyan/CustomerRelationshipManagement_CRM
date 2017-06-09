@@ -26,7 +26,7 @@ namespace CRM.WebApp.Controllers
         }
 
         // GET: api/EmailLists/5
-        [ResponseType(typeof(EmailListResponseModel)), Route("api/EmailLists/{id}")]
+        [Route("api/EmailLists/{id}")]
         public async Task<HttpResponseMessage> GetEmailList(int? id)
         {
             var email = await manager.GetEmailListById(id.Value);
@@ -38,8 +38,7 @@ namespace CRM.WebApp.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, factory.CreateEmailResponseModel(email));
         }
 
-
-        [ResponseType(typeof(EmailListResponseModel)), Route("api/EmailLists/add/{id}")]
+        [ Route("api/EmailLists/add/{id}")]
         public async Task<HttpResponseMessage> PutEmailListAdd([FromUri] int id, [FromBody] List<Guid> guidList)
         {
             if (!ModelState.IsValid)
@@ -50,7 +49,7 @@ namespace CRM.WebApp.Controllers
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             return Request.CreateResponse(HttpStatusCode.OK, emailListRes);
         }
-        [ResponseType(typeof(EmailListResponseModel)), Route("api/EmailLists/remove/{id}")]
+        [Route("api/EmailLists/remove/{id}")]
         public async Task<HttpResponseMessage> PutEmailListRemove([FromUri] int id, [FromBody] List<Guid> guidList)
         {
             if (!ModelState.IsValid)
@@ -60,7 +59,6 @@ namespace CRM.WebApp.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, emailListRes);
         }
         // POST: api/EmailLists
-        [ResponseType(typeof(EmailList))]
         public async Task<HttpResponseMessage> PostEmailList([FromBody]EmailListRequestModel emailListRequest)
         {
             if (!ModelState.IsValid)
@@ -72,7 +70,7 @@ namespace CRM.WebApp.Controllers
         }
 
         // DELETE: api/EmailLists/5
-        [ResponseType(typeof(EmailList)), Route("api/EmailLists/delete/{id}")]
+        [Route("api/EmailLists/delete/{id}")]
         public async Task<HttpResponseMessage> DeleteEmailList(int id)
         {
             var emailList = await manager.RemoveEmailList(id);
@@ -81,7 +79,7 @@ namespace CRM.WebApp.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, emailList);
         }
 
-        [ResponseType(typeof(EmailListResponseModel)), Route("api/EmailLists/filter")]
+        [Route("api/EmailLists/filter")]
         public async Task<HttpResponseMessage> PostContactsFilter([FromUri]string emailListName, [FromUri] string param)
         {
             List<EmailListResponseModel> response = await manager.GetFilteredEmailLists(emailListName, param);
@@ -90,8 +88,6 @@ namespace CRM.WebApp.Controllers
 
             return Request.CreateResponse(HttpStatusCode.OK, response);
         }
-
-
 
         protected override void Dispose(bool disposing)
         {

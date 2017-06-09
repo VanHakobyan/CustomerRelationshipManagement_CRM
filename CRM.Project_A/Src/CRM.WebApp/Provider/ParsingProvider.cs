@@ -70,7 +70,7 @@ namespace CRM.WebApp.Infrastructure
                     transaction.Commit();
                     return response;
                 }
-                catch (Exception)
+                catch
                 {
                     transaction.Rollback();
                     throw;
@@ -159,7 +159,7 @@ namespace CRM.WebApp.Infrastructure
                 }
 
             }
-            catch (Exception)
+            catch
             {
                 throw;
             }
@@ -206,7 +206,7 @@ namespace CRM.WebApp.Infrastructure
                 }
                 return listOfContacts;
             }
-            catch (Exception)
+            catch
             {
                 throw;
             }

@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Data.Entity.Core;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Http.Filters;
 
 namespace CRM.WebApp
@@ -70,8 +66,7 @@ namespace CRM.WebApp
                 context.Response = new HttpResponseMessage(HttpStatusCode.InternalServerError)
                 {
                     Content = new StringContent(string.Format($"{context.Exception.Message}\n{context.Exception.InnerException?.Message}")),
-                    // Content = new StringContent("An unhandled exception was thrown by service"),
-                    ReasonPhrase = "Internal Server Error.Please Contact your Administrator."
+                    ReasonPhrase = "Internal Server Error. Please Contact your Administrator."
                 };
 
             }
