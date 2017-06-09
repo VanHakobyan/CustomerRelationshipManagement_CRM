@@ -165,6 +165,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="build\favicon.jpeg" />
+    <Content Include="build\index.html" />
+    <Content Include="build\service-worker.js" />
+    <Content Include="build\static\css\main.aa44d37b.css" />
+    <Content Include="build\static\js\main.38652dd2.js" />
+    <Content Include="build\static\media\load.776ceffb.gif" />
     <Content Include="packages.config">
       <SubType>Designer</SubType>
     </Content>
@@ -174,6 +180,11 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="build\asset-manifest.json" />
+    <Content Include="build\manifest.json" />
+    <Content Include="build\static\css\main.aa44d37b.css.map" />
+    <Content Include="build\static\js\main.38652dd2.js.map" />
+    <Content Include="build\static\media\Quicksand-Regular.f87b9b4f.ttf" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

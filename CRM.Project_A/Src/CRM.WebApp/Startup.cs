@@ -28,7 +28,7 @@ namespace CRM.WebApp
         {
             ConfigureOAuth(app);
 
-            app.UseWelcomePage("/");
+            // app.UseWelcomePage("/");
 
             HttpConfiguration config = new HttpConfiguration();
 
