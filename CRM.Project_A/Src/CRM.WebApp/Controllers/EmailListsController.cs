@@ -17,9 +17,12 @@ namespace CRM.WebApp.Controllers
     {
         private ApplicationManager manager = new ApplicationManager();
         // GET: api/EmailLists
-        public async Task<List<EmailListResponseModel>> GetEmailLists()
+        public async Task<HttpResponseMessage> GetEmailLists()
         {
-            return await manager.GetAllEmailLis();
+            var emailList = await manager.GetAllEmailLis();
+            if (emailList == null)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+            return Request.CreateResponse(HttpStatusCode.OK, emailList);
         }
 
         // GET: api/EmailLists/5
@@ -36,13 +39,15 @@ namespace CRM.WebApp.Controllers
         }
 
 
-        [ResponseType(typeof(EmailListResponseModel)),Route("api/EmailLists/add/{id}")]
-        public async Task<HttpResponseMessage> PutEmailListAdd([FromUri] int id,[FromBody] List<Guid> guidList)
+        [ResponseType(typeof(EmailListResponseModel)), Route("api/EmailLists/add/{id}")]
+        public async Task<HttpResponseMessage> PutEmailListAdd([FromUri] int id, [FromBody] List<Guid> guidList)
         {
             if (!ModelState.IsValid)
-                return Request.CreateResponse(HttpStatusCode.NotModified, ModelState);
+                return Request.CreateResponse(HttpStatusCode.BadRequest, ModelState);
             EmailList emailListToUpdate = await manager.GetEmailListById(id);
             EmailListResponseModel emailListRes = await manager.AddAtEmailList(emailListToUpdate, guidList);
+            if (emailListRes == null)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
             return Request.CreateResponse(HttpStatusCode.OK, emailListRes);
         }
         [ResponseType(typeof(EmailListResponseModel)), Route("api/EmailLists/remove/{id}")]
@@ -67,13 +72,13 @@ namespace CRM.WebApp.Controllers
         }
 
         // DELETE: api/EmailLists/5
-        [ResponseType(typeof(EmailList)),Route("api/EmailLists/delete/{id}")]
+        [ResponseType(typeof(EmailList)), Route("api/EmailLists/delete/{id}")]
         public async Task<HttpResponseMessage> DeleteEmailList(int id)
         {
             var emailList = await manager.RemoveEmailList(id);
             if (emailList == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound);
-            return Request.CreateResponse(HttpStatusCode.OK,emailList);
+            return Request.CreateResponse(HttpStatusCode.OK, emailList);
         }
 
         [ResponseType(typeof(EmailListResponseModel)), Route("api/EmailLists/filter")]
@@ -86,7 +91,7 @@ namespace CRM.WebApp.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, response);
         }
 
-        
+
 
         protected override void Dispose(bool disposing)
         {
