@@ -222,36 +222,36 @@ namespace CRM.WebApp.Infrastructure
             }
         }
 
-        public async Task<EmailListResponseModel> AddEmailList(EmailList еmailListForAddOrUpdate, EmailListRequestModel requestEmailListModel)
+        public async Task<EmailListResponseModel> AddEmailList(EmailList еmailListForAdd, EmailListRequestModel requestEmailListModel)
         {
             using (DbContextTransaction transaction = db.Database.BeginTransaction())
             {
-                еmailListForAddOrUpdate.EmailListName = requestEmailListModel.EmailListName;
+                еmailListForAdd.EmailListName = requestEmailListModel.EmailListName;
 
                 if (requestEmailListModel.Contacts != null)
                 {
-                    еmailListForAddOrUpdate.Contacts.Clear();
+                    еmailListForAdd.Contacts.Clear();
                     foreach (Guid guid in requestEmailListModel.Contacts)
                     {
                         var contacts = await db.Contacts.FirstOrDefaultAsync(x => x.GuID == guid);
-                        if (contacts != null) еmailListForAddOrUpdate.Contacts.Add(contacts);
+                        if (contacts != null) еmailListForAdd.Contacts.Add(contacts);
                     }
                 }
                 try
                 {
-                    db.EmailLists.AddOrUpdate(еmailListForAddOrUpdate);
+                    db.EmailLists.AddOrUpdate(еmailListForAdd);
                     await db.SaveChangesAsync();
                     transaction.Commit();
                 }
                 catch (Exception)
                 {
                     transaction.Rollback();
-                    if ((await EmailListExists(еmailListForAddOrUpdate.EmailListID)))
+                    if ((await EmailListExists(еmailListForAdd.EmailListID)))
                         return null;
                     else
                         throw;
                 }
-                return factory.CreateEmailResponseModel(еmailListForAddOrUpdate);
+                return factory.CreateEmailResponseModel(еmailListForAdd);
             }
         }
 
@@ -505,7 +505,7 @@ namespace CRM.WebApp.Infrastructure
                     db.Contacts.AddRange(startContacts);
                     db.EmailLists.AddRange(BetConstract);
                     db.EmailLists.AddRange(OtherPeople);
-
+                   
                     await db.SaveChangesAsync();
                     transaction.Commit();
                     return true;

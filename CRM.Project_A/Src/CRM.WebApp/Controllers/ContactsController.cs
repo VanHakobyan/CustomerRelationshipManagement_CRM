@@ -6,6 +6,9 @@ using System.Web.Http;
 using CRM.WebApp.Models;
 using System.Threading.Tasks;
 using CRM.WebApp.Infrastructure;
+using System.Net.Http.Headers;
+using System.Web;
+using System.IO;
 
 namespace CRM.WebApp.Controllers
 {
@@ -113,12 +116,17 @@ namespace CRM.WebApp.Controllers
         [Route("api/Contacts/reset"), HttpGet]
         public async Task<HttpResponseMessage> GetReset()
         {
-            bool result = await manager.Reset();
-            if (result)
-            {
-                return Request.CreateResponse(HttpStatusCode.OK, "Data Successfully reset");
-            }
-            return Request.CreateResponse(HttpStatusCode.BadRequest);
+            var response = new HttpResponseMessage();
+            string htmlPath = HttpContext.Current.Server.MapPath($"~//Templates//reset.html");
+            string responseText = File.ReadAllText(htmlPath).Replace("{date}", DateTime.Now.ToString());
+
+            response.Content = new StringContent(responseText);
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
+
+            if (await manager.Reset())
+                return response;
+            response.StatusCode = HttpStatusCode.InternalServerError;
+            return response;
         }
 
         protected override void Dispose(bool disposing)
