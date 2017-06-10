@@ -1,4 +1,4 @@
-<p align="center"><img src="https://www.site-rb.ru/templates/ir/images/crm_shutterstock.jpg"></p><br><br>
+<p align="center"><a href="http://crmbeta.azurewebsites.net" rel="CRM Site"><img src="https://www.site-rb.ru/templates/ir/images/crm_shutterstock.jpg" alt="CRM BETA"></a></p><br><br>
 
 ### Objective :bulb:
 
@@ -11,9 +11,9 @@ Customer relationship management, processes implemented to manage a company's in
 * [ASP.NET Web Api REST Service](https://github.com/VanHakobyan/CRM_Projects_A/tree/master/CRM.Project_A/Src/CRM.WebApp) :email:
 * [Entity Framework Library Project ](https://github.com/VanHakobyan/CRM_Projects_A/tree/master/CRM.Project_A/Src/EntityLibrary) :clipboard:
 
-### Սhort Description GIF :movie_camera:
+### Short Description GIF :movie_camera: <br>
 
-<p align="center"><img src="https://github.com/VanHakobyan/CodeFightsSolutionAndProjectsUnreadable/blob/master/CRM.gif?raw=true"></p><br>
+<p align="center"><a href="http://crmbeta.azurewebsites.net" rel="CRM Site"><img src="https://github.com/VanHakobyan/CodeFightsSolutionAndProjectsUnreadable/blob/master/CRM.gif?raw=true"></a></p><br>
 
 ### About :pencil2:
 
