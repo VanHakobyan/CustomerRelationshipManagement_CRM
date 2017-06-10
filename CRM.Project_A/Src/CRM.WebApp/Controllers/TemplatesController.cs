@@ -9,7 +9,7 @@ using System.Net.Http.Headers;
 
 namespace CRM.WebApp.Controllers
 {
-    [ExceptionCustomFilterAttribute]
+    [ExceptionCustomFilter]
     //[Authorize]
     public class TemplatesController : ApiController
     {

@@ -201,7 +201,6 @@ namespace CRM.WebApp.Infrastructure
             try
             {
                 List<EmailList> entityContactList = await db.EmailLists.ToListAsync();
-                List<EmailListResponseModel> ModelContactList = new List<EmailListResponseModel>();
                 return entityContactList.Select(f => factory.CreateEmailResponseModel(f)).ToList();
             }
             catch
@@ -222,36 +221,36 @@ namespace CRM.WebApp.Infrastructure
             }
         }
 
-        public async Task<EmailListResponseModel> AddEmailList(EmailList еmailListForAdd, EmailListRequestModel requestEmailListModel)
+        public async Task<EmailListResponseModel> AddEmailList(EmailList еmailListAdd, EmailListRequestModel requestEmailList)
         {
             using (DbContextTransaction transaction = db.Database.BeginTransaction())
             {
-                еmailListForAdd.EmailListName = requestEmailListModel.EmailListName;
+                еmailListAdd.EmailListName = requestEmailList.EmailListName;
 
-                if (requestEmailListModel.Contacts != null)
+                if (requestEmailList.Contacts != null)
                 {
-                    еmailListForAdd.Contacts.Clear();
-                    foreach (Guid guid in requestEmailListModel.Contacts)
+                    еmailListAdd.Contacts.Clear();
+                    foreach (Guid guid in requestEmailList.Contacts)
                     {
                         var contacts = await db.Contacts.FirstOrDefaultAsync(x => x.GuID == guid);
-                        if (contacts != null) еmailListForAdd.Contacts.Add(contacts);
+                        if (contacts != null) еmailListAdd.Contacts.Add(contacts);
                     }
                 }
                 try
                 {
-                    db.EmailLists.AddOrUpdate(еmailListForAdd);
+                    db.EmailLists.AddOrUpdate(еmailListAdd);
                     await db.SaveChangesAsync();
                     transaction.Commit();
                 }
                 catch (Exception)
                 {
                     transaction.Rollback();
-                    if ((await EmailListExists(еmailListForAdd.EmailListID)))
+                    if ((await EmailListExists(еmailListAdd.EmailListID)))
                         return null;
                     else
                         throw;
                 }
-                return factory.CreateEmailResponseModel(еmailListForAdd);
+                return factory.CreateEmailResponseModel(еmailListAdd);
             }
         }
 
@@ -351,7 +350,6 @@ namespace CRM.WebApp.Infrastructure
             try
             {
                 var templateList = await db.Templates.ToListAsync();
-                var response = new List<TemplateResponseModel>();
                 return templateList.Select(x => factory.CreateTemplateResponseModel(x)).ToList();
             }
             catch

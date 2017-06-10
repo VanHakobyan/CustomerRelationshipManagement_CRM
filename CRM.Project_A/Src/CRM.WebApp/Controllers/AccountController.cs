@@ -7,7 +7,7 @@ using System.Web.Http;
 namespace CRM.WebApp.Controllers
 {
     [RoutePrefix("api/Account")]
-    [ExceptionCustomFilterAttribute]
+    [ExceptionCustomFilter]
     public class AccountController : ApiController
     {
         private ApplicationManager manager = new ApplicationManager();

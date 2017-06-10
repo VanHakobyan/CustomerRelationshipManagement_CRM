@@ -12,7 +12,7 @@ using System.IO;
 
 namespace CRM.WebApp.Controllers
 {
-    [ExceptionCustomFilterAttribute]
+    [ExceptionCustomFilter]
     //[Authorize]
     public class ContactsController : ApiController
     {

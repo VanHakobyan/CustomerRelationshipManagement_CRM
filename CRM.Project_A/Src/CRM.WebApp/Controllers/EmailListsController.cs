@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using System.Web.Http.Description;
 using EntityLibrary;
 using System.Threading.Tasks;
 using CRM.WebApp.Infrastructure;
@@ -11,7 +10,7 @@ using CRM.WebApp.Models;
 
 namespace CRM.WebApp.Controllers
 {
-    [ExceptionCustomFilterAttribute]
+    [ExceptionCustomFilter]
     //[Authorize]
     public class EmailListsController : ApiController
     {

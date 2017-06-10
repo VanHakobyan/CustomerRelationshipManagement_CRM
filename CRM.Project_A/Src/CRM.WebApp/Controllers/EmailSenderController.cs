@@ -9,23 +9,23 @@ using System.Web.Http;
 
 namespace CRM.WebApp.Controllers
 {
-    [ExceptionCustomFilterAttribute]
+    [ExceptionCustomFilter]
     //[Authorize]
     public class EmailSenderController : ApiController
     {
-        EmailProvider provider = new EmailProvider();
-        ApplicationManager manager = new ApplicationManager();
+        private readonly EmailProvider provider = new EmailProvider();
+        private readonly ApplicationManager manager = new ApplicationManager();
         [Route("api/EmailSender/{TemplateId}")]
         public async Task<IHttpActionResult> PostSendEmails([FromBody] List<Guid> GuIdList, [FromUri] int TemplateId)
         {
-            List<ContactResponseModel> ContactsForSending = await manager.GetContactsByGuIdList(GuIdList);
-            if (ContactsForSending == null)
+            List<ContactResponseModel> contactsForSending = await manager.GetContactsByGuIdList(GuIdList);
+            if (contactsForSending == null)
             {
                 return NotFound();
             }
             try
             {
-                provider.SendEmailList(ContactsForSending, TemplateId);
+                provider.SendEmailList(contactsForSending, TemplateId);
             }
             catch (Exception ex)
             {
@@ -39,7 +39,7 @@ namespace CRM.WebApp.Controllers
         {
             if (!await manager.TemplateExistsAsync(TemplateId))
                 return Request.CreateResponse(HttpStatusCode.NotFound);
-            if (!await provider.SendMailToMailingList(emailListId,TemplateId))
+            if (!await provider.SendMailToMailingList(emailListId, TemplateId))
                 return Request.CreateResponse(HttpStatusCode.Conflict);
             return Request.CreateResponse(HttpStatusCode.OK);
         }
