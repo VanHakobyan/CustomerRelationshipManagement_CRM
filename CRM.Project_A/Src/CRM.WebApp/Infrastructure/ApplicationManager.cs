@@ -3,7 +3,6 @@ using EntityLibrary;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Core;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Migrations;
 using System.Linq;
@@ -27,9 +26,9 @@ namespace CRM.WebApp.Infrastructure
                 List<Contact> dbContactList = await db.Contacts.ToListAsync();
                 return dbContactList.Select(x => factory.CreateContactResponseModel(x)).ToList();
             }
-            catch (EntitySqlException dbEx)
+            catch
             {
-                throw new EntitySqlException(dbEx.Message);
+                throw;
             }
         }
 
@@ -87,7 +86,7 @@ namespace CRM.WebApp.Infrastructure
                 }
                 return ContactsList;
             }
-            catch (Exception)
+            catch
             {
                 throw;
             }
@@ -102,7 +101,7 @@ namespace CRM.WebApp.Infrastructure
                 {
                     dbContactToUpdate = await db.Contacts.FirstOrDefaultAsync(c => c.GuID == guid);
                 }
-                catch (Exception)
+                catch
                 {
                     throw;
                 }
@@ -242,7 +241,7 @@ namespace CRM.WebApp.Infrastructure
                     await db.SaveChangesAsync();
                     transaction.Commit();
                 }
-                catch (Exception)
+                catch
                 {
                     transaction.Rollback();
                     if ((await EmailListExists(еmailListAdd.EmailListID)))
@@ -273,7 +272,7 @@ namespace CRM.WebApp.Infrastructure
                     await db.SaveChangesAsync();
                     transaction.Commit();
                 }
-                catch (Exception)
+                catch 
                 {
                     transaction.Rollback();
                     if ((await EmailListExists(еmailListForAddOrUpdate.EmailListID)))
@@ -303,7 +302,7 @@ namespace CRM.WebApp.Infrastructure
                     await db.SaveChangesAsync();
                     transaction.Commit();
                 }
-                catch (Exception)
+                catch 
                 {
                     transaction.Rollback();
                     if ((await EmailListExists(еmailListForAddOrUpdate.EmailListID)))
@@ -373,20 +372,20 @@ namespace CRM.WebApp.Infrastructure
                 string resultQuery = "SELECT * FROM Contacts";
                 List<string> conditions = new List<string>();
 
-                //if (!string.IsNullOrEmpty(contactFilterData.FullName))
-                //    conditions.Add($" FullName LIKE '%{contactFilterData.FullName}%'");
+                if (!string.IsNullOrEmpty(contactFilterData.FullName))
+                    conditions.Add($" FullName LIKE '%{contactFilterData.FullName}%'");
 
-                //if (!string.IsNullOrEmpty(contactFilterData.CompanyName))
-                //    conditions.Add($" CompanyName LIKE '%{contactFilterData.CompanyName}%'");
+                if (!string.IsNullOrEmpty(contactFilterData.CompanyName))
+                    conditions.Add($" CompanyName LIKE '%{contactFilterData.CompanyName}%'");
 
-                //if (!string.IsNullOrEmpty(contactFilterData.Position))
-                //    conditions.Add($" Position LIKE '%{contactFilterData.Position}%'");
+                if (!string.IsNullOrEmpty(contactFilterData.Position))
+                    conditions.Add($" Position LIKE '%{contactFilterData.Position}%'");
 
-                //if (!string.IsNullOrEmpty(contactFilterData.Country))
-                //    conditions.Add($" Country LIKE '%{contactFilterData.Country}%'");
+                if (!string.IsNullOrEmpty(contactFilterData.Country))
+                    conditions.Add($" Country LIKE '%{contactFilterData.Country}%'");
 
-                //if (!string.IsNullOrEmpty(contactFilterData.Email))
-                //    conditions.Add($" Email LIKE '%{contactFilterData.Email}%'");
+                if (!string.IsNullOrEmpty(contactFilterData.Email))
+                    conditions.Add($" Email LIKE '%{contactFilterData.Email}%'");
 
                 if (conditions.Count != 0)
                 {
@@ -413,7 +412,7 @@ namespace CRM.WebApp.Infrastructure
                 {
                     contactList = db.Database.SqlQuery<Contact>(resultQuery).ToList();
                 }
-                catch (Exception)
+                catch 
                 {
                     return null;
                 }
@@ -445,7 +444,7 @@ namespace CRM.WebApp.Infrastructure
                 {
                     EmailLists = db.Database.SqlQuery<EmailList>(resultQuery).ToList();
                 }
-                catch (Exception)
+                catch
                 {
                     return null;
                 }
@@ -508,7 +507,7 @@ namespace CRM.WebApp.Infrastructure
                     transaction.Commit();
                     return true;
                 }
-                catch (Exception)
+                catch
                 {
                     transaction.Rollback();
                     return false;
