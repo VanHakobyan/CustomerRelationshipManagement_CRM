@@ -43,6 +43,8 @@ namespace CRM.WebApp.Controllers
             if (!ModelState.IsValid)
                 return Request.CreateResponse(HttpStatusCode.BadRequest, ModelState);
             EmailList emailListToUpdate = await manager.GetEmailListById(id);
+            if (emailListToUpdate == null)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
             EmailListResponseModel emailListRes = await manager.AddAtEmailList(emailListToUpdate, guidList);
             if (emailListRes == null)
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
@@ -54,6 +56,8 @@ namespace CRM.WebApp.Controllers
             if (!ModelState.IsValid)
                 return Request.CreateResponse(HttpStatusCode.NotModified, ModelState);
             EmailList emailListToUpdate = await manager.GetEmailListById(id);
+            if (emailListToUpdate == null)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
             EmailListResponseModel emailListRes = await manager.RemoveAtEmailList(emailListToUpdate, guidList);
             return Request.CreateResponse(HttpStatusCode.OK, emailListRes);
         }

@@ -244,10 +244,7 @@ namespace CRM.WebApp.Infrastructure
                 catch
                 {
                     transaction.Rollback();
-                    if ((await EmailListExists(еmailListAdd.EmailListID)))
-                        return null;
-                    else
-                        throw;
+                    throw;
                 }
                 return factory.CreateEmailResponseModel(еmailListAdd);
             }
@@ -272,13 +269,10 @@ namespace CRM.WebApp.Infrastructure
                     await db.SaveChangesAsync();
                     transaction.Commit();
                 }
-                catch 
+                catch
                 {
                     transaction.Rollback();
-                    if ((await EmailListExists(еmailListForAddOrUpdate.EmailListID)))
-                        return null;
-                    else
-                        throw;
+                    throw;
                 }
                 return factory.CreateEmailResponseModel(еmailListForAddOrUpdate);
             }
@@ -302,13 +296,10 @@ namespace CRM.WebApp.Infrastructure
                     await db.SaveChangesAsync();
                     transaction.Commit();
                 }
-                catch 
+                catch
                 {
                     transaction.Rollback();
-                    if ((await EmailListExists(еmailListForAddOrUpdate.EmailListID)))
-                        return null;
-                    else
-                        throw;
+                    throw;
                 }
 
                 return factory.CreateEmailResponseModel(еmailListForAddOrUpdate);
@@ -412,7 +403,7 @@ namespace CRM.WebApp.Infrastructure
                 {
                     contactList = db.Database.SqlQuery<Contact>(resultQuery).ToList();
                 }
-                catch 
+                catch
                 {
                     return null;
                 }
@@ -502,7 +493,7 @@ namespace CRM.WebApp.Infrastructure
                     db.Contacts.AddRange(startContacts);
                     db.EmailLists.AddRange(BetConstract);
                     db.EmailLists.AddRange(OtherPeople);
-                   
+
                     await db.SaveChangesAsync();
                     transaction.Commit();
                     return true;

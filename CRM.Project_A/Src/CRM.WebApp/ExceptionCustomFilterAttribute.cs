@@ -52,12 +52,20 @@ namespace CRM.WebApp
                     ReasonPhrase = "throwed Not Implemented Exception",
                 };
             }
-            else if (context.Exception is FileNotFoundException)
+            else if (context.Exception is FileNotFoundException )
             {
                 context.Response = new HttpResponseMessage(HttpStatusCode.NotImplemented)
                 {
                     Content = new StringContent(string.Format($"{context.Exception.Message}\n{context.Exception.InnerException?.Message}")),
                     ReasonPhrase = "Invalid Type of File"
+                };
+            }
+            else if (context.Exception is IndexOutOfRangeException)
+            {
+                context.Response = new HttpResponseMessage(HttpStatusCode.NotImplemented)
+                {
+                    Content = new StringContent(string.Format($"{context.Exception.Message}\n{context.Exception.InnerException?.Message}")),
+                    ReasonPhrase = "throwed Index Exception"
                 };
             }
             else if (context.Exception is IOException)
