@@ -167,9 +167,8 @@
   <ItemGroup>
     <Content Include="build\favicon.jpeg" />
     <Content Include="build\index.html" />
-    <Content Include="build\service-worker.js" />
-    <Content Include="build\static\css\main.52113f3e.css" />
-    <Content Include="build\static\js\main.acb101f2.js" />
+    <Content Include="build\static\css\main.2471c9e2.css" />
+    <Content Include="build\static\js\main.198ad4b3.js" />
     <Content Include="build\static\media\load.776ceffb.gif" />
     <Content Include="packages.config">
       <SubType>Designer</SubType>
@@ -182,8 +181,8 @@
     </Content>
     <Content Include="build\asset-manifest.json" />
     <Content Include="build\manifest.json" />
-    <Content Include="build\static\css\main.52113f3e.css.map" />
-    <Content Include="build\static\js\main.acb101f2.js.map" />
+    <Content Include="build\static\css\main.2471c9e2.css.map" />
+    <Content Include="build\static\js\main.198ad4b3.js.map" />
     <Content Include="build\static\media\Quicksand-Regular.f87b9b4f.ttf" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
