@@ -65,7 +65,7 @@ namespace CRM.WebApp
                 context.Response = new HttpResponseMessage(HttpStatusCode.NotImplemented)
                 {
                     Content = new StringContent(string.Format($"{context.Exception.Message}\n{context.Exception.InnerException?.Message}")),
-                    ReasonPhrase = "throwed Index Exception"
+                    ReasonPhrase = "Incorrect file"
                 };
             }
             else if (context.Exception is IOException)

@@ -1,0 +1,797 @@
+.return {
+    height: 100%
+}
+
+.buttonsCont {
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    margin-top: 15px
+}
+
+.buttonsCont, .selectContainer {
+    display: -ms-flexbox;
+    display: flex
+}
+
+.selectContainer {
+    -ms-flex-direction: column;
+    flex-direction: column
+}
+
+.savebutton {
+    border-radius: 5px;
+    background: blue;
+    color: #fff;
+    margin: 10px
+}
+
+#templateSelectBox {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center
+}
+
+.glyphicon {
+    color: #735a73;
+    font-size: 1.7em
+}
+
+.addBtn {
+    width: 120px;
+    padding: 7px;
+    border: none;
+    border-radius: 1px;
+    cursor: pointer;
+    color: #fff;
+    background-color: #735a73;
+    -webkit-transition: background-color .5s ease;
+    -o-transition: background-color .5s ease;
+    transition: background-color .5s ease;
+    margin-top: 10px
+}
+
+    .addBtn:hover {
+        background-color: #60c5bb
+    }
+
+.back {
+    margin-left: 20px
+}
+
+.tableButtons {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    height: auto;
+    color: #735a73;
+    padding: 0 10px;
+    margin-left: 5px
+}
+
+    .tableButtons, .tableButtons:disabled {
+        background-color: transparent;
+        border: 0
+    }
+
+        .tableButtons:disabled {
+            color: #d3d3d3
+        }
+
+.UserTable {
+    width: 100%;
+    height: 100%;
+    background-color: #f1f1f1;
+    color: #513654;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 25px
+}
+
+#scroll {
+    height: 85%;
+    width: 100%;
+    overflow: auto
+}
+
+.table {
+    width: 100%;
+    margin: 0 auto;
+    border-collapse: collapse
+}
+
+    .table, .table td {
+        border: 0 solid transparent
+    }
+
+        .table td {
+            text-align: left;
+            padding-left: 5px
+        }
+
+        .table th {
+            text-align: left;
+            border: none
+        }
+
+.tableheader {
+    width: 100%;
+    color: #fff
+}
+
+#checkbox, .tableheader {
+    text-align: center
+}
+
+.addtablerow {
+    width: 100%
+}
+
+.editbutton {
+    cursor: pointer;
+    color: #fff;
+    outline: none
+}
+
+#theader {
+    height: 30px;
+    color: #666467;
+    text-align: center;
+    font-size: 2.5em;
+    padding: 10px
+}
+
+.openWindow {
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    display: -ms-flexbox;
+    display: flex;
+    position: fixed;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -ms-flex-align: center;
+    align-items: center;
+    z-index: 999
+}
+
+.addInput {
+    padding: 7px;
+    margin: 7px 0
+}
+
+.closeWindow {
+    display: none
+}
+
+#flexEdit {
+    -ms-flex-direction: column;
+    flex-direction: column;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: distribute;
+    justify-content: space-around;
+    -ms-flex-line-pack: distribute;
+    align-content: space-around
+}
+
+.formContainerUpload {
+    background-color: #bbb0bd
+}
+
+.formContainer {
+    margin: 0 auto;
+    position: relative;
+    z-index: 99;
+    width: 400px;
+    min-width: 30%;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    padding: 15px 0;
+    border: 1px solid #fff;
+    background-color: rgba(0,0,0,.23)
+}
+
+#flexEdit input {
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    padding: 5px;
+    width: 100%
+}
+
+.addToExisting {
+    margin-top: 10px
+}
+
+.addToExisting, .uploadContainer {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column
+}
+
+.uploadContainer {
+    padding: 50px;
+    position: relative;
+    z-index: 99
+}
+
+.uploadButtonsCont {
+    display: -ms-flexbox;
+    display: flex;
+    margin-top: 10px;
+    -ms-flex-pack: justify;
+    justify-content: space-between
+}
+
+.uploadButtons {
+    width: 65px;
+    padding: 7px;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    color: #fff
+}
+
+.inputMail {
+    padding-left: 5px
+}
+
+.maillist {
+    margin-top: 13px;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    padding: 5px;
+    height: 40px;
+    border-radius: 5px
+}
+
+.selectPopup {
+    width: 100%;
+    margin-top: 10px
+}
+
+.AddRow, .selectPopup {
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -ms-flex-direction: column;
+    flex-direction: column
+}
+
+.AddRow {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 5px;
+    width: 70%;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -ms-flex-align: center;
+    align-items: center
+}
+
+.AddRow1 {
+    width: 100%;
+    margin-top: 10px
+}
+
+.addForm, .AddRow1 {
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -ms-flex-direction: column;
+    flex-direction: column
+}
+
+.addForm {
+    -ms-flex-pack: center;
+    justify-content: center
+}
+
+.btnBox {
+    padding-bottom: 1%;
+    padding-top: 4%;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box
+}
+
+.btnBox, .responseContainer {
+    display: -ms-flexbox;
+    display: flex
+}
+
+.responseContainer {
+    height: 140px;
+    width: 90%;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -ms-flex-align: center;
+    align-items: center;
+    background-color: #735a73
+}
+
+.responseWindow {
+    height: 100%;
+    width: 100%;
+    background-color: #60c5bb
+}
+
+.edit {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: center;
+    justify-content: center;
+    border: none
+}
+
+.windowText {
+    text-align: center;
+    color: azure;
+    font-size: 1.3em
+}
+
+select {
+    padding: 5px;
+    background-color: #efefef
+}
+
+#fileUpload {
+    width: 260px;
+    background-color: #ddd;
+    padding: 2px
+}
+
+.fileButtons {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: center;
+    justify-content: center
+}
+
+@media screen and (max-width:768px) {
+    .btnBox {
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap
+    }
+
+    #templateSelectBox, .btnBox {
+        -ms-flex-direction: column;
+        flex-direction: column
+    }
+
+    .maillist {
+        -ms-flex-pack: center;
+        justify-content: center
+    }
+
+    .glyphicon {
+        z-index: -1
+    }
+
+    .change {
+        z-index: 0
+    }
+}
+
+.overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    background: url(/build/static/media/load.776ceffb.gif) no-repeat 50%
+}
+
+h1 {
+    font-size: 2.5em
+}
+
+.logo {
+    margin-bottom: 13px;
+    color: #fff
+}
+
+    .logo a {
+        color: #fff;
+        text-decoration: none
+    }
+
+.header {
+    width: 95%;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -ms-flex-align: center;
+    align-items: center
+}
+
+.header_container {
+    position: fixed;
+    height: 10%;
+    width: 100%;
+    top: 0;
+    z-index: 999
+}
+
+.flex {
+    display: -ms-flexbox;
+    display: flex
+}
+
+.row {
+    width: 100%;
+    height: 100%;
+    background-color: #513654;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -ms-flex-align: center;
+    align-items: center;
+    margin: 0
+}
+
+.menu_icon {
+    display: none;
+    margin-left: 15px;
+    cursor: pointer
+}
+
+.icon_item {
+    width: 25px;
+    height: 2px;
+    background-color: #fff;
+    margin: 4px 0;
+    border-radius: 5px
+}
+
+.menu_list {
+    list-style-type: none
+}
+
+.menu_item {
+    width: 100%;
+    text-align: left;
+    height: 60px;
+    border-bottom: 1px solid #adadad;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    -ms-flex-align: center;
+    align-items: center;
+    cursor: pointer;
+    -webkit-transition: .5s;
+    -o-transition: .5s;
+    transition: .5s
+}
+
+    .menu_item a {
+        text-decoration: none;
+        color: azure;
+        font-size: 1.2em
+    }
+
+#sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #735a73;
+    overflow-x: hidden;
+    padding-top: 60px;
+    -webkit-transition: .5s;
+    -o-transition: .5s;
+    transition: .5s
+}
+
+.close_icon {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    right: 25px;
+    top: 43px;
+    position: absolute
+}
+
+.close_item {
+    width: 25px;
+    height: 2px;
+    background-color: azure;
+    margin: -2.2px 0
+}
+
+    .close_item:first-child {
+        -webkit-transform: rotate(-45deg);
+        -ms-transform: rotate(-45deg);
+        transform: rotate(-45deg)
+    }
+
+    .close_item:nth-child(2) {
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg)
+    }
+
+.active, a:active {
+    background-color: #a795a7
+}
+
+@media (max-width:866px) {
+    .menu_icon {
+        display: block
+    }
+
+    .logo {
+        margin-left: 25px
+    }
+
+    .user {
+        width: 60%
+    }
+
+    .list {
+        -ms-flex-pack: center;
+        justify-content: center
+    }
+
+    .list_item:nth-child(2) {
+        display: none
+    }
+
+    h1 {
+        font-size: 25px
+    }
+}
+
+.menuListWrap {
+    width: 90%
+}
+
+.menu {
+    list-style-type: none;
+    width: 20%;
+    background-color: #735a73;
+    overflow: hidden;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -ms-flex-pack: center;
+    justify-content: center;
+    height: 90%;
+    float: left;
+    position: fixed;
+    top: 10%
+}
+
+.menu_item {
+    text-decoration: none;
+    color: azure;
+    font-size: 1.1em;
+    width: 100%;
+    text-align: left;
+    height: 60px;
+    border-bottom: 1px solid #adadad;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    -ms-flex-align: center;
+    align-items: center;
+    cursor: pointer;
+    -webkit-transition: .5s;
+    -o-transition: .5s;
+    transition: .5s
+}
+
+    .menu_item:hover {
+        background-color: #a795a7
+    }
+
+.list_menu {
+    text-decoration: none;
+    list-style-type: none;
+    width: 100%
+}
+
+.active, a:active {
+    background-color: #a795a7
+}
+
+@media (max-width:866px) {
+    .menu {
+        display: none
+    }
+}
+
+.h2 {
+    font-size: 1.8em;
+    text-align: center;
+    color: #735a73;
+    border-bottom: 1px solid #735a73
+}
+
+.scroll {
+    width: 100%;
+    display: -ms-flexbox;
+    display: flex;
+    padding: 10px 10px 5px;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    overflow: auto;
+    -ms-flex-direction: column;
+    flex-direction: column
+}
+
+.change {
+    font-size: 1.2em
+}
+
+.mailingListTable {
+    width: 100%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    border: 0 solid transparent
+}
+
+    .mailingListTable tr {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-pack: justify;
+        justify-content: space-between
+    }
+
+        .mailingListTable tr :hover {
+            cursor: pointer;
+            background-color: #a795a7
+        }
+
+        .mailingListTable tr:nth-child(odd) {
+            background-color: #ddd
+        }
+
+        .mailingListTable tr:nth-child(2n) {
+            background-color: #f1f1f1
+        }
+
+        .mailingListTable tr td {
+            width: 100%;
+            padding: 3px 0;
+            cursor: pointer
+        }
+
+    .mailingListTable td {
+        text-align: left;
+        padding-left: 5px;
+        border: 0 solid transparent
+    }
+
+    .mailingListTable tr th {
+        text-align: left;
+        border: none
+    }
+
+#ChooseSendRemove {
+    background-color: #f1f1f1
+}
+
+.trash {
+    -ms-flex-align: right;
+    align-items: right;
+    -ms-flex-pack: center;
+    justify-content: center;
+    cursor: pointer
+}
+
+.mailListContainer {
+    width: 100%
+}
+
+.mailingListContactsTable {
+    width: 100%;
+    border-collapse: collapse
+}
+
+    .mailingListContactsTable td {
+        border-collapse: collapse;
+        text-align: left;
+        padding: 5px 0 5px 5px
+    }
+
+    .mailingListContactsTable th {
+        text-align: left;
+        padding-left: 5px;
+        border-bottom: 1px solid #f1f1f1
+    }
+
+    .mailingListContactsTable thead tr, .mailingListContactsTable tr {
+        border-bottom: 1px solid #d3d3d3
+    }
+
+#sendIconBtn {
+    margin-right: 4%
+}
+
+#trashIconBtn {
+    margin-right: 22%
+}
+
+.btnContainer {
+    width: 100%
+}
+
+.mailBtn {
+    height: 37px;
+    border: 1px solid #735a73;
+    padding: 0 10px;
+    margin: 15px 10px 10px;
+    font-size: 1em;
+    background: #735a73;
+    color: #fff;
+    -webkit-transition: background-color .5s ease;
+    -o-transition: background-color .5s ease;
+    transition: background-color .5s ease
+}
+
+    .mailBtn:hover {
+        background-color: #60c5bb
+    }
+
+    #sendBtn:disabled, .mailBtn:disabled {
+        color: #735a73;
+        background-color: #ddd
+    }
+
+* {
+    margin: 0;
+    padding: 0
+}
+
+body, html {
+    background-color: #f1f1f1
+}
+
+@font-face {
+    font-family: font;
+    src: url(/build/static/media/Quicksand-Regular.f87b9b4f.ttf)
+}
+
+#root, body, html {
+    height: 100%
+}
+
+main {
+    width: 80%;
+    height: 90%;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -ms-flex-align: center;
+    align-items: center;
+    float: left;
+    margin-left: 20%;
+    margin-top: 61px
+}
+
+a {
+    display: block;
+    height: 100%;
+    width: 100%;
+    padding-left: 35px;
+    padding-top: 17px;
+    text-decoration: none
+}
+
+@media (max-width:866px) {
+    main {
+        width: 100%;
+        margin-left: 0
+    }
+}
+/*# sourceMappingURL=main.90b2020d.css.map*/
