@@ -11,6 +11,12 @@ Customer relationship management, processes implemented to manage a company's in
 * [ASP.NET Web Api REST Service](https://github.com/VanHakobyan/CRM_Projects_A/tree/master/CRM.Project_A/Src/CRM.WebApp) :email:
 * [Entity Framework Library Project ](https://github.com/VanHakobyan/CRM_Projects_A/tree/master/CRM.Project_A/Src/EntityLibrary) :clipboard:
 
+### Web API Specification :pencil:
+
+* [Google doc](https://docs.google.com/document/d/1dXnqt6vdYm-wwNIpK9w-ijUQsUKBUd0JKJhzqtrAD2Y/edit?usp=sharing)
+* [Office Docx](https://github.com/VanHakobyan/CRM_Projects_A/blob/master/CRMWebAPISpecification.docx)
+* [PDF](https://github.com/VanHakobyan/CRM_Projects_A/blob/master/CRMWebAPISpecificationPDF.pdf)
+
 ### Short Description GIF :movie_camera: <br>
 
 <p align="center"><a href="http://crmbeta.azurewebsites.net" rel="CRM Site"><img src="https://github.com/VanHakobyan/CodeFightsSolutionAndProjectsUnreadable/blob/master/CRM.gif?raw=true"></a></p><br>
