@@ -11,9 +11,9 @@ Customer relationship management, processes implemented to manage a company's in
 * [ASP.NET Web Api REST Service](https://github.com/VanHakobyan/CRM_Projects_A/tree/master/CRM.Project_A/Src/CRM.WebApp) :email:
 * [Entity Framework Library Project ](https://github.com/VanHakobyan/CRM_Projects_A/tree/master/CRM.Project_A/Src/EntityLibrary) :clipboard:
 
-### Structure. Front-end :telescope:
+### Structure. Front-end :headphones:
 
-* [React Js](https://github.com/VanHakobyan/CRM_Projects_A/tree/master/CRM.Project_A/Src/CRM.WebApp/build)
+* [React Js](https://github.com/VanHakobyan/CRM_Projects_A/tree/master/CRM.Project_A/Src/CRM.WebApp/build) :crown:
 
 ### Web API Specification :pencil:
 
