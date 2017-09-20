@@ -25,6 +25,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -165,11 +166,16 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="build\asset-manifest.json" />
     <Content Include="build\favicon.jpeg" />
     <Content Include="build\index.html" />
+    <Content Include="build\manifest.json" />
     <Content Include="build\static\css\main.90b2020d.css" />
+    <Content Include="build\static\css\main.90b2020d.css.map" />
     <Content Include="build\static\js\main.9c97437d.js" />
+    <Content Include="build\static\js\main.9c97437d.js.map" />
     <Content Include="build\static\media\load.776ceffb.gif" />
+    <Content Include="build\static\media\Quicksand-Regular.f87b9b4f.ttf" />
     <Content Include="packages.config">
       <SubType>Designer</SubType>
     </Content>
@@ -179,11 +185,6 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="build\asset-manifest.json" />
-    <Content Include="build\manifest.json" />
-    <Content Include="build\static\css\main.90b2020d.css.map" />
-    <Content Include="build\static\js\main.9c97437d.js.map" />
-    <Content Include="build\static\media\Quicksand-Regular.f87b9b4f.ttf" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

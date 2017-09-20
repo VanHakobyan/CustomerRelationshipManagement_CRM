@@ -51,9 +51,9 @@
     margin-top: 10px
 }
 
-    .addBtn:hover {
-        background-color: #60c5bb
-    }
+.addBtn:hover {
+    background-color: #60c5bb
+}
 
 .back {
     margin-left: 20px
@@ -68,14 +68,14 @@
     margin-left: 5px
 }
 
-    .tableButtons, .tableButtons:disabled {
-        background-color: transparent;
-        border: 0
-    }
+.tableButtons, .tableButtons:disabled {
+    background-color: transparent;
+    border: 0
+}
 
-        .tableButtons:disabled {
-            color: #d3d3d3
-        }
+.tableButtons:disabled {
+    color: #d3d3d3
+}
 
 .UserTable {
     width: 100%;
@@ -99,19 +99,19 @@
     border-collapse: collapse
 }
 
-    .table, .table td {
-        border: 0 solid transparent
-    }
+.table, .table td {
+    border: 0 solid transparent
+}
 
-        .table td {
-            text-align: left;
-            padding-left: 5px
-        }
+.table td {
+    text-align: left;
+    padding-left: 5px
+}
 
-        .table th {
-            text-align: left;
-            border: none
-        }
+.table th {
+    text-align: left;
+    border: none
+}
 
 .tableheader {
     width: 100%;
@@ -293,6 +293,8 @@
 }
 
 .btnBox {
+    display: flex;
+    justify-content: space-around;
     padding-bottom: 1%;
     padding-top: 4%;
     -webkit-box-sizing: border-box;
@@ -396,10 +398,10 @@ h1 {
     color: #fff
 }
 
-    .logo a {
-        color: #fff;
-        text-decoration: none
-    }
+.logo a {
+    color: #fff;
+    text-decoration: none
+}
 
 .header {
     width: 95%;
@@ -470,11 +472,11 @@ h1 {
     transition: .5s
 }
 
-    .menu_item a {
-        text-decoration: none;
-        color: azure;
-        font-size: 1.2em
-    }
+.menu_item a {
+    text-decoration: none;
+    color: azure;
+    font-size: 1.2em
+}
 
 #sidenav {
     height: 100%;
@@ -507,17 +509,17 @@ h1 {
     margin: -2.2px 0
 }
 
-    .close_item:first-child {
-        -webkit-transform: rotate(-45deg);
-        -ms-transform: rotate(-45deg);
-        transform: rotate(-45deg)
-    }
+.close_item:first-child {
+    -webkit-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    transform: rotate(-45deg)
+}
 
-    .close_item:nth-child(2) {
-        -webkit-transform: rotate(45deg);
-        -ms-transform: rotate(45deg);
-        transform: rotate(45deg)
-    }
+.close_item:nth-child(2) {
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg)
+}
 
 .active, a:active {
     background-color: #a795a7
@@ -591,9 +593,9 @@ h1 {
     transition: .5s
 }
 
-    .menu_item:hover {
-        background-color: #a795a7
-    }
+.menu_item:hover {
+    background-color: #a795a7
+}
 
 .list_menu {
     text-decoration: none;
@@ -641,42 +643,42 @@ h1 {
     border: 0 solid transparent
 }
 
-    .mailingListTable tr {
-        display: -ms-flexbox;
-        display: flex;
-        -ms-flex-pack: justify;
-        justify-content: space-between
-    }
+.mailingListTable tr {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: justify;
+    justify-content: space-between
+}
 
-        .mailingListTable tr :hover {
-            cursor: pointer;
-            background-color: #a795a7
-        }
+.mailingListTable tr :hover {
+    cursor: pointer;
+    background-color: #a795a7
+}
 
-        .mailingListTable tr:nth-child(odd) {
-            background-color: #ddd
-        }
+.mailingListTable tr:nth-child(odd) {
+    background-color: #ddd
+}
 
-        .mailingListTable tr:nth-child(2n) {
-            background-color: #f1f1f1
-        }
+.mailingListTable tr:nth-child(2n) {
+    background-color: #f1f1f1
+}
 
-        .mailingListTable tr td {
-            width: 100%;
-            padding: 3px 0;
-            cursor: pointer
-        }
+.mailingListTable tr td {
+    width: 100%;
+    padding: 3px 0;
+    cursor: pointer
+}
 
-    .mailingListTable td {
-        text-align: left;
-        padding-left: 5px;
-        border: 0 solid transparent
-    }
+.mailingListTable td {
+    text-align: left;
+    padding-left: 5px;
+    border: 0 solid transparent
+}
 
-    .mailingListTable tr th {
-        text-align: left;
-        border: none
-    }
+.mailingListTable tr th {
+    text-align: left;
+    border: none
+}
 
 #ChooseSendRemove {
     background-color: #f1f1f1
@@ -699,21 +701,21 @@ h1 {
     border-collapse: collapse
 }
 
-    .mailingListContactsTable td {
-        border-collapse: collapse;
-        text-align: left;
-        padding: 5px 0 5px 5px
-    }
+.mailingListContactsTable td {
+    border-collapse: collapse;
+    text-align: left;
+    padding: 5px 0 5px 5px
+}
 
-    .mailingListContactsTable th {
-        text-align: left;
-        padding-left: 5px;
-        border-bottom: 1px solid #f1f1f1
-    }
+.mailingListContactsTable th {
+    text-align: left;
+    padding-left: 5px;
+    border-bottom: 1px solid #f1f1f1
+}
 
-    .mailingListContactsTable thead tr, .mailingListContactsTable tr {
-        border-bottom: 1px solid #d3d3d3
-    }
+.mailingListContactsTable thead tr, .mailingListContactsTable tr {
+    border-bottom: 1px solid #d3d3d3
+}
 
 #sendIconBtn {
     margin-right: 4%
@@ -740,14 +742,14 @@ h1 {
     transition: background-color .5s ease
 }
 
-    .mailBtn:hover {
-        background-color: #60c5bb
-    }
+.mailBtn:hover {
+    background-color: #60c5bb
+}
 
-    #sendBtn:disabled, .mailBtn:disabled {
-        color: #735a73;
-        background-color: #ddd
-    }
+#sendBtn:disabled, .mailBtn:disabled {
+    color: #735a73;
+    background-color: #ddd
+}
 
 * {
     margin: 0;
@@ -776,7 +778,8 @@ main {
     align-items: center;
     float: left;
     margin-left: 20%;
-    margin-top: 61px
+    margin-top: 96px;
+
 }
 
 a {

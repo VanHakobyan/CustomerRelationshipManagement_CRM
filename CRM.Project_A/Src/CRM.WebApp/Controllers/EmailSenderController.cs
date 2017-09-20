@@ -18,7 +18,7 @@ namespace CRM.WebApp.Controllers
         [Route("api/EmailSender/{TemplateId}")]
         public async Task<IHttpActionResult> PostSendEmails([FromBody] List<Guid> GuIdList, [FromUri] int TemplateId)
         {
-            List<ContactResponseModel> contactsForSending = await manager.GetContactsByGuIdList(GuIdList);
+            var contactsForSending = await manager.GetContactsByGuIdList(GuIdList);
             if (contactsForSending == null)
             {
                 return NotFound();
