@@ -33,7 +33,7 @@ namespace CRM.WebApp.Controllers
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
-            ModelFactory factory = new ModelFactory();
+            var factory = new ModelFactory();
             return Request.CreateResponse(HttpStatusCode.OK, factory.CreateEmailResponseModel(email));
         }
 
@@ -42,23 +42,21 @@ namespace CRM.WebApp.Controllers
         {
             if (!ModelState.IsValid)
                 return Request.CreateResponse(HttpStatusCode.BadRequest, ModelState);
-            EmailList emailListToUpdate = await manager.GetEmailListById(id);
+            var emailListToUpdate = await manager.GetEmailListById(id);
             if (emailListToUpdate == null)
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
-            EmailListResponseModel emailListRes = await manager.AddAtEmailList(emailListToUpdate, guidList);
-            if (emailListRes == null)
-                return Request.CreateResponse(HttpStatusCode.BadRequest);
-            return Request.CreateResponse(HttpStatusCode.OK, emailListRes);
+            var emailListRes = await manager.AddAtEmailList(emailListToUpdate, guidList);
+            return emailListRes == null ? Request.CreateResponse(HttpStatusCode.BadRequest) : Request.CreateResponse(HttpStatusCode.OK, emailListRes);
         }
         [Route("api/EmailLists/remove/{id}")]
         public async Task<HttpResponseMessage> PutEmailListRemove([FromUri] int id, [FromBody] List<Guid> guidList)
         {
             if (!ModelState.IsValid)
                 return Request.CreateResponse(HttpStatusCode.NotModified, ModelState);
-            EmailList emailListToUpdate = await manager.GetEmailListById(id);
+            var emailListToUpdate = await manager.GetEmailListById(id);
             if (emailListToUpdate == null)
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
-            EmailListResponseModel emailListRes = await manager.RemoveAtEmailList(emailListToUpdate, guidList);
+            var emailListRes = await manager.RemoveAtEmailList(emailListToUpdate, guidList);
             return Request.CreateResponse(HttpStatusCode.OK, emailListRes);
         }
         // POST: api/EmailLists
@@ -67,8 +65,8 @@ namespace CRM.WebApp.Controllers
             if (!ModelState.IsValid)
                 return Request.CreateResponse(HttpStatusCode.BadRequest, ModelState);
 
-            EmailList emailListSend = new EmailList();
-            EmailListResponseModel emailList = await manager.AddEmailList(emailListSend, emailListRequest);
+            var emailListSend = new EmailList();
+            var emailList = await manager.AddEmailList(emailListSend, emailListRequest);
             return Request.CreateResponse(HttpStatusCode.Created, emailList);
         }
 
@@ -83,13 +81,10 @@ namespace CRM.WebApp.Controllers
         }
 
         [Route("api/EmailLists/filter")]
-        public async Task<HttpResponseMessage> PostContactsFilter([FromUri]string emailListName, [FromUri] string param)
+        public  HttpResponseMessage PostContactsFilter([FromUri]string emailListName, [FromUri] string param)
         {
-            List<EmailListResponseModel> response = await manager.GetFilteredEmailLists(emailListName, param);
-            if (response == null)
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "wrong Url, can't work with database");
-
-            return Request.CreateResponse(HttpStatusCode.OK, response);
+            var response =  manager.GetFilteredEmailLists(emailListName, param);
+            return response == null ? Request.CreateResponse(HttpStatusCode.BadRequest, "wrong Url, can't work with database") : Request.CreateResponse(HttpStatusCode.OK, response);
         }
 
         protected override void Dispose(bool disposing)
@@ -103,7 +98,8 @@ namespace CRM.WebApp.Controllers
 
         private async Task<bool> EmailListExists(int id)
         {
-            return await manager.EmailListExists(id);
+            // ReSharper disable once AsyncConverter.AsyncAwaitMayBeElidedHighlighting
+            return await manager.EmailListExists(id).ConfigureAwait(false);
         }
     }
 }

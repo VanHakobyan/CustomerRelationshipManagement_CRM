@@ -26,10 +26,7 @@ namespace CRM.WebApp.Infrastructure
                 List<Contact> dbContactList = await db.Contacts.ToListAsync();
                 return dbContactList.Select(x => factory.CreateContactResponseModel(x)).ToList();
             }
-            catch
-            {
-                throw;
-            }
+            catch{throw;}
         }
 
         public async Task<List<Contact>> GetContactPage(int start, int numberRows, bool flag)
@@ -44,10 +41,7 @@ namespace CRM.WebApp.Infrastructure
                 return query;
 
             }
-            catch
-            {
-                throw;
-            }
+            catch{throw;}
         }
 
         public async Task<ContactResponseModel> GetContactByGuid(Guid id)
@@ -57,10 +51,7 @@ namespace CRM.WebApp.Infrastructure
                 var contact = await db.Contacts.FirstOrDefaultAsync(t => t.GuID == id);
                 return factory.CreateContactResponseModel(contact);
             }
-            catch
-            {
-                throw;
-            }
+            catch{throw;}
         }
 
         public async Task<int> GetContactsPageCounter()
@@ -69,15 +60,12 @@ namespace CRM.WebApp.Infrastructure
             {
                 return await db.Contacts.CountAsync() > 10 ? await db.Contacts.CountAsync() / 10 : 1;
             }
-            catch
-            {
-                throw;
-            }
+            catch{throw;}
         }
 
         public async Task<List<ContactResponseModel>> GetContactsByGuIdList(List<Guid> GuIdList)
         {
-            List<ContactResponseModel> ContactsList = new List<ContactResponseModel>();
+            var ContactsList = new List<ContactResponseModel>();
             try
             {
                 foreach (var guid in GuIdList)
@@ -86,10 +74,7 @@ namespace CRM.WebApp.Infrastructure
                 }
                 return ContactsList;
             }
-            catch
-            {
-                throw;
-            }
+            catch{throw;}
         }
 
         public async Task<bool> UpdateContact(Guid guid, ContactRequestModel contact)
@@ -101,10 +86,7 @@ namespace CRM.WebApp.Infrastructure
                 {
                     dbContactToUpdate = await db.Contacts.FirstOrDefaultAsync(c => c.GuID == guid);
                 }
-                catch
-                {
-                    throw;
-                }
+                catch{throw;}
                 if (dbContactToUpdate == null) return false;
                 dbContactToUpdate.FullName = contact.FullName;
                 dbContactToUpdate.Country = contact.Country;
@@ -137,7 +119,7 @@ namespace CRM.WebApp.Infrastructure
 
         public async Task<ContactResponseModel> AddContact(ContactRequestModel contact)
         {
-            using (DbContextTransaction transaction = db.Database.BeginTransaction())
+            using (var transaction = db.Database.BeginTransaction())
             {
                 try
                 {
@@ -166,10 +148,7 @@ namespace CRM.WebApp.Infrastructure
                 return resModel;
 
             }
-            catch
-            {
-                throw;
-            }
+            catch{throw;}
         }
 
         public async Task<bool> RemoveContactByGuidList(List<Guid> guidlist)
@@ -187,10 +166,7 @@ namespace CRM.WebApp.Infrastructure
             {
                 return await db.Contacts.CountAsync(e => e.GuID == id) > 0;
             }
-            catch
-            {
-                throw;
-            }
+            catch{throw;}
         }
         #endregion
 
@@ -199,13 +175,10 @@ namespace CRM.WebApp.Infrastructure
         {
             try
             {
-                List<EmailList> entityContactList = await db.EmailLists.ToListAsync();
+                var entityContactList = await db.EmailLists.ToListAsync();
                 return entityContactList.Select(f => factory.CreateEmailResponseModel(f)).ToList();
             }
-            catch
-            {
-                throw;
-            }
+            catch{throw;}
         }
 
         public async Task<EmailList> GetEmailListById(int id)
@@ -214,15 +187,12 @@ namespace CRM.WebApp.Infrastructure
             {
                 return await db.EmailLists.FirstOrDefaultAsync(t => t.EmailListID == id);
             }
-            catch
-            {
-                throw;
-            }
+            catch{throw;}
         }
 
         public async Task<EmailListResponseModel> AddEmailList(EmailList еmailListAdd, EmailListRequestModel requestEmailList)
         {
-            using (DbContextTransaction transaction = db.Database.BeginTransaction())
+            using (var transaction = db.Database.BeginTransaction())
             {
                 еmailListAdd.EmailListName = requestEmailList.EmailListName;
 
@@ -252,7 +222,7 @@ namespace CRM.WebApp.Infrastructure
 
         public async Task<EmailListResponseModel> AddAtEmailList(EmailList еmailListForAddOrUpdate, List<Guid> guidList)
         {
-            using (DbContextTransaction transaction = db.Database.BeginTransaction())
+            using (var transaction = db.Database.BeginTransaction())
             {
                 //еmailListForAddOrUpdate.EmailListName = requestEmailListModel.EmailListName;
                 if (guidList.Count != 0)
@@ -279,7 +249,7 @@ namespace CRM.WebApp.Infrastructure
         }
         public async Task<EmailListResponseModel> RemoveAtEmailList(EmailList еmailListForAddOrUpdate, List<Guid> guidList)
         {
-            using (DbContextTransaction transaction = db.Database.BeginTransaction())
+            using (var transaction = db.Database.BeginTransaction())
             {
                 //еmailListForAddOrUpdate.EmailListName = guidList.EmailListName;
                 if (guidList.Count != 0)
@@ -315,10 +285,7 @@ namespace CRM.WebApp.Infrastructure
                 await db.SaveChangesAsync();
                 return factory.CreateEmailResponseModel(emailList);
             }
-            catch
-            {
-                throw;
-            }
+            catch{throw;}
         }
 
         public async Task<bool> EmailListExists(int id)
@@ -327,10 +294,7 @@ namespace CRM.WebApp.Infrastructure
             {
                 return await db.EmailLists.CountAsync(e => e.EmailListID == id) > 0;
             }
-            catch
-            {
-                throw;
-            }
+            catch{throw;}
         }
         #endregion
 
@@ -342,10 +306,7 @@ namespace CRM.WebApp.Infrastructure
                 var templateList = await db.Templates.ToListAsync();
                 return templateList.Select(x => factory.CreateTemplateResponseModel(x)).ToList();
             }
-            catch
-            {
-                throw;
-            }
+            catch{throw;}
         }
 
         public async Task<bool> TemplateExistsAsync(int id)
@@ -355,13 +316,13 @@ namespace CRM.WebApp.Infrastructure
         #endregion
 
         #region Filtering
-        public async Task<List<ContactResponseModel>> GetFilteredContacts(ContactFilterModel contactFilterData, string[] orderParams)
+        public Task<List<ContactResponseModel>> GetFilteredContacts(ContactFilterModel contactFilterData, string[] orderParams)
         {
-            return await Task.Run(() =>
+            return Task.Run(() =>
             {
-                List<ContactResponseModel> result = new List<ContactResponseModel>();
-                string resultQuery = "SELECT * FROM Contacts";
-                List<string> conditions = new List<string>();
+                var result = new List<ContactResponseModel>();
+                var resultQuery = "SELECT * FROM Contacts";
+                var conditions = new List<string>();
 
                 if (!string.IsNullOrEmpty(contactFilterData.FullName))
                     conditions.Add($" FullName LIKE '%{contactFilterData.FullName}%'");
@@ -413,11 +374,11 @@ namespace CRM.WebApp.Infrastructure
         }
 
 
-        public async Task<List<EmailListResponseModel>> GetFilteredEmailLists(string emailListName, string param)
+        public Task<List<EmailListResponseModel>> GetFilteredEmailLists(string emailListName, string param)
         {
-            return await Task.Run(() =>
+            return Task.Run(() =>
             {
-                List<EmailListResponseModel> result = new List<EmailListResponseModel>();
+                var result = new List<EmailListResponseModel>();
                 string resultQuery = "SELECT * FROM EmailLists";
 
                 if (!string.IsNullOrEmpty(emailListName))
@@ -464,9 +425,9 @@ namespace CRM.WebApp.Infrastructure
 
                     List<EmailList> TeamA = new List<EmailList>() { new EmailList() { EmailListName = "Team A" } };
                     List<EmailList> BetConstract = new List<EmailList>() { new EmailList() { EmailListName = "BetConstruct" } };
-                    List<EmailList> OtherPeople = new List<EmailList>() { new EmailList() { EmailListName = "Other team members" } };
+                    var OtherPeople = new List<EmailList>() { new EmailList() { EmailListName = "Other team members" } };
 
-                    List<Contact> startContacts = new List<Contact>()
+                    var startContacts = new List<Contact>()
                     {
                         new Contact() { FullName = "Vanik Hakobyan",CompanyName = "YSU",Country = "Armenia",Position = "Student", Email = "vanhakobyan1996@gmail.com",  EmailLists = TeamA,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
                         new Contact() { FullName = "Khachatur Sukiasyan",CompanyName = "Microsoft",Country = "Armenia",Position = "Freelancer", Email = "khachatur124@gmail.com", EmailLists = TeamA,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },

@@ -23,19 +23,15 @@ namespace CRM.WebApp.Controllers
         // GET: api/Contacts
         public async Task<HttpResponseMessage> GetContacts()
         {
-            List<ContactResponseModel> contacts = await manager.GetAllContacts();
-            if (contacts == null)
-                return Request.CreateResponse(HttpStatusCode.NotFound);
-            return Request.CreateResponse(HttpStatusCode.OK, contacts);
+            var contacts = await manager.GetAllContacts();
+            return contacts == null ? Request.CreateResponse(HttpStatusCode.NotFound) : Request.CreateResponse(HttpStatusCode.OK, contacts);
         }
 
         // GET: api/Contacts/paje
         public async Task<HttpResponseMessage> GetContact(int start, int numberRows, bool flag)
         {
             var contact = await manager.GetContactPage(start, numberRows, flag);
-            if (contact == null)
-                return Request.CreateResponse(HttpStatusCode.NotFound);
-            return Request.CreateResponse(HttpStatusCode.OK, contact);
+            return contact == null ? Request.CreateResponse(HttpStatusCode.NotFound) : Request.CreateResponse(HttpStatusCode.OK, contact);
         }
 
         // GET: api/Contacts/guid
@@ -43,9 +39,7 @@ namespace CRM.WebApp.Controllers
         public async Task<HttpResponseMessage> GetContactGuid([FromUri]Guid id)
         {
             var contact = await manager.GetContactByGuid(id);
-            if (contact == null)
-                return Request.CreateResponse(HttpStatusCode.NotFound);
-            return Request.CreateResponse(HttpStatusCode.OK, contact);
+            return contact == null ? Request.CreateResponse(HttpStatusCode.NotFound) : Request.CreateResponse(HttpStatusCode.OK, contact);
         }
 
 
@@ -105,25 +99,22 @@ namespace CRM.WebApp.Controllers
 
 
         [Route("api/Contacts/filter")]
-        public async Task<HttpResponseMessage> PostContactsFilter([FromBody]ContactFilterModel contactFilterData, [FromUri] string[] param)
+        public HttpResponseMessage PostContactsFilter([FromBody]ContactFilterModel contactFilterData, [FromUri] string[] param)
         {
-            List<ContactResponseModel> response = await manager.GetFilteredContacts(contactFilterData, param);
-            if (response == null)
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "wrong Url, can't work with database");
-
-            return Request.CreateResponse(HttpStatusCode.OK, response);
+            var response =  manager.GetFilteredContacts(contactFilterData, param);
+            return response == null ? Request.CreateResponse(HttpStatusCode.BadRequest, "wrong Url, can't work with database") : Request.CreateResponse(HttpStatusCode.OK, response);
         }
         [Route("api/Contacts/reset"), HttpGet]
         public async Task<HttpResponseMessage> GetReset()
         {
             var response = new HttpResponseMessage();
-            string htmlPath = HttpContext.Current.Server.MapPath($"~//Templates//reset.html");
-            string responseText = File.ReadAllText(htmlPath).Replace("{date}", DateTime.Now.ToString());
+            var htmlPath = HttpContext.Current.Server.MapPath($"~//Templates//reset.html");
+            var responseText = File.ReadAllText(htmlPath).Replace("{date}", DateTime.Now.ToString());
 
             response.Content = new StringContent(responseText);
             response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
 
-            if (await manager.Reset())
+            if (await manager.Reset().ConfigureAwait(false))
                 return response;
             response.StatusCode = HttpStatusCode.InternalServerError;
             return response;
