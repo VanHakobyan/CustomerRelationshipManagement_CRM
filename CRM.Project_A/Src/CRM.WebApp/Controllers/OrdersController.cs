@@ -3,7 +3,7 @@ using System.Web.Http;
 
 namespace CRM.WebApp.Controllers
 {
-    [ExceptionCustomFilterAttribute]
+    [ExceptionCustomFilter]
     [RoutePrefix("api/Orders")]
     public class OrdersController : ApiController
     {
@@ -16,7 +16,7 @@ namespace CRM.WebApp.Controllers
     }
 
     #region Helpers
-    [ExceptionCustomFilterAttribute]
+    [ExceptionCustomFilter]
     public class Order
     {
         public int OrderID { get; set; }
@@ -26,7 +26,7 @@ namespace CRM.WebApp.Controllers
 
         public static List<Order> CreateOrders()
         {
-            List<Order> OrderList = new List<Order>
+            List<Order> orderList = new List<Order>
             {
                 new Order {OrderID = 10248, CustomerName = "Tsovinar Ghazaryan", ShipperCity = "Madrid", IsShipped = true },
                 new Order {OrderID = 10249, CustomerName = "Khachik Sukiasyan", ShipperCity = "London", IsShipped = false},
@@ -35,7 +35,7 @@ namespace CRM.WebApp.Controllers
                 new Order {OrderID = 10252,CustomerName = "Zara Muradyan", ShipperCity = "Kuwait", IsShipped = true}
             };
 
-            return OrderList;
+            return orderList;
         }
     }
 

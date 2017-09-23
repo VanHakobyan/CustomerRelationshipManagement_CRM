@@ -1,5 +1,4 @@
 ﻿using CRM.WebApp.Infrastructure;
-using CRM.WebApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -15,17 +14,17 @@ namespace CRM.WebApp.Controllers
     {
         private readonly EmailProvider provider = new EmailProvider();
         private readonly ApplicationManager manager = new ApplicationManager();
-        [Route("api/EmailSender/{TemplateId}")]
-        public async Task<IHttpActionResult> PostSendEmails([FromBody] List<Guid> GuIdList, [FromUri] int TemplateId)
+        [Route("api/EmailSender/{templateId}")]
+        public async Task<IHttpActionResult> PostSendEmails([FromBody] List<Guid> guIdList, [FromUri] int templateId)
         {
-            var contactsForSending = await manager.GetContactsByGuIdList(GuIdList);
+            var contactsForSending = await manager.GetContactsByGuIdList(guIdList);
             if (contactsForSending == null)
             {
                 return NotFound();
             }
             try
             {
-                provider.SendEmailList(contactsForSending, TemplateId);
+                provider.SendEmailList(contactsForSending, templateId);
             }
             catch (Exception ex)
             {
@@ -34,12 +33,12 @@ namespace CRM.WebApp.Controllers
             }
             return Ok("Thank you!!! ");
         }
-        [Route("api/EmailSender/{EmailListId}/{TemplateId}")]
-        public async Task<HttpResponseMessage> PostSendEmailList(int emailListId, int TemplateId)
+        [Route("api/EmailSender/{EmailListId}/{templateId}")]
+        public async Task<HttpResponseMessage> PostSendEmailList(int emailListId, int templateId)
         {
-            if (!await manager.TemplateExistsAsync(TemplateId))
+            if (!await manager.TemplateExistsAsync(templateId))
                 return Request.CreateResponse(HttpStatusCode.NotFound);
-            if (!await provider.SendMailToMailingList(emailListId, TemplateId))
+            if (!await provider.SendMailToMailingList(emailListId, templateId))
                 return Request.CreateResponse(HttpStatusCode.Conflict);
             return Request.CreateResponse(HttpStatusCode.OK);
         }
