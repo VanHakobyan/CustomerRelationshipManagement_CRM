@@ -7,7 +7,7 @@ namespace CRM.WebApp.Models
         [Required(ErrorMessage = "Full name is required"), StringLength(100, MinimumLength = 1, ErrorMessage = "The full name must be specified.")]
         public string FullName { get; set; }
 
-        [Required(ErrorMessage = "Company is required"), StringLength(100, MinimumLength = 1, ErrorMessage = "The Compzny name must be specified.")]
+        [Required(ErrorMessage = "Company is required"), StringLength(100, MinimumLength = 1, ErrorMessage = "The Company name must be specified.")]
         public string CompanyName { get; set; }
 
         [Required(ErrorMessage = "Position is required"), StringLength(100, MinimumLength = 1, ErrorMessage = "The Position must be specified.")]

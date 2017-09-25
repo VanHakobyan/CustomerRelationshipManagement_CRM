@@ -4,7 +4,7 @@ namespace CRM.WebApp.Models
 {
     public class EmailListResponseModel
     {
-        public int EmailListID { get; set; }
+        public int EmailListId { get; set; }
         public string EmailListName { get; set; }
         public List<ContactResponseModel> Contacts { get; set; }
     }

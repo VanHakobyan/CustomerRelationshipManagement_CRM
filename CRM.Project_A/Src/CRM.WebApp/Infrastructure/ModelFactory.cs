@@ -68,7 +68,7 @@ namespace CRM.WebApp.Infrastructure
         public EmailListResponseModel CreateEmailResponseModel(EmailList emailList)
         {
             return new EmailListResponseModel() {
-                EmailListID = emailList.EmailListID,
+                EmailListId = emailList.EmailListID,
                 EmailListName = emailList.EmailListName,
                 Contacts = emailList.Contacts.Select(CreateContactResponseModel).ToList()
                 };

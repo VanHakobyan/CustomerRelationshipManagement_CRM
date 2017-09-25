@@ -2,6 +2,7 @@
 using NLog.Targets;
 using System;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Web;
 
@@ -12,7 +13,7 @@ namespace CRM.WebApp
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         public LoggerManager()
         {
-            FileTarget loggerTarget = (FileTarget)LogManager.Configuration.FindTargetByName("file");
+            var loggerTarget = (FileTarget)LogManager.Configuration.FindTargetByName("file");
             loggerTarget.DeleteOldFileOnStartup = false;
         }
         public void LogInfo(HttpMethod request, Uri uri)
@@ -31,15 +32,13 @@ namespace CRM.WebApp
         {
             var fileTarget = (FileTarget)LogManager.Configuration.FindTargetByName("file");
             var logEventInfo = new LogEventInfo { TimeStamp = DateTime.Now };
-            string fileName = fileTarget.FileName.Render(logEventInfo);
+            var fileName = fileTarget.FileName.Render(logEventInfo);
             if (!File.Exists(fileName))
                 File.Create($"{logEventInfo.TimeStamp}.log");
             var data = File.ReadAllLines(fileName);
-            string path = HttpContext.Current?.Request.MapPath("~//Templates//LogMessage.html");
+            var path = HttpContext.Current?.Request.MapPath("~//Templates//LogMessage.html");
             var html = File.ReadAllText(path);
-            string res = string.Empty;
-            foreach (string s in data)
-                res += s + "</br>";
+            var res = data.Aggregate(string.Empty, (current, s) => current + (s + "</br>"));
             var t = html.Replace("{data}", res).Replace("{filename}", fileName);
             return t;
         }
