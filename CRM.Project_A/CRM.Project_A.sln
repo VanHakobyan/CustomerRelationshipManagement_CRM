@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{4940FBD4-9322-477B-9E4C-2251859ABB94}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{BEDEA66B-45B0-49E9-AB11-A0B8D3C42539}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "CRM.DataBaseProject", "Src\CRM.DataBaseProject\CRM.DataBaseProject.sqlproj", "{8D2244FA-4A13-4849-A705-C40D1774784C}"
 EndProject
@@ -41,5 +39,8 @@ Global
 		{8D2244FA-4A13-4849-A705-C40D1774784C} = {4940FBD4-9322-477B-9E4C-2251859ABB94}
 		{225247E8-99A0-4411-AC45-24F9CF2C1A3B} = {4940FBD4-9322-477B-9E4C-2251859ABB94}
 		{74DA14AE-4353-43E0-A9EF-27CD9647422F} = {4940FBD4-9322-477B-9E4C-2251859ABB94}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {695C1349-DD0B-4059-A6A2-9903DAE94F3F}
 	EndGlobalSection
 EndGlobal
