@@ -9,8 +9,9 @@ using System.IO;
 using System.Threading.Tasks;
 using CRM.WebApp.Models;
 using System.Data.Entity;
+using CRM.WebApp.Infrastructure;
 
-namespace CRM.WebApp.Infrastructure
+namespace CRM.WebApp.Provider
 {
     public class EmailProvider
     {
@@ -21,7 +22,7 @@ namespace CRM.WebApp.Infrastructure
             try
             {
                 var template = db.Templates.Find(templateId);
-                string path = HttpContext.Current?.Request.MapPath(template.Path);
+                var path = HttpContext.Current?.Request.MapPath(template.Path);
                 var templateText = File.ReadAllText(path);
                 return
                     templateText.Replace("{FullName}", contact.FullName)
@@ -37,18 +38,18 @@ namespace CRM.WebApp.Infrastructure
             }
         }
 
-        public void SendEmail(ContactResponseModel contact, int TemplateID)//List<Contact> list)
+        public void SendEmail(ContactResponseModel contact, int templateId)//List<Contact> list)
         {
 
-            using (MailMessage msg = new MailMessage())
+            using (var msg = new MailMessage())
             {
 
                 msg.To.Add(contact.Email);
                 msg.Subject = "BetConstruct Team BETA";
                 msg.IsBodyHtml = true;
-                msg.Body = GetMessageText(TemplateID, contact);
+                msg.Body = GetMessageText(templateId, contact);
 
-                SmtpClient client = new SmtpClient();
+                var client = new SmtpClient();
 
                 try
                 {
@@ -79,7 +80,7 @@ namespace CRM.WebApp.Infrastructure
                 if (emailList == null) return false;
 
                 var contacts = emailList.Contacts.ToList();
-                List<ContactResponseModel> response = new List<ContactResponseModel>();
+                var response = new List<ContactResponseModel>();
                 foreach (var item in contacts)
                 {
                     response.Add(factory.CreateContactResponseModel(item));

@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using CRM.WebApp.Provider;
 
 namespace CRM.WebApp.Controllers
 {
@@ -31,7 +32,7 @@ namespace CRM.WebApp.Controllers
                 return BadRequest(ex.Message);
 
             }
-            return Ok("Thank you!!! ");
+            return Ok("Thank you!!!");
         }
         [Route("api/EmailSender/{EmailListId}/{templateId}")]
         public async Task<HttpResponseMessage> PostSendEmailList(int emailListId, int templateId)
