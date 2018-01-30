@@ -45,7 +45,7 @@ namespace CRM.WebApp.Provider
             {
 
                 msg.To.Add(contact.Email);
-                msg.Subject = "BetConstruct Team BETA";
+                msg.Subject = "Team BETA";
                 msg.IsBodyHtml = true;
                 msg.Body = GetMessageText(templateId, contact);
 
