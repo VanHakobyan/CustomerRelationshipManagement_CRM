@@ -443,13 +443,7 @@ namespace CRM.WebApp.Infrastructure
                         new Contact() { FullName = "Narek Yegoryan",CompanyName = "NPUA",Country = "Armenia",Position = "Student", Email = "yegoryan.narek@gmail.com", EmailLists = OtherPeople,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
                         new Contact() { FullName = "Lusine Khachatryan",CompanyName = "LK LLC",Country = "Armenia",Position = "Director", Email = "luskhachatryann@gmail.com", EmailLists = OtherPeople,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
 
-                        new Contact() { FullName = "George Voyatzis",CompanyName = "BetConstruct",Country = "London - United Kingdom",Position = "Commercial Director", Email = "g.voyatzis@betconstruct.com", EmailLists = BetConstract,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
-                        new Contact() { FullName = "Anna Poghosyan",CompanyName = "BetConstruct",Country = "Yerevan - Armenia",Position = "International Development Director", Email = "a.poghosyan@betconstruct.com", EmailLists = BetConstract,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
-                        new Contact() { FullName = "Anna Shahbazyan",CompanyName = "BetConstruct",Country = "Montevideo - Uruguay",Position = "Regional Director", Email = "a.shahbazyan@betconstruct.com", EmailLists = BetConstract,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
-                        new Contact() { FullName = "Samvel Nersisyan",CompanyName = "BetConstruct",Country = "Yerevan - Armenia",Position = "Head of Business Development", Email = "samvel.nersisyan@betconstruct.com", EmailLists = BetConstract,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
-                        new Contact() { FullName = "Zorair Asadour",CompanyName = "BetConstruct",Country = "Cape Town - South Africa",Position = "Regional Director", Email = "z.asadour@betconstruct.com", EmailLists = BetConstract,GuID = Guid.NewGuid(),DateInserted = DateTime.Now },
-                        new Contact() { FullName = "Stephan Mamikonjan",CompanyName = "BetConstruct",Country = "Vienna - Austria",Position = "Regional Director", Email = "stephan.mamikonjan@betconstruct.com", EmailLists = BetConstract,GuID = Guid.NewGuid(),DateInserted = DateTime.Now }
-                     };
+                    };
 
                     db.Contacts.AddRange(startContacts);
                     db.EmailLists.AddRange(BetConstract);
