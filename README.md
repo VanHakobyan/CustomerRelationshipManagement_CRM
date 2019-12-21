@@ -1,4 +1,4 @@
-<p align="center"><a href="http://crmbeta.azurewebsites.net" rel="CRM Site"><img src="https://www.site-rb.ru/templates/ir/images/crm_shutterstock.jpg" alt="CRM BETA"></a></p><br><br>
+<p align="center"><a href="http://crmbeta.azurewebsites.net" rel="CRM Site"><img src="https://i2.wp.com/www.snyxius.com/wp-content/uploads/2017/01/crm_shutterstock.jpg__0x500_q95_autocrop_crop-smart_subsampling-2_upscale.jpg" alt="CRM BETA"></a></p><br><br>
 
 ### Objective :bulb:
 
