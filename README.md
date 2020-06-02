@@ -23,7 +23,7 @@ Customer relationship management, processes implemented to manage a company's in
 
 ### Short Description GIF :movie_camera: <br>
 
-<p align="center"><a href="http://crmbeta.azurewebsites.net" rel="CRM Site"><img src="https://github.com/VanHakobyan/CodeFightsSolutionAndProjectsUnreadable/blob/master/CRM.gif?raw=true"></a></p><br>
+<p align="center"><a href="http://crmbeta.azurewebsites.net" rel="CRM Site"><img src="https://github.com/VanHakobyan/CustomerRelationshipManagement_CRM/blob/master/CRM.gif?raw=true"></a></p><br>
 
 ### About :pencil2:
 
